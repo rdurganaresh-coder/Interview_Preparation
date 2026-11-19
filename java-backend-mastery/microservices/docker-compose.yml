@@ -1,0 +1,29 @@
+services:
+  service-discovery:
+    build: ./service-discovery
+    ports:
+      - "8761:8761"
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-discovery
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka/
+  order-service:
+    build: ./order-service
+    ports:
+      - "8091:8091"
+    depends_on:
+      - service-discovery
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka/
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8092:8092"
+    depends_on:
+      - service-discovery
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-discovery:8761/eureka/

@@ -1,0 +1,8 @@
+{
+  "name": "react-workspace",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}
