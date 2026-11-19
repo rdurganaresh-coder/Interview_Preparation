@@ -30,4 +30,21 @@ mvn clean compile
 
 # Run Linux practice sandbox container
 cd linux && docker compose up -d --build && docker exec -it linux-practice-lab bash
+
 ```
+
+
+The archive contains the updated java-backend-mastery full-stack multi-module workspace configured for JDK 26, Spring Boot 4.1.2, Docker Compose, React, and Angular:
+• Nested Core Java & DSA Aggregators (Both inherit JDK 26 from the root pom.xml):
+• corejava_modules/ (<packaging>pom</packaging>) containing java-streams, java-collections, and multithreading (with a Java Virtual Threads demo).
+• dsa_algorithms/ (<packaging>pom</packaging>) containing arrays-strings (TwoSum), trees-graphs (BinaryTreeTraversal), and dynamic-programming (FibonacciDP).
+• Spring & Microservices Backend Modules:
+• spring-boot/ with spring-boot-rest-basics (port 8081) and spring-boot-jpa-crud (port 8082).
+• spring-batch/ with batch-csv-to-db and batch-job-scheduler.
+• spring-security/ with security-basic-rbac (port 8083) and security-jwt-auth (port 8084).
+• microservices/ with service-discovery (port 8761), api-gateway (port 8080), order-service (port 8091), payment-service (port 8092), Dockerfiles, and docker-compose.yml.
+• Frontend Workspaces:
+• frontend/react-workspace/ (@learning/shared-ui, react-basics on 3001, react-dashboard on 3002) and frontend/angular-workspace/ (shared-lib, angular-basics on 4201, angular-admin on 4202).
+Would you like me to add JUnit 5 unit tests inside your new dsa_algorithms sub-modules (arrays-strings, trees-graphs, and dynamic-programming) so you can run automated test suites in IntelliJ IDEA?
+Show Code
+

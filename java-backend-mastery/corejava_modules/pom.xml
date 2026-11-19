@@ -17,5 +17,6 @@
         <module>java-streams</module>
         <module>java-collections</module>
         <module>multithreading</module>
+        <module>java-concurrency</module>
     </modules>
 </project>
