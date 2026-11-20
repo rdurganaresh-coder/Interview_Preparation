@@ -1,7 +1,0 @@
-services:
-  linux-lab:
-    build: .
-    container_name: linux-practice-lab
-    volumes:
-      - ./scripts:/workspace/scripts
-      - ./sample-logs:/workspace/sample-logs
