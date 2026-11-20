@@ -1,4 +1,0 @@
-mastery:
-  app:
-    environment-name: prod
-    max-retries: 5

@@ -1,4 +1,0 @@
-mastery:
-  app:
-    environment-name: dev
-    max-retries: 1
