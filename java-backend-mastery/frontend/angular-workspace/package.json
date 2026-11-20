@@ -1,0 +1,12 @@
+{
+  "name": "angular-workspace",
+  "private": true,
+  "scripts": {
+    "start:basics": "ng serve angular-basics --port 4201",
+    "start:admin": "ng serve angular-admin --port 4202"
+  },
+  "dependencies": {
+    "@angular/core": "^19.0.0",
+    "@angular/common": "^19.0.0"
+  }
+}
