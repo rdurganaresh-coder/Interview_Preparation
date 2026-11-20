@@ -3,4 +3,6 @@
 ## Table of Contents
 
 * **Basics**
-  * [Concurrency Basics](concurrency.md)
+  * [Basics](concurrency.md)
+  * [Blocking-Queue](blockingqueue.md)
+  * [concurrent-skipList-Map](concurrent-skiplist-map.md)
