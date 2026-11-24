@@ -11,7 +11,7 @@ Binary Search Tree(BST) is a node-based binary tree data structure which has the
 * The left and right subtree each must also be a binary search tree.
 * There must be no duplicate nodes.
 
-![image](../assets/images/algorithm/1122/bst.png){:width="450px"}  
+![image](../images/bst.png){:width="450px"}  
 
 ## Common Operations on BST
 
