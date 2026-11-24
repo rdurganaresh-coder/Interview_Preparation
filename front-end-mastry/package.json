@@ -1,0 +1,20 @@
+{
+  "name": "front-end-mastry",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "angular-workspace",
+    "react-workspace/*",
+    "html-css-js/*",
+    "typescript-core/*"
+  ],
+  "scripts": {
+    "start:html-css": "npm --workspace=html-css-basics start",
+    "start:js-es6": "npm --workspace=js-es6-playground start",
+    "start:ts": "npm --workspace=ts-fundamentals start",
+    "start:react-basics": "npm --workspace=react-basics run dev",
+    "start:react-dashboard": "npm --workspace=react-backend-dashboard run dev",
+    "start:angular-basics": "npm --workspace=angular-workspace run start:basics",
+    "start:angular-dashboard": "npm --workspace=angular-workspace run start:dashboard"
+  }
+}

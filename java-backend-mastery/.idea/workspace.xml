@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="65d2cfb1-403b-4cc1-a41e-2c9594cf3bf5" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.000000004040661" />
+      <entry key="S10" value="1.0001219115612865" />
+      <entry key="S30" value="1.124146624796254" />
+      <entry key="S60" value="1.737735986495776" />
+      <entry key="M2" value="3.0886093844333846" />
+      <entry key="M5" value="6.360982162995819" />
+      <entry key="M10" value="9.326313961953433" />
+      <entry key="M15" value="10.813652816722652" />
+      <entry key="M30" value="12.670153406804914" />
+      <entry key="H1" value="13.768291322864512" />
+      <entry key="H2" value="14.366385804827585" />
+      <entry key="H4" value="14.678612333060324" />
+      <entry key="D1" value="14.945786889580763" />
+      <entry key="W1" value="14.992239225227516" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="9.530899022740817E-214" />
+      <entry key="S2" value="5.55627160573386E-54" />
+      <entry key="S5" value="4.987850027595979E-22" />
+      <entry key="S10" value="2.233349535410687E-11" />
+      <entry key="S30" value="2.828566675923461E-4" />
+      <entry key="S60" value="0.01869415751417062" />
+      <entry key="M2" value="0.20511021717717437" />
+      <entry key="M5" value="1.1291623621539957" />
+      <entry key="M10" value="2.1006155055960476" />
+      <entry key="M15" value="2.5972843438751947" />
+      <entry key="M30" value="3.2193912245541907" />
+      <entry key="H1" value="3.5874929973418825" />
+      <entry key="H2" value="3.787864886098519" />
+      <entry key="H4" value="3.8924184684334553" />
+      <entry key="D1" value="3.981855665031104" />
+      <entry key="W1" value="3.997402659017166" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.8066417592221263" />
+      <entry key="MS500" value="0.9579352182226964" />
+      <entry key="S2" value="0.9893137269832234" />
+      <entry key="S5" value="0.9957117125954634" />
+      <entry key="S10" value="0.9979752006130175" />
+      <entry key="S30" value="1.1236118543240006" />
+      <entry key="S60" value="1.7551825207776817" />
+      <entry key="M2" value="3.2895449730895026" />
+      <entry key="M5" value="7.481545063563342" />
+      <entry key="M10" value="11.418962532837542" />
+      <entry key="M15" value="13.404369862208354" />
+      <entry key="M30" value="15.885471932677527" />
+      <entry key="H1" value="17.353513957156796" />
+      <entry key="H2" value="18.153051735440556" />
+      <entry key="H4" value="18.570414674106523" />
+      <entry key="D1" value="18.927537491992176" />
+      <entry key="W1" value="18.98962681631436" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3MMW0ePmIuHTyXQl2x6dMbosqiv" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Maven.java-backend-mastery [clean,install].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Github/Interview_Preparation/java-backend-mastery/corejava_modules/java-concurrency/docs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "D:/Github/Interview_Preparation/java-backend-mastery/corejava_modules/java-concurrency/src/Main.java",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2026.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Github\Interview_Preparation\java-backend-mastery\corejava_modules\java-concurrency\docs" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-ac68fc9d2b05-intellij.indexing.shared.core-IU-263.7307.200" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="65d2cfb1-403b-4cc1-a41e-2c9594cf3bf5" name="Changes" comment="" />
+      <created>1795160695306</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1795160695306</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/corejava_modules/java-concurrency/src/Main.java</url>
+          <line>10</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

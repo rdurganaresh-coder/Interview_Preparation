@@ -1,0 +1,46 @@
+services:
+  eureka:
+    build:
+      context: .
+      args:
+        MODULE_NAME: service-registry-eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - ms-net
+  api-gateway:
+    build:
+      context: .
+      args:
+        MODULE_NAME: api-gateway
+    ports:
+      - "8200:8200"
+    depends_on:
+      - eureka
+    networks:
+      - ms-net
+  order-service:
+    build:
+      context: .
+      args:
+        MODULE_NAME: order-service
+    ports:
+      - "8201:8201"
+    depends_on:
+      - eureka
+    networks:
+      - ms-net
+  payment-service:
+    build:
+      context: .
+      args:
+        MODULE_NAME: payment-service
+    ports:
+      - "8202:8202"
+    depends_on:
+      - eureka
+    networks:
+      - ms-net
+networks:
+  ms-net:
+    driver: bridge
