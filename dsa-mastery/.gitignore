@@ -1,4 +1,7 @@
-target/
+# IDE files
 .idea/
 *.iml
-.DS_Store
+.vscode/
+
+# Maven build outputs
+target/
