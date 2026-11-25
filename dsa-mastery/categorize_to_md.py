@@ -69,13 +69,14 @@ CONCEPT_KEYWORDS = [
     ])
 ]
 
+DIFFICULTY_ORDER = ["Easy", "Medium", "Hard"]
+
 DIFFICULTY_BADGES = {
     "Easy": "🟢 Easy",
     "Medium": "🟡 Medium",
     "Hard": "🔴 Hard"
 }
 
-# Precompile whole-word regexes for accurate matching
 COMPILED_CONCEPTS = [
     (concept, re.compile(r"\b(?:" + "|".join(re.escape(k) for k in kws) + r")\b", re.IGNORECASE))
     for concept, kws in CONCEPT_KEYWORDS
@@ -93,12 +94,12 @@ def make_leetcode_url(title: str) -> str:
     slug = re.sub(r"[\s-]+", "-", slug).strip("-")
     return f"https://leetcode.com{slug}/"
 
-def make_anchor(text: str) -> str:
-    anchor = text.lower().replace("&", "").replace(",", "")
-    return re.sub(r"\s+", "-", anchor.strip())
+def make_slug(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return slug
 
 def parse_and_export_md(file_path: str, output_path: str):
-    categorized = defaultdict(list)
+    categorized = defaultdict(lambda: defaultdict(list))
     diff_counts = {"Easy": 0, "Medium": 0, "Hard": 0}
     line_pattern = re.compile(r"^(\d+)\s+(.+?)\s+(Easy|Medium|Hard)\s*$")
     
@@ -109,7 +110,7 @@ def parse_and_export_md(file_path: str, output_path: str):
                 prob_id, title, difficulty = match.groups()
                 concept = get_primary_concept(title)
                 
-                categorized[concept].append({
+                categorized[concept][difficulty].append({
                     "id": int(prob_id),
                     "title": title,
                     "difficulty": difficulty,
@@ -123,7 +124,8 @@ def parse_and_export_md(file_path: str, output_path: str):
         ordered_concepts.append("Arrays, Hashing & Greedy")
 
     with open(output_path, "w", encoding="utf-8") as out:
-        # Top Header
+        # Explicit Top Anchor for reliable "Back to Top" navigation in all Markdown viewers
+        out.write('<a id="top"></a>\n\n')
         out.write("# AlgoMap LeetCode Problem Bank\n\n")
         out.write(
             f"**Total Problems: {total}** "
@@ -132,36 +134,49 @@ def parse_and_export_md(file_path: str, output_path: str):
             f"🔴 Hard: {diff_counts['Hard']})\n\n"
         )
         
-        # Table of Contents
+        # Table of Contents linking directly to explicit HTML anchors
         out.write("## Table of Contents\n")
         for concept in ordered_concepts:
-            count = len(categorized[concept])
-            anchor = make_anchor(f"{concept} ({count})")
-            out.write(f"- [{concept} ({count})](#{anchor})\n")
+            concept_total = sum(len(categorized[concept][d]) for d in DIFFICULTY_ORDER)
+            anchor = make_slug(concept)
+            out.write(f"- [{concept} ({concept_total})](#{anchor})\n")
         out.write("\n---\n\n")
 
-        # Concept Sections with 5-column Tables
+        # Concept Sections with Separate Easy / Medium / Hard Sub-Tables
         for concept in ordered_concepts:
-            items = sorted(categorized[concept], key=lambda x: x["id"])
-            easy_c = sum(1 for i in items if i["difficulty"] == "Easy")
-            med_c = sum(1 for i in items if i["difficulty"] == "Medium")
-            hard_c = sum(1 for i in items if i["difficulty"] == "Hard")
+            concept_total = sum(len(categorized[concept][d]) for d in DIFFICULTY_ORDER)
+            easy_c = len(categorized[concept]["Easy"])
+            med_c = len(categorized[concept]["Medium"])
+            hard_c = len(categorized[concept]["Hard"])
+            anchor = make_slug(concept)
 
-            out.write(f"## {concept} ({len(items)})\n\n")
+            # Explicit anchor tag ensures TOC clicks jump straight here in VS Code, Obsidian, & GitHub
+            out.write(f'<a id="{anchor}"></a>\n\n')
+            out.write(f"## {concept} ({concept_total})\n\n")
             out.write(f"🟢 Easy: {easy_c} | 🟡 Medium: {med_c} | 🔴 Hard: {hard_c}\n\n")
             
-            out.write("| ID | Problem | Difficulty | LeetCode | Status |\n")
-            out.write("| :-: | :--- | :--- | :-: | :-: |\n")
-            
-            for item in items:
-                badge = DIFFICULTY_BADGES[item["difficulty"]]
-                out.write(
-                    f"| {item['id']} | {item['title']} | {badge} | "
-                    f"[Solve]({item['url']}) | <input type=\"checkbox\"> |\n"
-                )
-            out.write("\n")
+            for diff in DIFFICULTY_ORDER:
+                items = sorted(categorized[concept][diff], key=lambda x: x["id"])
+                if not items:
+                    continue
 
-    print(f"Exported {total} problems into styled Markdown tables at {output_path}.")
+                badge = DIFFICULTY_BADGES[diff]
+                out.write(f"### {badge} ({len(items)})\n\n")
+                
+                out.write("| ID | Problem | Difficulty | LeetCode | Status |\n")
+                out.write("| :-: | :--- | :--- | :-: | :-: |\n")
+                
+                for item in items:
+                    out.write(
+                        f"| {item['id']} | {item['title']} | {badge} | "
+                        f"[Solve]({item['url']}) | <input type=\"checkbox\"> |\n"
+                    )
+                
+                out.write("\n[↑ Back to Top](#top)\n\n")
+
+            out.write("---\n\n")
+
+    print(f"Exported {total} problems with sub-tables and navigation links to {output_path}.")
 
 if __name__ == "__main__":
     # Save your pasted text into 'problems.txt' before running
