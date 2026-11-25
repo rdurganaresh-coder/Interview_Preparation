@@ -1,0 +1,87 @@
+package com.dsamastery.trees;
+
+import java.util.*;
+
+public class CountAllPossibleWalks {
+
+    with exactly 2 edges. The walks are {0, 2, 3} and {0, 1, 3}
+    // C++ program to count walks from u to v with exactly k edges
+    // Number of vertices in the graph
+    // A naive recursive function to count walks from u to v with k edges
+    int countwalks(int graph[][V], int u, int v, int k)
+    {
+    // Base cases
+    if (k == 0 && u == v) return 1;
+    if (k == 1 && graph[u][v]) return 1;
+    if (k <= 0) return 0;
+    // Initialize result
+    int count = 0;
+    // Go to all adjacents of u and recur
+    for (int i = 0; i < V; i++)
+    if (graph[u][i]) // Check if is adjacent of u
+    count += countwalks(graph, i, v, k-1);
+    return count;
+    }
+    // driver program to test above function
+    int main()
+    {
+    /* Let us create the graph shown in above diagram*/
+    int graph[V][V] = { {0, 1, 1, 1},
+    {0, 0, 0, 1},
+    {0, 0, 0, 1},
+    {0, 0, 0, 0}
+    };
+    int u = 0, v = 3, k = 2;
+    System.out.print(countwalks(graph, u, v, k));
+    return 0;
+    }
+    // C++ program to count walks from u to v with exactly k edges
+    // Number of vertices in the graph
+    // A Dynamic programming based function to count walks from u
+    // to v with k edges
+    int countwalks(int graph[][V], int u, int v, int k)
+    {
+    // Table to be filled up using DP. The value count[i][j][e] will
+    // store count of possible walks from i to j with exactly k edges
+    int count[V][V][k+1];
+    // Loop for number of edges from 0 to k
+    for (int e = 0; e <= k; e++)
+    {
+    for (int i = 0; i < V; i++) // for source
+    {
+    for (int j = 0; j < V; j++) // for destination
+    {
+    // initialize value
+    count[i][j][e] = 0;
+    // from base cases
+    if (e == 0 && i == j)
+    count[i][j][e] = 1;
+    if (e == 1 && graph[i][j])
+    count[i][j][e] = 1;
+    // go to adjacent only when number of edges is more than 1
+    if (e > 1)
+    {
+    for (int a = 0; a < V; a++) // adjacent of source i
+    if (graph[i][a])
+    count[i][j][e] += count[a][j][e-1];
+    }
+    }
+    }
+    }
+    return count[u][v][k];
+    }
+    // driver program to test above function
+    int main()
+    {
+    /* Let us create the graph shown in above diagram*/
+    int graph[V][V] = { {0, 1, 1, 1},
+    {0, 0, 0, 1},
+    {0, 0, 0, 1},
+    {0, 0, 0, 0}
+    };
+    int u = 0, v = 3, k = 2;
+    System.out.print(countwalks(graph, u, v, k));
+    return 0;
+    }
+    Wecanalsouse Divide and ConquertosolvetheaboveprobleminO(V3Logk)
+}

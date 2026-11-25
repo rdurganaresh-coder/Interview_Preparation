@@ -1,0 +1,81 @@
+package com.dsamastery.arrays;
+
+import java.util.*;
+
+public class MaximumOfAllSubarrays {
+
+    arr[] = {1, 2, 3, 1, 4, 5, 2, 3, 6}
+    arr[] = {8, 5, 10, 7, 9, 4, 15, 12, 90, 13}
+    Method 1 (Simple)
+    void printKMax(int arr[], int n, int k)
+    {
+    int j, max;
+    for (int i = 0; i <= n-k; i++)
+    {
+    max = arr[i];
+    for (j = 1; j < k; j++)
+    {
+    if (arr[i+j] > max)
+    max = arr[i+j];
+    }
+    System.out.printf("%d ", max);
+    }
+    }
+    int main()
+    {
+    int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int k = 3;
+    printKMax(arr, n, k);
+    return 0;
+    }
+    Method 2 (Use Self-Balancing BST)
+    // A Dequeue (Double ended queue) based method for printing maixmum element of
+    // all subarrays of size k
+    void printKMax(int arr[], int n, int k)
+    {
+    // Create a Double Ended Queue, Qi that will store indexes of array elements
+    // The queue will store indexes of useful elements in every window and it will
+    // maintain decreasing order of values from front to rear in Qi, i.e.,
+    // arr[Qi.front[]] to arr[Qi.rear()] are sorted in decreasing order
+    std::deque<int> Qi(k);
+    /* Process first k (or first window) elements of array */
+    int i;
+    for (i = 0; i < k; ++i)
+    {
+    // For very element, the previous smaller elements are useless so
+    // remove them from Qi
+    while ( (!Qi.empty()) && arr[i] >= arr[Qi.back()])
+    Qi.pop_back(); // Remove from rear
+    // Add new element at rear of queue
+    Qi.push_back(i);
+    }
+    // Process rest of the elements, i.e., from arr[k] to arr[n-1]
+    for ( ; i < n; ++i)
+    {
+    // The element at the front of the queue is the largest element of
+    // previous window, so print it
+    System.out.print(arr[Qi.front()] << " ");
+    // Remove the elements which are out of this window
+    while ( (!Qi.empty()) && Qi.front() <= i - k)
+    Qi.pop_front(); // Remove from front of queue
+    // Remove all elements smaller than the currently
+    // being added element (remove useless elements)
+    while ( (!Qi.empty()) && arr[i] >= arr[Qi.back()])
+    Qi.pop_back();
+    // Add current element at the rear of Qi
+    Qi.push_back(i);
+    }
+    // Print the maximum element of last window
+    System.out.print(arr[Qi.front()]);
+    }
+    // Driver program to test above functions
+    int main()
+    {
+    int arr[] = {12, 1, 78, 90, 57, 89, 56};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int k = 3;
+    printKMax(arr, n, k);
+    return 0;
+    }
+}
