@@ -1288,7 +1288,7 @@
 
 | # | Problem / Article | Link | Status |
 | :--- | :--- | :--- | :---: |
-| 1155 | 1â€™s and 2â€™s complement of a Binary Number | [View on GFG](https://www.geeksforgeeks.org/1s-2s-complement-binary-number/) | ⬜ |
+| 1155 | 1's and 2's complement of a Binary Number | [View on GFG](https://www.geeksforgeeks.org/1s-2s-complement-binary-number/) | ⬜ |
 
 ## Ï
 

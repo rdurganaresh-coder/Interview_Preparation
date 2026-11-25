@@ -5,7 +5,7 @@ import pandas as pd
 # ==========================================
 # CONFIGURATION
 # ==========================================
-INPUT_FILE = r"D:\Github\Interview_Preparation\dsa-mastery\docs\GeeksForgeeks1.csv"
+INPUT_FILE = r"D:\Github\Interview_Preparation\dsa-mastery\docs\GeeksForgeeks.xlsx"
 OUTPUT_DIR = r"D:\Github\Interview_Preparation\dsa-mastery\gfg_dsa_sheets"
 
 REMOVE_GLOBAL_DUPLICATES = True
