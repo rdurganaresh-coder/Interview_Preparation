@@ -1,0 +1,102 @@
+Problems 
+  
+2290H	Extra Roadbinary search, dfs and similar, greedy, trees	Submit		 x1651
+2290G2	Lakeside Trail (Hard Version)binary search, dp, greedy, math	Submit		 x1737
+2290G1	Lakeside Trail (Easy Version)binary search, brute force, math	Submit		 x2431
+2290F	Value Countersbinary search, constructive algorithms, math	Submit		 x3416
+2290E	Avalanchedp, games, math	Submit		 x6533
+2290D	Letters Downdata structures, dsu, greedy, implementation, strings	Submit		 x11202
+2290C	Books on a Shelfconstructive algorithms, greedy, sortings	Submit		 x14700
+2290B	Stubborn Penimplementation, strings	Submit		 x21746
+2290A	Three Pilesimplementation, math	Submit		 x24529
+2289F	Problem from Malinovkabrute force, implementation, math, number theory	Submit		 x304
+2289E	The Problem from Silachbrute force, data structures, dp, dsu, trees, two pointers	Submit		 x764
+2289D	Problem from Yuzhnouralskdata structures, greedy, sortings, two pointers	Submit		 x1849
+2289C	Problem from Ust-Katavbinary search, data structures	Submit		 x3651
+2289B	Problem from Chebarkuldata structures, implementation	Submit		 x4876
+2289A	Problem from Dolgoderevenskoyemath, number theory	Submit		 x6234
+2288C	Reimu Hakurei and the Youkaigreedy, sortings	Submit		 x3986
+2288A	Youmu Konpaku and the Duelbrute force, math	Submit		 x6436
+2287E2	Marisa Kirisame and the Game (Hard Version)dp, dp, games, games	Submit		 x51
+2287E1	Marisa Kirisame and the Game (Easy Version)dp, games	Submit		 x44
+2287D	Patchouli Knowledge and the Stringbinary search, brute force, fft, hashing, probabilities, strings	Submit		 x174
+2287C	Cirno and the Math Problembitmasks, brute force, dp, math, number theory	Submit		 x568
+2287B	Satori Komeiji and the Metrobinary search, greedy, two pointers	Submit		 x2134
+2287A2	Yukari Yakumo and the Boundary Stones (Hard Version)constructive algorithms, interactive	Submit		 x2831
+2287A1	Yukari Yakumo and the Boundary Stones (Easy Version)dp, greedy	Submit		 x5591
+2285F	Mooclear Reactor 3data structures, divide and conquer, dsu, graphs	Submit		 x220
+2285E	Arithmetic Subarraydata structures, greedy, implementation, sortings, two pointers	Submit		 x556
+2285D	Reverse Partitionbinary search, combinatorics, data structures, math	Submit		 x1971
+2285C	Max Substitutioncombinatorics, data structures, data structures, math, math, sortings, sortings, two pointers	Submit		 x4840
+2285B	Diverse Stringcombinatorics, math, strings	Submit		 x6874
+2285A	Composite Permutationconstructive algorithms, math	Submit		 x10292
+2284F	Fun Timescombinatorics, data structures, dp, math, matrices	Submit		 x215
+2284E	My Mind Is Goingbinary search, dfs and similar, graphs, interactive	Submit		 x173
+2284D	The Theorem of Two Canscommunication, constructive algorithms, dfs and similar, graphs, interactive, math, trees	Submit		 x975
+2284C2	Disgusting + GCD (Checker Version)brute force, dp, graphs, greedy, greedy, greedy, greedy, math, number theory	Submit		 x2832
+2284C1	Disgusting + GCD (Constructive Version)constructive algorithms, dp, graphs, greedy, math, number theory	Submit		 x5776
+2284B	Introduction to the Niche Internetconstructive algorithms, greedy, sortings	Submit		 x7858
+2284A2	15K4JR3B (Hard Version)greedy, math, number theory	Submit		 x9789
+2284A1	15K4JR3B (Easy Version)greedy, math, number theory	Submit		 x11912
+2283G	Order Statistics on the Graphbitmasks, brute force, sortings	Submit		 x166
+2283F	Minimize the Graphbrute force, data structures, graphs, greedy	Submit		 x703
+2283E	Partition of a Binary Stringcombinatorics, dp	Submit		 x1720
+2283D	Black, Gray and Whitebrute force, constructive algorithms, dfs and similar, trees	Submit		 x4023
+2283C	Big XORbitmasks, constructive algorithms	Submit		 x6505
+2283B	Rhythmic Stringbrute force, number theory	Submit		 x10155
+2283A	Numbers on the Boardgreedy, math, two pointers	Submit		 x11896
+2280B	Secret String Patternsinteractive	Submit		 x6948
+2280A	Are They the Same?brute force, implementation	Submit		 x8966
+2279F	The Stones of Nimbitmasks, graphs, greedy	Submit		 x153
+2279E	Save Me!brute force, dfs and similar, matrices, meet-in-the-middle	Submit		 x196
+2279D	Meta Graphconstructive algorithms, dp, graphs, shortest paths	Submit		 x652
+2279C	Anti-Productivebrute force, greedy, math, sortings	Submit		 x1917
+2279B	Balanced Subsetsbitmasks, combinatorics, dp	Submit		 x2792
+2279A	Reverse and Doublebinary search, brute force, data structures, implementation	Submit		 x5006
+2278G	0s and 1sbitmasks, dfs and similar, dp, hashing, number theory, trees	Submit		 x837
+2278F	Modulo and Countingdp, math, number theory	Submit		 x1589
+2278E	Swap and Negateconstructive algorithms, constructive algorithms, constructive algorithms, greedy	Submit		 x5606
+2278D	Lock and Unlockgreedy	Submit		 x9070
+2278C	Math and Physicsgreedy	Submit		 x13252
+2278B	Stakes and Shapesconstructive algorithms, greedy	Submit		 x15578
+2278A	Fraction and Siximplementation, sortings, strings	Submit		 x19069
+2277F	Token Re-Movingdata structures, dfs and similar, dsu, trees	Submit		 x503
+2277E	Tree Guessingconstructive algorithms, interactive, trees	Submit		 x456
+2277D2	Number Operating (Hard Version)bitmasks, brute force, divide and conquer, dp	Submit		 x539
+2277D1	Number Operating (Easy Version)binary search, bitmasks, brute force, greedy	Submit		 x3291
+2277C	Edge Addeletingdfs and similar, greedy, trees	Submit		 x6351
+2277B	Sequence Decreasingconstructive algorithms, greedy	Submit		 x9498
+2277A	Subset Selectinggreedy	Submit		 x11213
+2276G	Elimination of Playerscombinatorics, dp, math	Submit	2100	 x486
+2276F	Permutation Coloring Gamebrute force, dp, dsu, games, greedy, implementation, math	Submit	2400	 x921
+2276E	Good Substringscombinatorics, data structures, data structures, dp, greedy, greedy, strings	Submit	1800	 x3516
+2276D	Cavemancombinatorics, graphs	Submit	1400	 x8240
+2276C	Subarraysmath, number theory	Submit	1100	 x12322
+2276B	Replace and Compressimplementation, strings	Submit	1000	 x13432
+2276A	Perfect Sandwichesgreedy, math	Submit	800	 x21318
+2275H	A Problem to Warm Up the Eyebrowscombinatorics, combinatorics, dp, dp, math, math	Submit	2400	 x746
+2275G	Copper Squanderbinary search, data structures, dsu, graphs, greedy, math, sortings, ternary search	Submit	1900	 x1945
+2275F	Tea Blendhashing, math, number theory	Submit	1800	 x2952
+2275E	Repentance Is Already on the Waydp, implementation	Submit	1500	 x5843
+2275D	Precision Alignmentbinary search, brute force, greedy, implementation	Submit	1300	 x8862
+2275C	Unrequited Lovebrute force, data structures	Submit	1000	 x16293
+2275B	Did Not Go to Printdata structures, implementation	Submit	800	 x23462
+2275A	In Search of Conveniencegeometry, implementation	Submit	800	 x28266
+2274B	Prefixgreedy	Submit	1100	 x6291
+2274A	The Projections of Pacodfs and similar, dp, hashing, implementation, math	Submit	800	 x8887
+2273F	Pancho's Permutationconstructive algorithms, dp, greedy, math	Submit	3500	 x191
+2273E	Six-Seven Bagsbrute force, greedy, interactive	Submit	2900	 x197
+2273D	Aura Battlebrute force, implementation, interactive, math	Submit	2600	 x335
+2273C	Matrix Puzzlebrute force, data structures, implementation, math, matrices	Submit	2100	 x891
+2273B	Robot Championshipconstructive algorithms, math	Submit	1900	 x1898
+2273A	Lavencia Orangesbinary search, constructive algorithms, dp, greedy	Submit	1300	 x5092
+2272G	Rangesdata structures, data structures, divide and conquer, dsu	Submit		 x352
+2272F	Tree Reduction Gamedfs and similar, dp, games, trees	Submit		 x544
+2272E	Memory Cell Interceptionbinary search, greedy, two pointers	Submit		 x1117
+2272D	Connecting the Conflictsbrute force, constructive algorithms, dfs and similar, dp	Submit		 x3355
+2272C	Yet Another Black Cell Problembinary search, constructive algorithms, dp, greedy	Submit		 x6189
+2272B	Frogs Jumpconstructive algorithms, greedy	Submit		 x9030
+2272A	Maximize One MEXbrute force, constructive algorithms, greedy	Submit		 x10621
+2271H2	Personal Issues (Hard Version)games, games, trees, trees	Submit	3300	 x98
+2271H1	Personal Issues (Easy Version)dp, games, games, trees, trees	Submit	2800	 x160
+2271G	Grid Fillingconstructive algorithms, constructive algorithms, greedy, greedy, implementation, implementation	Submit	3100	 x132
