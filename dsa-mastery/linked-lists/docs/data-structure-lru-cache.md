@@ -249,4 +249,4 @@ lru.get(3);   // keys = [3,7,4,6,5], values = [9,2,4,6,5], return 9
 ## Reference
 
 * [LRU Cache Implementation](https://www.geeksforgeeks.org/lru-cache-implementation/)
-* [LRU Cache on LeetCode](https://leetcode.com/problems/lru-cache/)
+* [LRU Cache on LeetCode](https://leetcode.com/problems//problems/lru-cache/)

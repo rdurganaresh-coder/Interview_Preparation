@@ -531,7 +531,7 @@ public int[] findRedundantConnection(int[][] edges) {
 
 ## Classic Problems
 
-* [LeetCode 200 - Number of Islands](https://leetcode.com/problems/number-of-islands/)
-* [LeetCode 934 - Shortest Bridge](https://leetcode.com/problems/shortest-bridge/)
-* [LeetCode 742 - Closest Leaf in a Binary Tree](https://leetcode.com/problems/closest-leaf-in-a-binary-tree/)
-* [LeetCode 684 - Redundant Connection](https://leetcode.com/problems/redundant-connection/)
+* [LeetCode 200 - Number of Islands](https://leetcode.com/problems//problems/number-of-islands/)
+* [LeetCode 934 - Shortest Bridge](https://leetcode.com/problems//problems/shortest-bridge/)
+* [LeetCode 742 - Closest Leaf in a Binary Tree](https://leetcode.com/problems//problems/closest-leaf-in-a-binary-tree/)
+* [LeetCode 684 - Redundant Connection](https://leetcode.com/problems//problems/redundant-connection/)

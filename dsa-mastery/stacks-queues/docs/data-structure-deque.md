@@ -244,7 +244,7 @@ public class CircularArrayDeque {
 
 ## Classic Problems
 
-* [LeetCode 239 - Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)
+* [LeetCode 239 - Sliding Window Maximum](https://leetcode.com/problems//problems/sliding-window-maximum/)
 
 ## Source files
 

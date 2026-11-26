@@ -358,7 +358,7 @@ public class QueueMergeSort {
 
 ## Classic Problems
 
-* [LeetCode 346 - Moving Average from Data Stream](https://leetcode.com/problems/moving-average-from-data-stream/)
+* [LeetCode 346 - Moving Average from Data Stream](https://leetcode.com/problems//problems/moving-average-from-data-stream/)
 
 ## Source files
 

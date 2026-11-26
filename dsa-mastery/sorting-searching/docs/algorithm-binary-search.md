@@ -201,19 +201,19 @@ public int searchLast(int[] nums, int target) {
 
 ## Classic Problems
 
-* [LeetCode 704 - Binary Search](https://leetcode.com/problems/binary-search/)
+* [LeetCode 704 - Binary Search](https://leetcode.com/problems//problems/binary-search/)
 * [LintCode 61 - Search for a range](https://www.lintcode.com/problem/search-for-a-range)
-* [LeetCode 35 - Search Insert Position](https://leetcode.com/problems/search-insert-position/)
-* [LeetCode 74 - Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/)
-* [LeetCode 278 - First Bad Version](https://leetcode.com/problems/first-bad-version/)
-* [LeetCode 162 - Find Peak Element](https://leetcode.com/problems/find-peak-element/)
-* [LeetCode 33 - Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/)
-* [LeetCode 153 - Find Minimum in Rotated Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/)
-* [LeetCode 4 - Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/)
-* [LeetCode 88 - Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/)
+* [LeetCode 35 - Search Insert Position](https://leetcode.com/problems//problems/search-insert-position/)
+* [LeetCode 74 - Search a 2D Matrix](https://leetcode.com/problems//problems/search-a-2d-matrix/)
+* [LeetCode 278 - First Bad Version](https://leetcode.com/problems//problems/first-bad-version/)
+* [LeetCode 162 - Find Peak Element](https://leetcode.com/problems//problems/find-peak-element/)
+* [LeetCode 33 - Search in Rotated Sorted Array](https://leetcode.com/problems//problems/search-in-rotated-sorted-array/)
+* [LeetCode 153 - Find Minimum in Rotated Sorted Array](https://leetcode.com/problems//problems/find-minimum-in-rotated-sorted-array/)
+* [LeetCode 4 - Median of Two Sorted Arrays](https://leetcode.com/problems//problems/median-of-two-sorted-arrays/)
+* [LeetCode 88 - Merge Sorted Array](https://leetcode.com/problems//problems/merge-sorted-array/)
 * [LintCode 39 - Recover Sorted Array](https://www.lintcode.com/problem/recover-rotated-sorted-array/)
-* [LeetCode 796 - Rotate String](https://leetcode.com/problems/rotate-string/)
-* [LeetCode 151 - Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/)
+* [LeetCode 796 - Rotate String](https://leetcode.com/problems//problems/rotate-string/)
+* [LeetCode 151 - Reverse Words in a String](https://leetcode.com/problems//problems/reverse-words-in-a-string/)
 
 ## Source files
 

@@ -160,8 +160,8 @@ private boolean dfs(List<Integer>[] graph, int[] colors, int color, int node) {
 
 ## Classic Problems
 
-* [LeetCode 785 - Is Graph Bipartite?](https://leetcode.com/problems/is-graph-bipartite/)
-* [LeetCode 886 - Possible Bipartition](https://leetcode.com/problems/possible-bipartition/)
+* [LeetCode 785 - Is Graph Bipartite?](https://leetcode.com/problems//problems/is-graph-bipartite/)
+* [LeetCode 886 - Possible Bipartition](https://leetcode.com/problems//problems/possible-bipartition/)
 
 ## Reference
 

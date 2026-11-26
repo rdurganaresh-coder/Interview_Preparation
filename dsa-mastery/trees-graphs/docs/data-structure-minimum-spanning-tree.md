@@ -136,7 +136,7 @@ public void testMST() {
 
 ## Related Questions
 
-* [Cheapest Flights Within K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops)
+* [Cheapest Flights Within K Stops](https://leetcode.com/problems//problems/cheapest-flights-within-k-stops)
 
 ## Source files
 

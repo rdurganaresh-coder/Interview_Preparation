@@ -49,7 +49,7 @@ with open(OUTPUT_MD, mode="w", encoding="utf-8") as md:
     for prob_id, title, difficulty in problems:
         safe_title = title.replace("|", "\\|")
         badge = {"Easy": "🟢 Easy", "Medium": "🟡 Medium", "Hard": "🔴 Hard"}[difficulty]
-        lc_url = f"https://leetcode.com/problems/{slugify(title)}/"
+        lc_url = f"https://leetcode.com/problems//problems/{slugify(title)}/"
         md.write(f"| {prob_id} | {safe_title} | {badge} | [Solve]({lc_url}) | ⬜ |\n")
 
 print(f"Successfully generated {OUTPUT_MD} with {len(problems)} problems!")

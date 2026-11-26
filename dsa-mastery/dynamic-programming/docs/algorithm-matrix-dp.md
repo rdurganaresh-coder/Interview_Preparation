@@ -112,13 +112,13 @@ public int uniquePath(int m, int n) {
 
 ## Define Matrix with Larger Size
 
-When to define a dp matrix with `m+1` and `n+1`? see question [LeetCode 221 - Maximal Square](https://leetcode.com/problems/maximal-square).
+When to define a dp matrix with `m+1` and `n+1`? see question [LeetCode 221 - Maximal Square](https://leetcode.com/problems//problems/maximal-square).
 
 ## Classic Problems
 
-* [LeetCode 62 - Unique Paths](https://leetcode.com/problems/unique-paths/)
-* [LeetCode 64 - Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
-* [LeetCode 221 - Maximal Square](https://leetcode.com/problems/maximal-square)
+* [LeetCode 62 - Unique Paths](https://leetcode.com/problems//problems/unique-paths/)
+* [LeetCode 64 - Minimum Path Sum](https://leetcode.com/problems//problems/minimum-path-sum/)
+* [LeetCode 221 - Maximal Square](https://leetcode.com/problems//problems/maximal-square)
 
 ## Source files
 

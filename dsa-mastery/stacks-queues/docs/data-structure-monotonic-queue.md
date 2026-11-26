@@ -184,4 +184,4 @@ public int[][] firstLarger(int[] nums) {
 
 * [Monotonic Queue Explained with LeetCode Problems](https://medium.com/algorithms-and-leetcode/monotonic-queue-explained-with-leetcode-problems-7db7c530c1d6)
 * [Monotonic Queue](https://anthony-huang.github.io/competitiveprogramming/2016/06/06/monotonic-queue.html)
-* [This is a typical monotonic queue problem](https://leetcode.com/problems/sliding-window-maximum/discuss/65885/this-is-a-typical-monotonic-queue-problem)
+* [This is a typical monotonic queue problem](https://leetcode.com/problems//problems/sliding-window-maximum/discuss/65885/this-is-a-typical-monotonic-queue-problem)

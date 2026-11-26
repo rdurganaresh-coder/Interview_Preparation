@@ -271,8 +271,8 @@ public String alienOrder(String[] words) {
 ## Classic Problems
 
 * [LintCode 127 - Topological Sorting](http://lintcode.com/problem/topological-sorting/)
-* [LeetCode 207 - Course Schedule](https://leetcode.com/problems/course-schedule/)
-* [LeetCode 269 - Alien Dictionary](https://leetcode.com/problems/alien-dictionary)
+* [LeetCode 207 - Course Schedule](https://leetcode.com/problems//problems/course-schedule/)
+* [LeetCode 269 - Alien Dictionary](https://leetcode.com/problems//problems/alien-dictionary)
 
 ## Source files
 

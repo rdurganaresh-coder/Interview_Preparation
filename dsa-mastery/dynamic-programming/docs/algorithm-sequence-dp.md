@@ -201,21 +201,21 @@ A[i]\arr[i] | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 
 ### Classic Problems
 
-* [LeetCode 70 - Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)
-* [LeetCode 55 - Jump Game](https://leetcode.com/problems/jump-game/)
-* [LeetCode 45 - Jump Game II](https://leetcode.com/problems/jump-game-ii/)
-* [LeetCode 132 - Palindrome Partitioning II](https://leetcode.com/problems/palindrome-partitioning-ii/)
-* [LeetCode 139 - Word Break](https://leetcode.com/problems/word-break/)
-* [LeetCode 140 - Word Break II](https://leetcode.com/problems/word-break-ii/)
-* [LeetCode 674 - Longest Continuous Increasing Subsequence](https://leetcode.com/problems/longest-continuous-increasing-subsequence/)
-* [LeetCode 300 - Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)
-* [LeetCode 198 - House Robber](https://leetcode.com/problems/house-robber/)
-* [LeetCode 213 - House Robber II](https://leetcode.com/problems/house-robber-ii)
+* [LeetCode 70 - Climbing Stairs](https://leetcode.com/problems//problems/climbing-stairs/)
+* [LeetCode 55 - Jump Game](https://leetcode.com/problems//problems/jump-game/)
+* [LeetCode 45 - Jump Game II](https://leetcode.com/problems//problems/jump-game-ii/)
+* [LeetCode 132 - Palindrome Partitioning II](https://leetcode.com/problems//problems/palindrome-partitioning-ii/)
+* [LeetCode 139 - Word Break](https://leetcode.com/problems//problems/word-break/)
+* [LeetCode 140 - Word Break II](https://leetcode.com/problems//problems/word-break-ii/)
+* [LeetCode 674 - Longest Continuous Increasing Subsequence](https://leetcode.com/problems//problems/longest-continuous-increasing-subsequence/)
+* [LeetCode 300 - Longest Increasing Subsequence](https://leetcode.com/problems//problems/longest-increasing-subsequence/)
+* [LeetCode 198 - House Robber](https://leetcode.com/problems//problems/house-robber/)
+* [LeetCode 213 - House Robber II](https://leetcode.com/problems//problems/house-robber-ii)
 
 ## Game, Min-Max
 
-* [LeetCode 486 - Predict the Winner](https://leetcode.com/problems/predict-the-winner/)
-* [LeetCode 877 - Stone Game](https://leetcode.com/problems/stone-game/)
+* [LeetCode 486 - Predict the Winner](https://leetcode.com/problems//problems/predict-the-winner/)
+* [LeetCode 877 - Stone Game](https://leetcode.com/problems//problems/stone-game/)
 
 ## Source files
 

@@ -159,12 +159,12 @@ private void dfs(int[] nums, int pos, List<Integer> list, List<List<Integer>> an
 
 ## Classic Problems
 
-* [LeetCode 77 - Combinations](https://leetcode.com/problems/combinations/)
-* [LeetCode 39 - Combination Sum](https://leetcode.com/problems/combination-sum/)
-* [LeetCode 40 - Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
-* [LeetCode 216 - Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)
-* [LeetCode 46 - Permutations](https://leetcode.com/problems/permutations/)
-* [LeetCode 78. Subsets](https://leetcode.com/problems/subsets/)
+* [LeetCode 77 - Combinations](https://leetcode.com/problems//problems/combinations/)
+* [LeetCode 39 - Combination Sum](https://leetcode.com/problems//problems/combination-sum/)
+* [LeetCode 40 - Combination Sum II](https://leetcode.com/problems//problems/combination-sum-ii/)
+* [LeetCode 216 - Combination Sum III](https://leetcode.com/problems//problems/combination-sum-iii/)
+* [LeetCode 46 - Permutations](https://leetcode.com/problems//problems/permutations/)
+* [LeetCode 78. Subsets](https://leetcode.com/problems//problems/subsets/)
 
 ## References
 

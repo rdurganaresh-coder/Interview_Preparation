@@ -332,11 +332,11 @@ public int numIslands(char[][] grid) {
 
 ## Classic Problems
 
-* [LeetCode 102 - Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
-* [LeetCode 144 - Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal/)
-* [LeetCode 200 - Number of Islands](https://leetcode.com/problems/number-of-islands/)
-* [LeetCode 542 - 01 Matrix](https://leetcode.com/problems/01-matrix/)
-* [LeetCode 797 - All Paths From Source to Target](https://leetcode.com/problems/all-paths-from-source-to-target/)
+* [LeetCode 102 - Binary Tree Level Order Traversal](https://leetcode.com/problems//problems/binary-tree-level-order-traversal/)
+* [LeetCode 144 - Binary Tree Preorder Traversal](https://leetcode.com/problems//problems/binary-tree-preorder-traversal/)
+* [LeetCode 200 - Number of Islands](https://leetcode.com/problems//problems/number-of-islands/)
+* [LeetCode 542 - 01 Matrix](https://leetcode.com/problems//problems/01-matrix/)
+* [LeetCode 797 - All Paths From Source to Target](https://leetcode.com/problems//problems/all-paths-from-source-to-target/)
 
 ## Source files
 

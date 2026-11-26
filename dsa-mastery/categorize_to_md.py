@@ -92,7 +92,7 @@ def make_leetcode_url(title: str) -> str:
     slug = title.lower()
     slug = re.sub(r"[^a-z0-9\s-]", "", slug)
     slug = re.sub(r"[\s-]+", "-", slug).strip("-")
-    return f"https://leetcode.com{slug}/"
+    return f"https://leetcode.com/problems/{slug}/"
 
 def make_slug(text: str) -> str:
     slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")

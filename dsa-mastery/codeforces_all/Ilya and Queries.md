@@ -1,0 +1,62 @@
+# B. Ilya and Queries
+
+*Rating: 1100 | Tags: dp, implementation | [https://codeforces.com/problemset/problem/313/B](https://codeforces.com/problemset/problem/313/B)*
+
+
+time limit per test
+
+2 seconds
+
+memory limit per test
+
+256 megabytes
+
+input
+
+stdin
+
+output
+
+stdout
+
+Ilya the Lion wants to help all his friends with passing exams. They need to solve the following problem to pass the IT exam.
+
+You've got string *s* = *s*1*s*2... *s**n* (*n* is the length of the string), consisting only of characters "." and "#" and *m* queries. Each query is described by a pair of integers *l**i*, *r**i* (1 ≤ *l**i* < *r**i* ≤ *n*). The answer to the query *l**i*, *r**i* is the number of such integers *i* (*l**i* ≤ *i* < *r**i*), that *s**i* = *s**i* + 1.
+
+Ilya the Lion wants to help his friends but is there anyone to help him? Help Ilya, solve the problem.
+
+### Input
+
+The first line contains string *s* of length *n* (2 ≤ *n* ≤ 105). It is guaranteed that the given string only consists of characters "." and "#".
+
+The next line contains integer *m* (1 ≤ *m* ≤ 105) — the number of queries. Each of the next *m* lines contains the description of the corresponding query. The *i*-th line contains integers *l**i*, *r**i* (1 ≤ *l**i* < *r**i* ≤ *n*).
+
+### Output
+
+Print *m* integers — the answers to the queries in the order in which they are given in the input.
+
+### Examples
+
+Input
+
+```
+......43 42 31 62 6
+```
+
+Output
+
+```
+1154
+```
+
+Input
+
+```
+#..###51 35 61 53 63 4
+```
+
+Output
+
+```
+11220
+```

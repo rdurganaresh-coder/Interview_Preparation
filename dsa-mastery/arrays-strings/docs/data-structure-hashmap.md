@@ -427,8 +427,8 @@ public class MyHashSet {
 
 ## Classic Problems
 
-* [LeetCode 1 - Two Sum](https://leetcode.com/problems/two-sum/)
-* [LeetCode 128 - Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/)
+* [LeetCode 1 - Two Sum](https://leetcode.com/problems//problems/two-sum/)
+* [LeetCode 128 - Longest Consecutive Sequence](https://leetcode.com/problems//problems/longest-consecutive-sequence/)
 
 ## Source files
 

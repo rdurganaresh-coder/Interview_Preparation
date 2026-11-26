@@ -646,12 +646,12 @@ public int[] findRedundantConnection(int[][] edges) {
 
 ## Classic Problems
 
-* [LeetCode 547 - Friend Circles](https://leetcode.com/problems/friend-circles/)
-* [LeetCode 817 - Linked List Components](https://leetcode.com/problems/linked-list-components/)
-* [LeetCode 684 - Redundant Connection](https://leetcode.com/problems/redundant-connection/)
-* [LeetCode 200 - Number of Islands](https://leetcode.com/problems/number-of-islands/)
-* [LeetCode 305 - Number of Islands II](https://leetcode.com/problems/number-of-islands-ii/)
-* [LeetCode 323 - Number of Connected Components in an Undirected Graph](https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/)
+* [LeetCode 547 - Friend Circles](https://leetcode.com/problems//problems/friend-circles/)
+* [LeetCode 817 - Linked List Components](https://leetcode.com/problems//problems/linked-list-components/)
+* [LeetCode 684 - Redundant Connection](https://leetcode.com/problems//problems/redundant-connection/)
+* [LeetCode 200 - Number of Islands](https://leetcode.com/problems//problems/number-of-islands/)
+* [LeetCode 305 - Number of Islands II](https://leetcode.com/problems//problems/number-of-islands-ii/)
+* [LeetCode 323 - Number of Connected Components in an Undirected Graph](https://leetcode.com/problems//problems/number-of-connected-components-in-an-undirected-graph/)
 
 ## Source files
 

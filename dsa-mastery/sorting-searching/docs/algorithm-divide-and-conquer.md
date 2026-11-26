@@ -293,13 +293,13 @@ public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
 
 ## Divide and Conquer Problems
 
-* [LeetCode 4 - Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/)
-* [LeetCode 148 - Sort List](https://leetcode.com/problems/sort-list/)
-* [LeetCode 704 - Binary Search](https://leetcode.com/problems/binary-search/)
-* [LeetCode 94 - Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal/)
-* [LeetCode 144 - Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal/)
-* [LeetCode 145 - Binary Tree Postorder Traversal](https://leetcode.com/problems/binary-tree-postorder-traversal/)
-* [LeetCode 617 - Merge Two Binary Trees](https://leetcode.com/problems/merge-two-binary-trees/)
+* [LeetCode 4 - Median of Two Sorted Arrays](https://leetcode.com/problems//problems/median-of-two-sorted-arrays/)
+* [LeetCode 148 - Sort List](https://leetcode.com/problems//problems/sort-list/)
+* [LeetCode 704 - Binary Search](https://leetcode.com/problems//problems/binary-search/)
+* [LeetCode 94 - Binary Tree Inorder Traversal](https://leetcode.com/problems//problems/binary-tree-inorder-traversal/)
+* [LeetCode 144 - Binary Tree Preorder Traversal](https://leetcode.com/problems//problems/binary-tree-preorder-traversal/)
+* [LeetCode 145 - Binary Tree Postorder Traversal](https://leetcode.com/problems//problems/binary-tree-postorder-traversal/)
+* [LeetCode 617 - Merge Two Binary Trees](https://leetcode.com/problems//problems/merge-two-binary-trees/)
 
 ## References
 

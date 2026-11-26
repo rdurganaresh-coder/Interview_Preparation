@@ -288,17 +288,17 @@ public boolean isInterleave(String s1, String s2, String s3) {
 
 ## Classic Problems
 
-* [LeetCode 1143 - Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/)
-* [LeetCode 1035 - Uncrossed Lines](https://leetcode.com/problems/uncrossed-lines/)
+* [LeetCode 1143 - Longest Common Subsequence](https://leetcode.com/problems//problems/longest-common-subsequence/)
+* [LeetCode 1035 - Uncrossed Lines](https://leetcode.com/problems//problems/uncrossed-lines/)
 * [LintCode 79 - Longest Common Substring](https://www.lintcode.com/problem/longest-common-substring)
-* [LeetCode 72 - Edit Distance](https://leetcode.com/problems/edit-distance/)
-* [LeetCode 115 - Distinct Subsequences](https://leetcode.com/problems/distinct-subsequences/)
-* [LeetCode 97 - Interleaving String](https://leetcode.com/problems/interleaving-string/)
+* [LeetCode 72 - Edit Distance](https://leetcode.com/problems//problems/edit-distance/)
+* [LeetCode 115 - Distinct Subsequences](https://leetcode.com/problems//problems/distinct-subsequences/)
+* [LeetCode 97 - Interleaving String](https://leetcode.com/problems//problems/interleaving-string/)
 
 ## Game, Min-Max
 
-* [LeetCode 486 - Predict the Winner](https://leetcode.com/problems/predict-the-winner/)
-* [LeetCode 877 - Stone Game](https://leetcode.com/problems/stone-game/)
+* [LeetCode 486 - Predict the Winner](https://leetcode.com/problems//problems/predict-the-winner/)
+* [LeetCode 877 - Stone Game](https://leetcode.com/problems//problems/stone-game/)
 
 ## Source files
 

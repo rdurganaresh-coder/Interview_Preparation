@@ -482,10 +482,10 @@ public class PriorityQueueMin {
 ## Classic Problems
 
 * [LeetCode 295 - Find Median from Data Stream](http://www.lintcode.com/en/problem/segment-tree-build/)
-* [LeetCode 42 - Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)
+* [LeetCode 42 - Trapping Rain Water](https://leetcode.com/problems//problems/trapping-rain-water/)
 * [LintCode 364 - Trapping Rain Water II](https://www.lintcode.com/problem/trapping-rain-water-ii/)
-* [LeetCode 218 - The Skyline Problem](https://leetcode.com/problems/the-skyline-problem/)
-* [LeetCode 480 - Sliding Window Median](https://leetcode.com/problems/sliding-window-median/)
+* [LeetCode 218 - The Skyline Problem](https://leetcode.com/problems//problems/the-skyline-problem/)
+* [LeetCode 480 - Sliding Window Median](https://leetcode.com/problems//problems/sliding-window-median/)
 
 ## Source files
 

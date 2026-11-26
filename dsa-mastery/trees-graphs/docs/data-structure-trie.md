@@ -237,7 +237,7 @@ public class TrieNode {
 
 ## Classic Problems
 
-* [LeetCode 212 - Word Search II](https://leetcode.com/problems/word-search-ii/)
+* [LeetCode 212 - Word Search II](https://leetcode.com/problems//problems/word-search-ii/)
 
 ## Source files
 

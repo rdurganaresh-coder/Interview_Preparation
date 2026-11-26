@@ -132,7 +132,7 @@ sd.query(7, 8); // 10
 
 ## Classic Problems
 
-* [LeetCode 307 - Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/)
+* [LeetCode 307 - Range Sum Query - Mutable](https://leetcode.com/problems//problems/range-sum-query-mutable/)
 
 ## Source files
 
