@@ -1,0 +1,191 @@
+# 3558. Number of Ways to Assign Edge Weights I
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/number-of-ways-to-assign-edge-weights-i/
+
+---
+
+[中文文档](/solution/3500-3599/3558.Number%20of%20Ways%20to%20Assign%20Edge%20Weights%20I/README.md)
+
+## Description
+
+<p>There is an undirected tree with <code>n</code> nodes labeled from 1 to <code>n</code>, rooted at node 1. The tree is represented by a 2D integer array <code>edges</code> of length <code>n - 1</code>, where <code>edges[i] = [u<sub>i</sub>, v<sub>i</sub>]</code> indicates that there is an edge between nodes <code>u<sub>i</sub></code> and <code>v<sub>i</sub></code>.</p>
+
+<p>Initially, all edges have a weight of 0. You must assign each edge a weight of either <strong>1</strong> or <strong>2</strong>.</p>
+
+<p>The <strong>cost</strong> of a path between any two nodes <code>u</code> and <code>v</code> is the total weight of all edges in the path connecting them.</p>
+
+<p>Select any one node <code>x</code> at the <strong>maximum</strong> depth. Return the number of ways to assign edge weights in the path from node 1 to <code>x</code> such that its total cost is <strong>odd</strong>.</p>
+
+<p>Since the answer may be large, return it <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>.</p>
+
+<p><strong>Note:</strong> Ignore all edges <strong>not</strong> in the path from node 1 to <code>x</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<p><img src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3500-3599/3558.Number%20of%20Ways%20to%20Assign%20Edge%20Weights%20I/images/screenshot-2025-03-24-at-060006.png" style="width: 200px; height: 72px;" /></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">edges = [[1,2]]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">1</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>The path from Node 1 to Node 2 consists of one edge (<code>1 &rarr; 2</code>).</li>
+	<li>Assigning weight 1 makes the cost odd, while 2 makes it even. Thus, the number of valid assignments is 1.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<p><img src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3500-3599/3558.Number%20of%20Ways%20to%20Assign%20Edge%20Weights%20I/images/screenshot-2025-03-24-at-055820.png" style="width: 220px; height: 207px;" /></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">edges = [[1,2],[1,3],[3,4],[3,5]]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>The maximum depth is 2, with nodes 4 and 5 at the same depth. Either node can be selected for processing.</li>
+	<li>For example, the path from Node 1 to Node 4 consists of two edges (<code>1 &rarr; 3</code> and <code>3 &rarr; 4</code>).</li>
+	<li>Assigning weights (1,2) or (2,1) results in an odd cost. Thus, the number of valid assignments is 2.</li>
+</ul>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>edges.length == n - 1</code></li>
+	<li><code>edges[i] == [u<sub>i</sub>, v<sub>i</sub>]</code></li>
+	<li><code>1 &lt;= u<sub>i</sub>, v<sub>i</sub> &lt;= n</code></li>
+	<li><code>edges</code> represents a valid tree.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS + Mathematics
+
+> **Thinking**
+>
+> The path from $1$ to a deepest leaf has $d$ edges. Each edge is $1$ or $2$, and the cost is odd iff an odd number of them are $1$. Other edges are free.
+>
+> The number of odd-sized subsets of $d$ elements is $2^{d-1}$ ($0$ when $d=0$). DFS finds $d$; a fast power finishes the count.
+
+First, we build an adjacency list $g$ from the edges, where $g[u]$ contains all neighbors of node $u$.
+
+Next, we use a function $\textit{dfs}$ to compute the depth $d$ of the tree. The answer is the number of ways to choose an odd number of elements from $d$. According to a well-known combinatorial identity, the number of ways to choose an odd number of elements from a set of size $d$ is $2^{d-1}$. Therefore, we can compute the answer using fast exponentiation.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes in the tree.
+
+#### Java
+
+```java
+class Solution {
+    private List<Integer>[] g;
+
+    public int assignEdgeWeights(int[][] edges) {
+        int n = edges.length + 1;
+        g = new List[n + 1];
+        Arrays.setAll(g, k -> new ArrayList<>());
+
+        for (var e : edges) {
+            int u = e[0];
+            int v = e[1];
+            g[u].add(v);
+            g[v].add(u);
+        }
+
+        return (int) pow(2, dfs(1, 0) - 1, 1_000_000_007);
+    }
+
+    private int dfs(int i, int fa) {
+        int res = 0;
+        for (int j : g[i]) {
+            if (j != fa) {
+                res = Math.max(res, dfs(j, i) + 1);
+            }
+        }
+        return res;
+    }
+
+    private long pow(long a, int n, int mod) {
+        long res = 1;
+        while (n > 0) {
+            if ((n & 1) != 0) {
+                res = res * a % mod;
+            }
+            a = a * a % mod;
+            n >>= 1;
+        }
+        return res;
+    }
+}
+```
+
+### Solution 2: Explicit Stack + Mathematics
+
+> **Thinking**
+>
+> The path from $1$ to a deepest leaf has $d$ edges. Each edge is $1$ or $2$, and the cost is odd iff an odd number of them are $1$. Other edges are free. The number of odd-sized subsets of $d$ elements is $2^{d-1}$ ($0$ when $d = 0$).
+>
+> With $n \le 10^5$, recursing from the root into each child reaches depth $n$ on a chain and overflows the call stack. That depth is only the number of edges from the root, so sibling order does not change the maximum.
+>
+> An explicit stack of $(\textit{node}, \textit{parent}, \textit{depth})$ therefore starts at node $1$ with depth $0$. Popping a frame updates the maximum depth, and every neighbor other than the parent is pushed with the depth increased by one. A fast power then evaluates $2^{d-1}$.
+
+First, we build an adjacency list $g$ from the edges, where $g[u]$ contains all neighbors of node $u$.
+
+An explicit stack then computes the depth $d$ of the tree. Each frame is $(\textit{node}, \textit{parent}, \textit{depth})$, starting from node $1$ at depth $0$. Popping a frame updates $d$ with the current depth, and every neighbor other than the parent is pushed with the depth increased by one. The answer is the number of ways to choose an odd number of elements from $d$. According to a well-known combinatorial identity, that number is $2^{d-1}$. Therefore, we can compute the answer using fast exponentiation.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes in the tree.
+
+#### Java
+
+```java
+class Solution {
+    public int assignEdgeWeights(int[][] edges) {
+        int n = edges.length + 1;
+        List<Integer>[] g = new List[n + 1];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int u = e[0];
+            int v = e[1];
+            g[u].add(v);
+            g[v].add(u);
+        }
+        int d = 0;
+        Deque<int[]> stk = new ArrayDeque<>();
+        stk.push(new int[] {1, 0, 0});
+        while (!stk.isEmpty()) {
+            int[] cur = stk.pop();
+            int i = cur[0], fa = cur[1], dep = cur[2];
+            d = Math.max(d, dep);
+            for (int j : g[i]) {
+                if (j != fa) {
+                    stk.push(new int[] {j, i, dep + 1});
+                }
+            }
+        }
+        return (int) pow(2, d - 1, 1_000_000_007);
+    }
+
+    private long pow(long a, int n, int mod) {
+        long res = 1;
+        while (n > 0) {
+            if ((n & 1) != 0) {
+                res = res * a % mod;
+            }
+            a = a * a % mod;
+            n >>= 1;
+        }
+        return res;
+    }
+}
+```

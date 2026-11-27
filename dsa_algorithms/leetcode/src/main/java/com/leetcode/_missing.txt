@@ -1,0 +1,499 @@
+608	Tree Node	Trees & Tries
+3054	Binary Tree Nodes	Trees & Tries
+3593	Minimum Increments to Equalize Leaf Paths	Trees & Tries
+1516	Move Sub-Tree of N-Ary Tree	Trees & Tries
+1597	Build Binary Expression Tree From Infix Expression	Trees & Tries
+1932	Merge BSTs to Create Single BST	Trees & Tries
+2005	Subtree Removal Game with Fibonacci Tree	Trees & Tries
+2277	Closest Node to Path in Tree	Trees & Tries
+3515	Shortest Path in a Weighted Tree	Trees & Tries
+613	Shortest Distance in a Line	Graphs & Shortest Path
+2987	Find Expensive Cities	Graphs & Shortest Path
+3198	Find Cities in Each State	Graphs & Shortest Path
+612	Shortest Distance in a Plane	Graphs & Shortest Path
+785	Is Graph Bipartite?	Graphs & Shortest Path
+2314	The First Day of the Maximum Recorded Degree in Each City	Graphs & Shortest Path
+2783	Flight Occupancy and Waitlist Analysis	Graphs & Shortest Path
+2984	Find Peak Calling Hours for Each City	Graphs & Shortest Path
+3328	Find Cities in Each State II	Graphs & Shortest Path
+3393	Count Paths With the Given XOR Value	Graphs & Shortest Path
+3419	Minimize the Maximum Edge Weight of Graph	Graphs & Shortest Path
+3543	Maximum Weighted K-Edge Path	Graphs & Shortest Path
+2793	Status of Flight Tickets	Graphs & Shortest Path
+3288	Length of the Longest Increasing Path	Graphs & Shortest Path
+3425	Longest Special Path	Graphs & Shortest Path
+3486	Longest Special Path II	Graphs & Shortest Path
+3530	Maximum Profit from Valid Topological Order in DAG	Graphs & Shortest Path
+3547	Maximum Sum of Edge Values in a Graph	Graphs & Shortest Path
+3553	Minimum Weighted Subgraph With the Required Paths II	Graphs & Shortest Path
+3451	Find Invalid IP Addresses	Backtracking
+3470	Permutations IV	Backtracking
+1988	Find Cutoff Score for Each School	Dynamic Programming
+3050	Pizza Toppings Cost Analysis	Dynamic Programming
+3409	Longest Subsequence With Decreasing Adjacent Difference	Dynamic Programming
+3413	Maximum Coins From K Consecutive Bags	Dynamic Programming
+3429	Paint House IV	Dynamic Programming
+3469	Find Minimum Cost to Remove Array Elements	Dynamic Programming
+3592	Inverse Coin Change	Dynamic Programming
+2030	Smallest K-Length Subsequence With Occurrences of a Letter	Dynamic Programming
+3139	Minimum Cost to Equalize Array	Dynamic Programming
+3441	Minimum Cost Good Caption	Dynamic Programming
+3449	Maximize the Minimum Game Score	Dynamic Programming
+3500	Minimum Cost to Divide Array Into Subarrays	Dynamic Programming
+3575	Maximum Good Subtree Score	Dynamic Programming
+2726	Calculator with Method Chaining	Stacks & Queues
+1756	Design Most Recently Used Queue	Stacks & Queues
+770	Basic Calculator IV	Stacks & Queues
+603	Consecutive Available Seats	Sliding Window & Two Pointers
+1576	Replace All ?'s to Avoid Consecutive Repeating Characters	Sliding Window & Two Pointers
+3415	Find Products with Three Consecutive Digits	Sliding Window & Two Pointers
+180	Consecutive Numbers	Sliding Window & Two Pointers
+1709	Biggest Window Between Visits	Sliding Window & Two Pointers
+2292	Products With Three or More Orders in Two Consecutive Years	Sliding Window & Two Pointers
+3140	Consecutive Available Seats II	Sliding Window & Two Pointers
+3434	Maximum Frequency After Subarray Operation	Sliding Window & Two Pointers
+3458	Select K Disjoint Special Substrings	Sliding Window & Two Pointers
+3473	Sum of K Subarrays With Length at Least M	Sliding Window & Two Pointers
+3529	Count Cells in Overlapping Horizontal and Vertical Substrings	Sliding Window & Two Pointers
+3557	Find Maximum Number of Non Intersecting Substrings	Sliding Window & Two Pointers
+3589	Count Prime-Gap Balanced Subarrays	Sliding Window & Two Pointers
+2701	Consecutive Transactions with Increasing Amounts	Sliding Window & Two Pointers
+2752	Customers with Maximum Number of Transactions on Consecutive Days	Sliding Window & Two Pointers
+2949	Count Beautiful Substrings II	Sliding Window & Two Pointers
+3061	Calculate Trapping Rain Water	Sliding Window & Two Pointers
+3260	Find the Largest Palindrome Divisible by K	Sliding Window & Two Pointers
+3303	Find the Occurrence of First Almost Equal Substring	Sliding Window & Two Pointers
+3410	Maximize Subarray Sum After Removing All Occurrences of One Element	Sliding Window & Two Pointers
+3448	Count Substrings Divisible By Last Digit	Sliding Window & Two Pointers
+3526	Range XOR Queries with Subarray Reversals	Sliding Window & Two Pointers
+2020	Number of Accounts That Did Not Stream	Design & Data Structures
+2622	Cache With Time Limit	Design & Data Structures
+631	Design Excel Sum Formula	Design & Data Structures
+2102	Sequentially Ordinal Rank Tracker	Design & Data Structures
+2254	Design Video Sharing Platform	Design & Data Structures
+2650	Design Cancellable Function	Design & Data Structures
+3037	Find Pattern in Infinite Stream II	Design & Data Structures
+610	Triangle Judgement	Matrices & Grids
+1459	Rectangles Area	Matrices & Grids
+2675	Array of Objects to Matrix	Matrices & Grids
+3382	Maximum Area Rectangle With Point Constraints II	Matrices & Grids
+2803	Factorial Generator	Bit Manipulation & Math
+949	Largest Time for Given Digits	Bit Manipulation & Math
+3463	Check If Digits Are Equal in String After Operations II	Bit Manipulation & Math
+3519	Count Numbers with Non-Decreasing Digits	Bit Manipulation & Math
+3569	Maximize Count of Distinct Primes After Split	Bit Manipulation & Math
+181	Employees Earning More Than Their Managers	SQL & Database
+183	Customers Who Never Order	SQL & Database
+577	Employee Bonus	SQL & Database
+584	Find Customer Referee	SQL & Database
+586	Customer Placing the Largest Number of Orders	SQL & Database
+596	Classes With at Least 5 Students	SQL & Database
+607	Sales Person	SQL & Database
+620	Not Boring Movies	SQL & Database
+627	Swap Salary	SQL & Database
+1068	Product Sales Analysis I	SQL & Database
+1069	Product Sales Analysis II	SQL & Database
+1075	Project Employees I	SQL & Database
+1076	Project Employees II	SQL & Database
+1082	Sales Analysis I	SQL & Database
+1083	Sales Analysis II	SQL & Database
+1084	Sales Analysis III	SQL & Database
+1141	User Activity for the Past 30 Days I	SQL & Database
+1142	User Activity for the Past 30 Days II	SQL & Database
+1179	Reformat Department Table	SQL & Database
+1280	Students and Examinations	SQL & Database
+1327	List the Products Ordered in a Period	SQL & Database
+1350	Students With Invalid Departments	SQL & Database
+1378	Replace Employee ID With The Unique Identifier	SQL & Database
+1484	Group Sold Products By The Date	SQL & Database
+1495	Friendly Movies Streamed Last Month	SQL & Database
+1511	Customer Order Frequency	SQL & Database
+1517	Find Users With Valid E-Mails	SQL & Database
+1543	Fix Product Name Format	SQL & Database
+1565	Unique Orders and Customers Per Month	SQL & Database
+1571	Warehouse Manager	SQL & Database
+1581	Customer Who Visited but Did Not Make Any Transactions	SQL & Database
+1587	Bank Account Summary II	SQL & Database
+1607	Sellers With No Sales	SQL & Database
+1633	Percentage of Users Attended a Contest	SQL & Database
+1667	Fix Names in a Table	SQL & Database
+1677	Product's Worth Over Invoices	SQL & Database
+1683	Invalid Tweets	SQL & Database
+1729	Find Followers Count	SQL & Database
+1731	The Number of Employees Which Report to Each Employee	SQL & Database
+1741	Find Total Time Spent by Each Employee	SQL & Database
+1757	Recyclable and Low Fat Products	SQL & Database
+1777	Product's Price for Each Store	SQL & Database
+1789	Primary Department for Each Employee	SQL & Database
+1795	Rearrange Products Table	SQL & Database
+1821	Find Customers With Positive Revenue this Year	SQL & Database
+1890	The Latest Login in 2020	SQL & Database
+1939	Users That Actively Request Confirmation Messages	SQL & Database
+1965	Employees With Missing Information	SQL & Database
+1978	Employees Whose Manager Left the Company	SQL & Database
+2082	The Number of Rich Customers	SQL & Database
+2205	The Number of Users That Are Eligible for Discount	SQL & Database
+2230	The Users That Are Eligible for Discount	SQL & Database
+2329	Product Sales Analysis V	SQL & Database
+2339	All the Matches of the League	SQL & Database
+2377	Sort the Olympic Table	SQL & Database
+2668	Find Latest Salaries	SQL & Database
+2853	Highest Salaries Difference	SQL & Database
+3150	Invalid Tweets II	SQL & Database
+3246	Premier League Table Ranking	SQL & Database
+3465	Find Products with Valid Serial Numbers	SQL & Database
+176	Second Highest Salary	SQL & Database
+177	Nth Highest Salary	SQL & Database
+178	Rank Scores	SQL & Database
+184	Department Highest Salary	SQL & Database
+570	Managers with at Least 5 Direct Reports	SQL & Database
+580	Count Student Number in Departments	SQL & Database
+614	Second Degree Follower	SQL & Database
+1045	Customers Who Bought All Products	SQL & Database
+1070	Product Sales Analysis III	SQL & Database
+1077	Project Employees III	SQL & Database
+1107	New Users Daily Count	SQL & Database
+1112	Highest Grade For Each Student	SQL & Database
+1164	Product Price at a Given Date	SQL & Database
+1341	Movie Rating	SQL & Database
+1364	Number of Trusted Contacts of a Customer	SQL & Database
+1398	Customers Who Bought Products A and B but Not C	SQL & Database
+1445	Apples & Oranges	SQL & Database
+1454	Active Users	SQL & Database
+1468	Calculate Salaries	SQL & Database
+1532	The Most Recent Three Orders	SQL & Database
+1549	The Most Recent Orders for Each Product	SQL & Database
+1555	Bank Account Summary	SQL & Database
+1596	The Most Frequently Ordered Products for Each Customer	SQL & Database
+1747	Leetflex Banned Accounts	SQL & Database
+1841	League Statistics	SQL & Database
+1843	Suspicious Bank Accounts	SQL & Database
+1867	Orders With Maximum Quantity Above Average	SQL & Database
+1875	Group Employees of the Same Salary	SQL & Database
+1907	Count Salary Categories	SQL & Database
+1951	All the Pairs With the Maximum Number of Common Followers	SQL & Database
+2066	Account Balance	SQL & Database
+2084	Drop Type 1 Orders for Customers With Type 0 Orders	SQL & Database
+2228	Users With Two Purchases Within Seven Days	SQL & Database
+2308	Arrange Table by Gender	SQL & Database
+2324	Product Sales Analysis IV	SQL & Database
+2388	Change Null Values in a Table to the Previous Value	SQL & Database
+2394	Employees With Deductions	SQL & Database
+2688	Find Active Users	SQL & Database
+2893	Calculate Orders Within Each Interval	SQL & Database
+2988	Manager of the Largest Department	SQL & Database
+3182	Find Top Scoring Students	SQL & Database
+3204	Bitwise User Permissions Analysis	SQL & Database
+3230	Customer Purchasing Behavior Analysis	SQL & Database
+3252	Premier League Table Ranking II	SQL & Database
+3293	Calculate Product Final Price	SQL & Database
+3322	Premier League Table Ranking III	SQL & Database
+3338	Second Highest Salary II	SQL & Database
+3421	Find Students Who Improved	SQL & Database
+3521	Find Product Recommendation Pairs	SQL & Database
+3564	Seasonal Sales Analysis	SQL & Database
+3580	Find Consistently Improving Employees	SQL & Database
+185	Department Top Three Salaries	SQL & Database
+262	Trips and Users	SQL & Database
+569	Median Employee Salary	SQL & Database
+579	Find Cumulative Salary of an Employee	SQL & Database
+615	Average Salary: Departments VS Company	SQL & Database
+618	Students Report By Geography	SQL & Database
+1127	User Purchase Platform	SQL & Database
+1384	Total Sales Amount by Year	SQL & Database
+1412	Find the Quiet Students in All Exams	SQL & Database
+1479	Sales by Day of the Week	SQL & Database
+2252	Dynamic Pivoting of a Table	SQL & Database
+2253	Dynamic Unpivoting of a Table	SQL & Database
+2474	Customers With Strictly Increasing Purchases	SQL & Database
+3057	Employees Project Allocation	SQL & Database
+3060	User Activities within Time Bounds	SQL & Database
+3156	Employee Task Duration and Concurrent Tasks	SQL & Database
+3188	Find Top Scoring Students II	SQL & Database
+3509	Maximum Product of Subsequences With an Alternating Sum Equal to K	SQL & Database
+1071	Greatest Common Divisor of Strings	Strings
+1816	Truncate Sentence	Strings
+2796	Repeat String	Strings
+192	Word Frequency	Strings
+1393	Capital Gain/Loss	Strings
+2633	Convert Object to JSON String	Strings
+411	Minimum Unique Word Abbreviation	Strings
+843	Guess the Word	Strings
+1397	Find All Good Strings	Strings
+2060	Check if an Original String Exists Given Two Encoded Strings	Strings
+2759	Convert JSON String to Object	Strings
+3389	Minimum Operations to Make Character Frequencies Equal	Strings
+3563	Lexicographically Smallest String After Adjacent Removals	Strings
+175	Combine Two Tables	Arrays, Hashing & Greedy
+182	Duplicate Emails	Arrays, Hashing & Greedy
+193	Valid Phone Numbers	Arrays, Hashing & Greedy
+195	Tenth Line	Arrays, Hashing & Greedy
+196	Delete Duplicate Emails	Arrays, Hashing & Greedy
+197	Rising Temperature	Arrays, Hashing & Greedy
+500	Keyboard Row	Arrays, Hashing & Greedy
+511	Game Play Analysis I	Arrays, Hashing & Greedy
+512	Game Play Analysis II	Arrays, Hashing & Greedy
+595	Big Countries	Arrays, Hashing & Greedy
+597	Friend Requests I: Overall Acceptance Rate	Arrays, Hashing & Greedy
+619	Biggest Single Number	Arrays, Hashing & Greedy
+1050	Actors and Directors Who Cooperated At Least Three Times	Arrays, Hashing & Greedy
+1113	Reported Posts	Arrays, Hashing & Greedy
+1148	Article Views I	Arrays, Hashing & Greedy
+1173	Immediate Food Delivery I	Arrays, Hashing & Greedy
+1211	Queries Quality and Percentage	Arrays, Hashing & Greedy
+1241	Number of Comments per Post	Arrays, Hashing & Greedy
+1251	Average Selling Price	Arrays, Hashing & Greedy
+1294	Weather Type in Each Country	Arrays, Hashing & Greedy
+1303	Find the Team Size	Arrays, Hashing & Greedy
+1322	Ads Performance	Arrays, Hashing & Greedy
+1407	Top Travellers	Arrays, Hashing & Greedy
+1421	NPV Queries	Arrays, Hashing & Greedy
+1435	Create a Session Bar Chart	Arrays, Hashing & Greedy
+1527	Patients With a Condition	Arrays, Hashing & Greedy
+1560	Most Visited Sector in a Circular Track	Arrays, Hashing & Greedy
+1623	All Valid Triplets That Can Represent a Country	Arrays, Hashing & Greedy
+1661	Average Time of Process per Machine	Arrays, Hashing & Greedy
+1693	Daily Leads and Partners	Arrays, Hashing & Greedy
+1809	Ad-Free Sessions	Arrays, Hashing & Greedy
+1853	Convert Date Format	Arrays, Hashing & Greedy
+1873	Calculate Special Bonus	Arrays, Hashing & Greedy
+2026	Low-Quality Problems	Arrays, Hashing & Greedy
+2072	The Winner University	Arrays, Hashing & Greedy
+2356	Number of Unique Subjects Taught by Each Teacher	Arrays, Hashing & Greedy
+2480	Form a Chemical Bond	Arrays, Hashing & Greedy
+2504	Concatenate the Name and the Profession	Arrays, Hashing & Greedy
+2619	Array Prototype Last	Arrays, Hashing & Greedy
+2620	Counter	Arrays, Hashing & Greedy
+2621	Sleep	Arrays, Hashing & Greedy
+2626	Array Reduce Transformation	Arrays, Hashing & Greedy
+2629	Function Composition	Arrays, Hashing & Greedy
+2634	Filter Elements from Array	Arrays, Hashing & Greedy
+2635	Apply Transform Over Each Element in Array	Arrays, Hashing & Greedy
+2648	Generate Fibonacci Sequence	Arrays, Hashing & Greedy
+2665	Counter II	Arrays, Hashing & Greedy
+2666	Allow One Function Call	Arrays, Hashing & Greedy
+2667	Create Hello World Function	Arrays, Hashing & Greedy
+2669	Count Artist Occurrences On Spotify Ranking List	Arrays, Hashing & Greedy
+2677	Chunk Array	Arrays, Hashing & Greedy
+2687	Bikes Last Time Used	Arrays, Hashing & Greedy
+2690	Infinite Method Object	Arrays, Hashing & Greedy
+2695	Array Wrapper	Arrays, Hashing & Greedy
+2703	Return Length of Arguments Passed	Arrays, Hashing & Greedy
+2704	To Be Or Not To Be	Arrays, Hashing & Greedy
+2715	Timeout Cancellation	Arrays, Hashing & Greedy
+2723	Add Two Promises	Arrays, Hashing & Greedy
+2724	Sort By	Arrays, Hashing & Greedy
+2725	Interval Cancellation	Arrays, Hashing & Greedy
+2727	Is Object Empty	Arrays, Hashing & Greedy
+2758	Next Day	Arrays, Hashing & Greedy
+2774	Array Upper Bound	Arrays, Hashing & Greedy
+2794	Create Object from Two Arrays	Arrays, Hashing & Greedy
+2797	Partial Function with Placeholders	Arrays, Hashing & Greedy
+2804	Array Prototype ForEach	Arrays, Hashing & Greedy
+2822	Inversion of Object	Arrays, Hashing & Greedy
+2837	Total Traveled Distance	Arrays, Hashing & Greedy
+2877	Create a DataFrame from List	Arrays, Hashing & Greedy
+2878	Get the Size of a DataFrame	Arrays, Hashing & Greedy
+2879	Display the First Three Rows	Arrays, Hashing & Greedy
+2880	Select Data	Arrays, Hashing & Greedy
+2881	Create a New Column	Arrays, Hashing & Greedy
+2882	Drop Duplicate Rows	Arrays, Hashing & Greedy
+2883	Drop Missing Data	Arrays, Hashing & Greedy
+2884	Modify Columns	Arrays, Hashing & Greedy
+2885	Rename Columns	Arrays, Hashing & Greedy
+2886	Change Data Type	Arrays, Hashing & Greedy
+2887	Fill Missing Data	Arrays, Hashing & Greedy
+2888	Reshape Data: Concatenate	Arrays, Hashing & Greedy
+2889	Reshape Data: Pivot	Arrays, Hashing & Greedy
+2890	Reshape Data: Melt	Arrays, Hashing & Greedy
+2891	Method Chaining	Arrays, Hashing & Greedy
+2985	Calculate Compressed Mean	Arrays, Hashing & Greedy
+2990	Loan Types	Arrays, Hashing & Greedy
+3051	Find Candidates for Data Scientist Position	Arrays, Hashing & Greedy
+3053	Classifying Triangles by Lengths	Arrays, Hashing & Greedy
+3059	Find All Unique Email Domains	Arrays, Hashing & Greedy
+3172	Second Day Verification	Arrays, Hashing & Greedy
+3358	Books with NULL Ratings	Arrays, Hashing & Greedy
+3436	Find Valid Emails	Arrays, Hashing & Greedy
+3570	Find Books with No Available Copies	Arrays, Hashing & Greedy
+194	Transpose File	Arrays, Hashing & Greedy
+534	Game Play Analysis III	Arrays, Hashing & Greedy
+550	Game Play Analysis IV	Arrays, Hashing & Greedy
+574	Winning Candidate	Arrays, Hashing & Greedy
+578	Get Highest Answer Rate Question	Arrays, Hashing & Greedy
+585	Investments in 2016	Arrays, Hashing & Greedy
+602	Friend Requests II: Who Has the Most Friends	Arrays, Hashing & Greedy
+626	Exchange Seats	Arrays, Hashing & Greedy
+751	IP to CIDR	Arrays, Hashing & Greedy
+957	Prison Cells After N Days	Arrays, Hashing & Greedy
+1098	Unpopular Books	Arrays, Hashing & Greedy
+1126	Active Businesses	Arrays, Hashing & Greedy
+1132	Reported Posts II	Arrays, Hashing & Greedy
+1149	Article Views II	Arrays, Hashing & Greedy
+1158	Market Analysis I	Arrays, Hashing & Greedy
+1174	Immediate Food Delivery II	Arrays, Hashing & Greedy
+1193	Monthly Transactions I	Arrays, Hashing & Greedy
+1204	Last Person to Fit in the Bus	Arrays, Hashing & Greedy
+1205	Monthly Transactions II	Arrays, Hashing & Greedy
+1212	Team Scores in Football Tournament	Arrays, Hashing & Greedy
+1226	The Dining Philosophers	Arrays, Hashing & Greedy
+1242	Web Crawler Multithreaded	Arrays, Hashing & Greedy
+1264	Page Recommendations	Arrays, Hashing & Greedy
+1270	All People Report to the Given Manager	Arrays, Hashing & Greedy
+1285	Find the Start and End Number of Continuous Ranges	Arrays, Hashing & Greedy
+1308	Running Total for Different Genders	Arrays, Hashing & Greedy
+1321	Restaurant Growth	Arrays, Hashing & Greedy
+1355	Activity Participants	Arrays, Hashing & Greedy
+1440	Evaluate Boolean Expression	Arrays, Hashing & Greedy
+1501	Countries You Can Safely Invest In	Arrays, Hashing & Greedy
+1613	Find the Missing IDs	Arrays, Hashing & Greedy
+1699	Number of Calls Between Two Persons	Arrays, Hashing & Greedy
+1715	Count Apples and Oranges	Arrays, Hashing & Greedy
+1744	Can You Eat Your Favorite Candy on Your Favorite Day?	Arrays, Hashing & Greedy
+1783	Grand Slam Titles	Arrays, Hashing & Greedy
+1811	Find Interview Candidates	Arrays, Hashing & Greedy
+1831	Maximum Transaction Each Day	Arrays, Hashing & Greedy
+1934	Confirmation Rate	Arrays, Hashing & Greedy
+1949	Strong Friendship	Arrays, Hashing & Greedy
+1990	Count the Number of Experiments	Arrays, Hashing & Greedy
+2041	Accepted Candidates From the Interviews	Arrays, Hashing & Greedy
+2051	The Category of Each Member in the Store	Arrays, Hashing & Greedy
+2112	The Airport With the Most Traffic	Arrays, Hashing & Greedy
+2142	The Number of Passengers in Each Bus I	Arrays, Hashing & Greedy
+2159	Order Two Columns Independently	Arrays, Hashing & Greedy
+2175	The Change in Global Rankings	Arrays, Hashing & Greedy
+2238	Number of Times a Driver Was a Passenger	Arrays, Hashing & Greedy
+2298	Tasks Count in the Weekend	Arrays, Hashing & Greedy
+2346	Compute the Rank as a Percentage	Arrays, Hashing & Greedy
+2372	Calculate the Influence of Each Salesperson	Arrays, Hashing & Greedy
+2618	Check if Object Instance of Class	Arrays, Hashing & Greedy
+2623	Memoize	Arrays, Hashing & Greedy
+2624	Snail Traversal	Arrays, Hashing & Greedy
+2625	Flatten Deeply Nested Array	Arrays, Hashing & Greedy
+2627	Debounce	Arrays, Hashing & Greedy
+2628	JSON Deep Equal	Arrays, Hashing & Greedy
+2631	Group By	Arrays, Hashing & Greedy
+2632	Curry	Arrays, Hashing & Greedy
+2636	Promise Pool	Arrays, Hashing & Greedy
+2637	Promise Time Limit	Arrays, Hashing & Greedy
+2649	Nested Array Generator	Arrays, Hashing & Greedy
+2676	Throttle	Arrays, Hashing & Greedy
+2686	Immediate Food Delivery III	Arrays, Hashing & Greedy
+2692	Make Object Immutable	Arrays, Hashing & Greedy
+2693	Call Function with Custom Context	Arrays, Hashing & Greedy
+2694	Event Emitter	Arrays, Hashing & Greedy
+2700	Differences Between Two Objects	Arrays, Hashing & Greedy
+2705	Compact Object	Arrays, Hashing & Greedy
+2721	Execute Asynchronous Functions in Parallel	Arrays, Hashing & Greedy
+2722	Join Two Arrays by ID	Arrays, Hashing & Greedy
+2738	Count Occurrences in Text	Arrays, Hashing & Greedy
+2754	Bind Function to Context	Arrays, Hashing & Greedy
+2755	Deep Merge of Two Objects	Arrays, Hashing & Greedy
+2757	Generate Circular Array Values	Arrays, Hashing & Greedy
+2775	Undefined to Null	Arrays, Hashing & Greedy
+2776	Convert Callback Based Function to Promise Based Function	Arrays, Hashing & Greedy
+2777	Date Range Generator	Arrays, Hashing & Greedy
+2795	Parallel Execution of Promises for Individual Results Retrieval	Arrays, Hashing & Greedy
+2805	Custom Interval	Arrays, Hashing & Greedy
+2820	Election Results	Arrays, Hashing & Greedy
+2821	Delay the Resolution of Each Promise	Arrays, Hashing & Greedy
+2823	Deep Object Filter	Arrays, Hashing & Greedy
+2854	Rolling Average Steps	Arrays, Hashing & Greedy
+2922	Market Analysis III	Arrays, Hashing & Greedy
+2978	Symmetric Coordinates	Arrays, Hashing & Greedy
+2986	Find Third Transaction	Arrays, Hashing & Greedy
+2989	Class Performance	Arrays, Hashing & Greedy
+2993	Friday Purchases I	Arrays, Hashing & Greedy
+3055	Top Percentile Fraud	Arrays, Hashing & Greedy
+3056	Snaps Analysis	Arrays, Hashing & Greedy
+3058	Friends With No Mutual Friends	Arrays, Hashing & Greedy
+3087	Find Trending Hashtags	Arrays, Hashing & Greedy
+3089	Find Bursty Behavior	Arrays, Hashing & Greedy
+3118	Friday Purchase III	Arrays, Hashing & Greedy
+3124	Find Longest Calls	Arrays, Hashing & Greedy
+3126	Server Utilization Time	Arrays, Hashing & Greedy
+3166	Calculate Parking Fees and Duration	Arrays, Hashing & Greedy
+3220	Odd and Even Transactions	Arrays, Hashing & Greedy
+3262	Find Overlapping Shifts	Arrays, Hashing & Greedy
+3278	Find Candidates for Data Scientist Position II	Arrays, Hashing & Greedy
+3308	Find Top Performing Driver	Arrays, Hashing & Greedy
+3428	Maximum and Minimum Sums of at Most Size K Subsequences	Arrays, Hashing & Greedy
+3468	Find the Number of Copy Arrays	Arrays, Hashing & Greedy
+3475	DNA Pattern Recognition	Arrays, Hashing & Greedy
+3489	Zero Array Transformation IV	Arrays, Hashing & Greedy
+3497	Analyze Subscription Conversion	Arrays, Hashing & Greedy
+3520	Minimum Threshold for Inversion Pairs Count	Arrays, Hashing & Greedy
+3540	Minimum Time to Visit All Houses	Arrays, Hashing & Greedy
+3586	Find COVID Recovery Patients	Arrays, Hashing & Greedy
+3595	Once Twice	Arrays, Hashing & Greedy
+218	The Skyline Problem	Arrays, Hashing & Greedy
+571	Find Median Given Frequency of Numbers	Arrays, Hashing & Greedy
+601	Human Traffic of Stadium	Arrays, Hashing & Greedy
+660	Remove 9	Arrays, Hashing & Greedy
+972	Equal Rational Numbers	Arrays, Hashing & Greedy
+1097	Game Play Analysis V	Arrays, Hashing & Greedy
+1159	Market Analysis II	Arrays, Hashing & Greedy
+1194	Tournament Winners	Arrays, Hashing & Greedy
+1225	Report Contiguous Dates	Arrays, Hashing & Greedy
+1336	Number of Transactions per Visit	Arrays, Hashing & Greedy
+1369	Get the Second Most Recent Activity	Arrays, Hashing & Greedy
+1591	Strange Printer II	Arrays, Hashing & Greedy
+1635	Hopper Company Queries I	Arrays, Hashing & Greedy
+1645	Hopper Company Queries II	Arrays, Hashing & Greedy
+1651	Hopper Company Queries III	Arrays, Hashing & Greedy
+1767	Find the Subtasks That Did Not Execute	Arrays, Hashing & Greedy
+1892	Page Recommendations II	Arrays, Hashing & Greedy
+1917	Leetcodify Friends Recommendations	Arrays, Hashing & Greedy
+1919	Leetcodify Similar Friends	Arrays, Hashing & Greedy
+1924	Erect the Fence II	Arrays, Hashing & Greedy
+1938	Maximum Genetic Difference Query	Arrays, Hashing & Greedy
+1956	Minimum Time For K Virus Variants to Spread	Arrays, Hashing & Greedy
+1972	First and Last Call On the Same Day	Arrays, Hashing & Greedy
+2004	The Number of Seniors and Juniors to Join the Company	Arrays, Hashing & Greedy
+2010	The Number of Seniors and Juniors to Join the Company II	Arrays, Hashing & Greedy
+2097	Valid Arrangement of Pairs	Arrays, Hashing & Greedy
+2118	Build the Equation	Arrays, Hashing & Greedy
+2153	The Number of Passengers in Each Bus II	Arrays, Hashing & Greedy
+2173	Longest Winning Streak	Arrays, Hashing & Greedy
+2183	Count Array Pairs Divisible by K	Arrays, Hashing & Greedy
+2199	Finding the Topic of Each Post	Arrays, Hashing & Greedy
+2362	Generate the Invoice	Arrays, Hashing & Greedy
+2494	Merge Overlapping Events in the Same Hall	Arrays, Hashing & Greedy
+2630	Memoize II	Arrays, Hashing & Greedy
+2691	Immutability Helper	Arrays, Hashing & Greedy
+2720	Popularity Percentage	Arrays, Hashing & Greedy
+2756	Query Batching	Arrays, Hashing & Greedy
+2991	Top Three Wineries	Arrays, Hashing & Greedy
+2994	Friday Purchases II	Arrays, Hashing & Greedy
+2995	Viewers Turned Streamers	Arrays, Hashing & Greedy
+3049	Earliest Second to Mark Indices II	Arrays, Hashing & Greedy
+3052	Maximize Items	Arrays, Hashing & Greedy
+3103	Find Trending Hashtags II	Arrays, Hashing & Greedy
+3214	Year on Year Growth Rate	Arrays, Hashing & Greedy
+3236	CEO Subordinate Hierarchy	Arrays, Hashing & Greedy
+3241	Time Taken to Mark All Nodes	Arrays, Hashing & Greedy
+3245	Alternating Groups III	Arrays, Hashing & Greedy
+3256	Maximum Value Sum by Placing Three Rooks I	Arrays, Hashing & Greedy
+3257	Maximum Value Sum by Placing Three Rooks II	Arrays, Hashing & Greedy
+3268	Find Overlapping Shifts II	Arrays, Hashing & Greedy
+3273	Minimum Amount of Damage Dealt to Bob	Arrays, Hashing & Greedy
+3352	Count K-Reducible Numbers Less Than N	Arrays, Hashing & Greedy
+3357	Minimize the Maximum Adjacent Element Difference	Arrays, Hashing & Greedy
+3359	Find Sorted Submatrices With Maximum Element at Most K	Arrays, Hashing & Greedy
+3368	First Letter Capitalization	Arrays, Hashing & Greedy
+3374	First Letter Capitalization II	Arrays, Hashing & Greedy
+3384	Team Dominance by Pass Success	Arrays, Hashing & Greedy
+3390	Longest Team Pass Streak	Arrays, Hashing & Greedy
+3395	Subsequences with a Unique Middle Mode I	Arrays, Hashing & Greedy
+3401	Find Circular Gift Exchange Chains	Arrays, Hashing & Greedy
+3416	Subsequences with a Unique Middle Mode II	Arrays, Hashing & Greedy
+3426	Manhattan Distances of All Arrangements of Pieces	Arrays, Hashing & Greedy
+3435	Frequencies of Shortest Supersequences	Arrays, Hashing & Greedy
+3444	Minimum Increments for Target Multiples in an Array	Arrays, Hashing & Greedy
+3482	Analyze Organization Hierarchy	Arrays, Hashing & Greedy
+3490	Count Beautiful Numbers	Arrays, Hashing & Greedy
+3533	Concatenated Divisibility	Arrays, Hashing & Greedy
+3538	Merge Operations for Minimum Travel Time	Arrays, Hashing & Greedy
+3544	Subtree Inversion Sum	Arrays, Hashing & Greedy
+3554	Find Category Recommendation Pairs	Arrays, Hashing & Greedy
+3594	Minimum Time to Transport All Individuals	Arrays, Hashing & Greedy

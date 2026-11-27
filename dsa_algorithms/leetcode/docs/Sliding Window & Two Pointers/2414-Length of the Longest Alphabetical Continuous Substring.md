@@ -1,0 +1,79 @@
+# 2414. Length of the Longest Alphabetical Continuous Substring
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/length-of-the-longest-alphabetical-continuous-substring/
+
+---
+
+[中文文档](/solution/2400-2499/2414.Length%20of%20the%20Longest%20Alphabetical%20Continuous%20Substring/README.md)
+
+## Description
+
+<p>An <strong>alphabetical continuous string</strong> is a string consisting of consecutive letters in the alphabet. In other words, it is any substring of the string <code>&quot;abcdefghijklmnopqrstuvwxyz&quot;</code>.</p>
+
+<ul>
+	<li>For example, <code>&quot;abc&quot;</code> is an alphabetical continuous string, while <code>&quot;acb&quot;</code> and <code>&quot;za&quot;</code> are not.</li>
+</ul>
+
+<p>Given a string <code>s</code> consisting of lowercase letters only, return the <em>length of the <strong>longest</strong> alphabetical continuous substring.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;abacaba&quot;
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are 4 distinct continuous substrings: &quot;a&quot;, &quot;b&quot;, &quot;c&quot; and &quot;ab&quot;.
+&quot;ab&quot; is the longest continuous substring.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;abcde&quot;
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> &quot;abcde&quot; is the longest continuous substring.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>s</code> consists of only English lowercase letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Single Pass
+
+> **Thinking**
+>
+> Alphabetical runs in a string of length $n\le 10^5$ do not need endpoint enumeration. If consecutive ASCII codes differ by one, extend the current run; otherwise reset its length to $1$. A single pass records the maximum.
+
+We can traverse the string $s$ and use a variable $\textit{ans}$ to record the length of the longest lexicographically consecutive substring, and another variable $\textit{cnt}$ to record the length of the current consecutive substring. Initially, $\textit{ans} = \textit{cnt} = 1$.
+
+Next, we start traversing the string $s$ from the character at index $1$. For each character $s[i]$, if $s[i] - s[i - 1] = 1$, it means the current character and the previous character are consecutive. In this case, $\textit{cnt} = \textit{cnt} + 1$, and we update $\textit{ans} = \max(\textit{ans}, \textit{cnt})$. Otherwise, it means the current character and the previous character are not consecutive, so $\textit{cnt} = 1$.
+
+Finally, we return $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the string $s$.
+
+#### Java
+
+```java
+class Solution {
+    public int longestContinuousSubstring(String s) {
+        int ans = 1, cnt = 1;
+        for (int i = 1; i < s.length(); ++i) {
+            if (s.charAt(i) - s.charAt(i - 1) == 1) {
+                ans = Math.max(ans, ++cnt);
+            } else {
+                cnt = 1;
+            }
+        }
+        return ans;
+    }
+}
+```

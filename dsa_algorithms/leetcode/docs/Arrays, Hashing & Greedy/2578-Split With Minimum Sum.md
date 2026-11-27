@@ -1,0 +1,122 @@
+# 2578. Split With Minimum Sum
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/split-with-minimum-sum/
+
+---
+
+[中文文档](/solution/2500-2599/2578.Split%20With%20Minimum%20Sum/README.md)
+
+## Description
+
+<p>Given a positive integer <code>num</code>, split it into two non-negative integers <code>num1</code> and <code>num2</code> such that:</p>
+
+<ul>
+	<li>The concatenation of <code>num1</code> and <code>num2</code> is a permutation of <code>num</code>.
+    <ul>
+    	<li>In other words, the sum of the number of occurrences of each digit in <code>num1</code> and <code>num2</code> is equal to the number of occurrences of that digit in <code>num</code>.</li>
+    </ul>
+    </li>
+    <li><code>num1</code> and <code>num2</code> can contain leading zeros.</li>
+
+</ul>
+
+<p>Return <em>the <strong>minimum</strong> possible sum of</em> <code>num1</code> <em>and</em> <code>num2</code>.</p>
+
+<p><strong>Notes:</strong></p>
+
+<ul>
+	<li>It is guaranteed that <code>num</code> does not contain any leading zeros.</li>
+	<li>The order of occurrence of the digits in <code>num1</code> and <code>num2</code> may differ from the order of occurrence of <code>num</code>.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> num = 4325
+<strong>Output:</strong> 59
+<strong>Explanation:</strong> We can split 4325 so that <code>num1</code> is 24 and <code>num2</code> is 35, giving a sum of 59. We can prove that 59 is indeed the minimal possible sum.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> num = 687
+<strong>Output:</strong> 75
+<strong>Explanation:</strong> We can split 687 so that <code>num1</code> is 68 and <code>num2</code> is 7, which would give an optimal sum of 75.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>10 &lt;= num &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Counting + Greedy
+
+> **Thinking**
+>
+> Split the digits of $\textit{num}$ into two integers whose sum is minimized. High places should be small, so the cheapest digits should fill those places on both numbers in turn.
+>
+> After counting digits $0$– $9$, append them in increasing order alternately to the two numbers, keeping their lengths close and their leading digits small.
+
+First, we use a hash table or array $\textit{cnt}$ to count the occurrences of each digit in $\textit{num}$, and use a variable $n$ to record the number of digits in $\textit{num}$.
+
+Next, we enumerate all the digits $i$ in $\textit{nums}$, and alternately allocate the digits in $\textit{cnt}$ to $\textit{num1}$ and $\textit{num2}$ in ascending order, recording them in an array $\textit{ans}$ of length $2$. Finally, we return the sum of the two numbers in $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(C)$, where $n$ is the number of digits in $\textit{num}$; and $C$ is the number of different digits in $\textit{num}$, in this problem, $C \leq 10$.
+
+#### Java
+
+```java
+class Solution {
+    public int splitNum(int num) {
+        int[] cnt = new int[10];
+        int n = 0;
+        for (; num > 0; num /= 10) {
+            ++cnt[num % 10];
+            ++n;
+        }
+        int[] ans = new int[2];
+        for (int i = 0, j = 0; i < n; ++i) {
+            while (cnt[j] == 0) {
+                ++j;
+            }
+            --cnt[j];
+            ans[i & 1] = ans[i & 1] * 10 + j;
+        }
+        return ans[0] + ans[1];
+    }
+}
+```
+
+### Solution 2: Sorting + Greedy
+
+> **Thinking**
+>
+> Solution 1 counts by hand for a linear pass. There are at most ten digits, so sorting the decimal string and joining even and odd positions yields the same split with less code.
+
+We can convert $\textit{num}$ to a string or character array, then sort it, and then alternately allocate the digits in the sorted array to $\textit{num1}$ and $\textit{num2}$ in ascending order. Finally, we return the sum of $\textit{num1}$ and $\textit{num2}$.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the number of digits in $\textit{num}$.
+
+#### Java
+
+```java
+class Solution {
+    public int splitNum(int num) {
+        char[] s = (num + "").toCharArray();
+        Arrays.sort(s);
+        int[] ans = new int[2];
+        for (int i = 0; i < s.length; ++i) {
+            ans[i & 1] = ans[i & 1] * 10 + s[i] - '0';
+        }
+        return ans[0] + ans[1];
+    }
+}
+```

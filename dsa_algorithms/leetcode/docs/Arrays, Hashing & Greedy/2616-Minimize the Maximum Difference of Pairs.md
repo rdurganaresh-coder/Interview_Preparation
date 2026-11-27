@@ -1,0 +1,96 @@
+# 2616. Minimize the Maximum Difference of Pairs
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimize-the-maximum-difference-of-pairs/
+
+---
+
+[中文文档](/solution/2600-2699/2616.Minimize%20the%20Maximum%20Difference%20of%20Pairs/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> integer array <code>nums</code> and an integer <code>p</code>. Find <code>p</code> pairs of indices of <code>nums</code> such that the <strong>maximum</strong> difference amongst all the pairs is <strong>minimized</strong>. Also, ensure no index appears more than once amongst the <code>p</code> pairs.</p>
+
+<p>Note that for a pair of elements at the index <code>i</code> and <code>j</code>, the difference of this pair is <code>|nums[i] - nums[j]|</code>, where <code>|x|</code> represents the <strong>absolute</strong> <strong>value</strong> of <code>x</code>.</p>
+
+<p>Return <em>the <strong>minimum</strong> <strong>maximum</strong> difference among all </em><code>p</code> <em>pairs.</em> We define the maximum of an empty set to be zero.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [10,1,2,7,1,3], p = 2
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The first pair is formed from the indices 1 and 4, and the second pair is formed from the indices 2 and 5. 
+The maximum difference is max(|nums[1] - nums[4]|, |nums[2] - nums[5]|) = max(0, 1) = 1. Therefore, we return 1.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [4,2,1,2], p = 1
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> Let the indices 1 and 3 form a pair. The difference of that pair is |2 - 2| = 0, which is the minimum we can attain.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>0 &lt;= p &lt;= (nums.length)/2</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search + Greedy
+
+> **Thinking**
+>
+> We select $p$ disjoint pairs and minimize the maximum pair difference. Searching matchings is combinatorial; $n \le 10^5$ needs a polynomial approach.
+>
+> The threshold $x$ is monotone: if $p$ pairs exist under $x$, a larger $x$ also works. After sorting, adjacent values are the cheapest pairs; taking a feasible pair immediately leaves later indices free.
+>
+> Binary-search $x$ and run that greedy check.
+
+We notice that the maximum difference has monotonicity: if a maximum difference $x$ is feasible, then $x-1$ is also feasible. Therefore, we can use binary search to find the minimal feasible maximum difference.
+
+First, sort the array $\textit{nums}$. Then, for a given maximum difference $x$, check whether it is possible to form $p$ pairs of indices such that the maximum difference in each pair does not exceed $x$. If possible, we can try a smaller $x$; otherwise, we need to increase $x$.
+
+To check whether $p$ such pairs exist with maximum difference at most $x$, we can use a greedy approach. Traverse the sorted array $\textit{nums}$ from left to right. For the current index $i$, if the difference between $\textit{nums}[i+1]$ and $\textit{nums}[i]$ does not exceed $x$, we can form a pair with $i$ and $i+1$, increment the pair count $\textit{cnt}$, and increase $i$ by $2$. Otherwise, increase $i$ by $1$. After traversing, if $\textit{cnt} \geq p$, then such $p$ pairs exist; otherwise, they do not.
+
+The time complexity is $O(n(\log n + \log m))$, and the space complexity is $O(1)$, where $n$ is the length of $\textit{nums}$ and $m$ is the difference between the maximum and minimum values in $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int minimizeMax(int[] nums, int p) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int l = 0, r = nums[n - 1] - nums[0] + 1;
+        while (l < r) {
+            int mid = (l + r) >>> 1;
+            if (count(nums, mid) >= p) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+
+    private int count(int[] nums, int diff) {
+        int cnt = 0;
+        for (int i = 0; i < nums.length - 1; ++i) {
+            if (nums[i + 1] - nums[i] <= diff) {
+                ++cnt;
+                ++i;
+            }
+        }
+        return cnt;
+    }
+}
+```

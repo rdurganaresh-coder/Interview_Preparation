@@ -1,0 +1,80 @@
+# 550. Game Play Analysis IV
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/game-play-analysis-iv/
+
+---
+
+[中文文档](/solution/0500-0599/0550.Game%20Play%20Analysis%20IV/README.md)
+
+## Description
+
+<p>Table: <code>Activity</code></p>
+
+<pre>
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| player_id    | int     |
+| device_id    | int     |
+| event_date   | date    |
+| games_played | int     |
++--------------+---------+
+(player_id, event_date) is the primary key (combination of columns with unique values) of this table.
+This table shows the activity of players of some games.
+Each row is a record of a player who logged in and played a number of games (possibly 0) before logging out on someday using some device.
+</pre>
+
+<p> </p>
+
+<p>Write a solution to report the <strong>fraction</strong> of players that logged in again on the day after the day they first logged in, <strong>rounded to 2 decimal places</strong>. In other words, you need to determine the number of players who logged in on the day immediately following their initial login, and divide it by the number of total players.</p>
+
+<p>The result format is in the following example.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> 
+Activity table:
++-----------+-----------+------------+--------------+
+| player_id | device_id | event_date | games_played |
++-----------+-----------+------------+--------------+
+| 1         | 2         | 2016-03-01 | 5            |
+| 1         | 2         | 2016-03-02 | 6            |
+| 2         | 3         | 2017-06-25 | 1            |
+| 3         | 1         | 2016-03-02 | 0            |
+| 3         | 4         | 2018-07-03 | 5            |
++-----------+-----------+------------+--------------+
+<strong>Output:</strong> 
++-----------+
+| fraction  |
++-----------+
+| 0.33      |
++-----------+
+<strong>Explanation:</strong> 
+Only the player with id 1 logged back in after the first day he had logged in so the answer is 1/3 = 0.33
+</pre>
+
+## Solutions
+
+### Solution 1: Grouping and Minimum Value + Left Join
+
+> **Thinking**
+>
+> Retention is the share of players who also log in the day after their first login. We need each player's first day, then whether the next day exists.
+>
+> A subquery takes `MIN(event_date)` per player and left-joins the base table on the same player and a date difference of $1$. Missing next days stay `NULL`; averaging `event_date IS NOT NULL` is the rate.
+
+We can first find the first login date of each player, and then perform a left join with the original table, with the join condition being that the player ID is the same and the date difference is $-1$, which means the player logged in on the second day. Then, we only need to calculate the ratio of non-null players among the players who logged in on the second day.
+
+### Solution 2: Window Function
+
+> **Thinking**
+>
+> Solution 1 aggregates and then joins. Windows can fetch the next login and rank dates in one pass.
+>
+> `LEAD` yields the following day and `RANK` marks the first login. Keep rank $1$ and measure how often the next date is exactly one day later. Same result without an explicit self-join.
+
+We can use the `LEAD` window function to get the next login date of each player. If the next login date is one day after the current login date, it means that the player logged in on the second day, and we use a field $st$ to record this information. Then, we use the `RANK` window function to rank the player IDs in ascending order by date, and get the login ranking of each player. Finally, we only need to calculate the ratio of non-null $st$ values among the players with a ranking of $1$.

@@ -1,0 +1,209 @@
+# 309. Best Time to Buy and Sell Stock with Cooldown
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+
+---
+
+[中文文档](/solution/0300-0399/0309.Best%20Time%20to%20Buy%20and%20Sell%20Stock%20with%20Cooldown/README.md)
+
+## Description
+
+<p>You are given an array <code>prices</code> where <code>prices[i]</code> is the price of a given stock on the <code>i<sup>th</sup></code> day.</p>
+
+<p>Find the maximum profit you can achieve. You may complete as many transactions as you like (i.e., buy one and sell one share of the stock multiple times) with the following restrictions:</p>
+
+<ul>
+	<li>After you sell your stock, you cannot buy stock on the next day (i.e., cooldown one day).</li>
+</ul>
+
+<p><strong>Note:</strong> You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> prices = [1,2,3,0,2]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> transactions = [buy, sell, cooldown, buy, sell]
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> prices = [1]
+<strong>Output:</strong> 0
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= prices.length &lt;= 5000</code></li>
+	<li><code>0 &lt;= prices[i] &lt;= 1000</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization Search
+
+> **Thinking**
+>
+> We may trade many times, but a sell forces a one-day cooldown. A raw decision tree over day, holding, and cooldown revisits the same states.
+>
+> Compress to $(i,j)$: starting at day $i$, whether we hold. Skip the day; if holding, sell and jump to $i+2$; if free, buy and start holding. Memoization evaluates each state once; the extra day after a sell is the cooldown.
+
+We design a function $\textit{dfs}(i, j)$, which represents the maximum profit that can be obtained starting from the $i$th day with state $j$. The values of $j$ are $0$ and $1$, respectively representing currently not holding a stock and holding a stock. The answer is $\textit{dfs}(0, 0)$.
+
+The execution logic of the function $\textit{dfs}(i, j)$ is as follows:
+
+If $i \geq n$, it means that there are no more stocks to trade, so return $0$;
+
+Otherwise, we can choose not to trade, then $\textit{dfs}(i, j) = \textit{dfs}(i + 1, j)$. We can also trade stocks. If $j > 0$, it means that we currently hold a stock and can sell it, then $\textit{dfs}(i, j) = \textit{prices}[i] + \textit{dfs}(i + 2, 0)$. If $j = 0$, it means that we currently do not hold a stock and can buy, then $\textit{dfs}(i, j) = -\textit{prices}[i] + \textit{dfs}(i + 1, 1)$. Take the maximum value as the return value of the function $\textit{dfs}(i, j)$.
+
+The answer is $\textit{dfs}(0, 0)$.
+
+To avoid repeated calculations, we use the method of memoization search, and use an array $f$ to record the return value of $\textit{dfs}(i, j)$. If $f[i][j]$ is not $-1$, it means that it has been calculated, and we can directly return $f[i][j]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{prices}$.
+
+#### Java
+
+```java
+class Solution {
+    private int[] prices;
+    private Integer[][] f;
+
+    public int maxProfit(int[] prices) {
+        this.prices = prices;
+        f = new Integer[prices.length][2];
+        return dfs(0, 0);
+    }
+
+    private int dfs(int i, int j) {
+        if (i >= prices.length) {
+            return 0;
+        }
+        if (f[i][j] != null) {
+            return f[i][j];
+        }
+        int ans = dfs(i + 1, j);
+        if (j > 0) {
+            ans = Math.max(ans, prices[i] + dfs(i + 2, 0));
+        } else {
+            ans = Math.max(ans, -prices[i] + dfs(i + 1, 1));
+        }
+        return f[i][j] = ans;
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> Solution 1 fills a suffix table from the end. The same choices can be written forward: $f[i][0/1]$ is the best profit after day $i$, free or holding. Free comes from staying free or selling today; holding comes from staying put or buying after cooldown, i.e. from $f[i-2][0]$.
+>
+> Fill left to right; the answer is free on the last day. Time stays $O(n)$.
+
+We can also use dynamic programming to solve this problem.
+
+We define $f[i][j]$ to represent the maximum profit that can be obtained on the $i$th day with state $j$. The values of $j$ are $0$ and $1$, respectively representing currently not holding a stock and holding a stock. Initially, $f[0][0] = 0$, $f[0][1] = -\textit{prices}[0]$.
+
+When $i \geq 1$, if we currently do not hold a stock, then $f[i][0]$ can be obtained by transitioning from $f[i - 1][0]$ and $f[i - 1][1] + \textit{prices}[i]$, i.e., $f[i][0] = \max(f[i - 1][0], f[i - 1][1] + \textit{prices}[i])$. If we currently hold a stock, then $f[i][1]$ can be obtained by transitioning from $f[i - 1][1]$ and $f[i - 2][0] - \textit{prices}[i]$, i.e., $f[i][1] = \max(f[i - 1][1], f[i - 2][0] - \textit{prices}[i])$. The final answer is $f[n - 1][0]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{prices}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[][] f = new int[n][2];
+        f[0][1] = -prices[0];
+        for (int i = 1; i < n; i++) {
+            f[i][0] = Math.max(f[i - 1][0], f[i - 1][1] + prices[i]);
+            f[i][1] = Math.max(f[i - 1][1], (i > 1 ? f[i - 2][0] : 0) - prices[i]);
+        }
+        return f[n - 1][0];
+    }
+}
+```
+
+### Solution 3: Dynamic Programming (Space Optimization)
+
+> **Thinking**
+>
+> Method 2 only reads $i-1$ and $i-2$, so the full table is unnecessary. Three rolling variables (free two days ago, free yesterday, holding yesterday) implement the same transfers in $O(1)$ space.
+
+The transition only needs the previous two days, so three variables are enough and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int f = 0, f0 = 0, f1 = -prices[0];
+        for (int i = 1; i < prices.length; ++i) {
+            int g0 = Math.max(f0, f1 + prices[i]);
+            f1 = Math.max(f1, f - prices[i]);
+            f = f0;
+            f0 = g0;
+        }
+        return f0;
+    }
+}
+```
+
+### Solution 4: Dynamic Programming
+
+> **Thinking**
+>
+> We may trade many times, but a sell forces a one-day cooldown. $n \le 5000$, so a raw decision tree is far too large.
+>
+> The state is the day and whether we hold. Skipping always calls the next day before it returns, so the chain has length $n$ and overflows the stack.
+>
+> Later days are known if we walk backward. Let $f[i][j]$ be the best profit from day $i$ with holding flag $j$, and fill $i$ from $n-1$ down to $0$. Selling lands on $i+2$, which is the cooldown.
+
+Let $f[i][j]$ be the maximum profit starting from day $i$ in state $j$. The values of $j$ are $0$ and $1$, meaning we do not hold a stock and we hold a stock. The answer is $f[0][0]$. Days past the end contribute $0$, so $f[n][j] = f[n + 1][j] = 0$.
+
+Fill $i$ from $n - 1$ down to $0$. Doing nothing keeps $f[i + 1][j]$. If $j > 0$, we hold a stock and may sell it, earning $\textit{prices}[i] + f[i + 2][0]$. The extra day is the cooldown. If $j = 0$, we may buy, earning $-\textit{prices}[i] + f[i + 1][1]$. Take the larger value:
+
+$$
+f[i][j] = \max(f[i + 1][j],\ \textit{prices}[i] + f[i + 2][0])
+$$
+
+when $j > 0$, and
+
+$$
+f[i][j] = \max(f[i + 1][j],\ -\textit{prices}[i] + f[i + 1][1])
+$$
+
+when $j = 0$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{prices}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[][] f = new int[n + 2][2];
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = 0; j < 2; ++j) {
+                int ans = f[i + 1][j];
+                if (j > 0) {
+                    ans = Math.max(ans, prices[i] + f[i + 2][0]);
+                } else {
+                    ans = Math.max(ans, -prices[i] + f[i + 1][1]);
+                }
+                f[i][j] = ans;
+            }
+        }
+        return f[0][0];
+    }
+}
+```

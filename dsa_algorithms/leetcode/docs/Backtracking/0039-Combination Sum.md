@@ -1,0 +1,154 @@
+# 39. Combination Sum
+
+**Difficulty:** Medium  
+**Category:** Backtracking  
+**LeetCode:** https://leetcode.com/problems/combination-sum/
+
+---
+
+[中文文档](/solution/0000-0099/0039.Combination%20Sum/README.md)
+
+## Description
+
+<p>Given an array of <strong>distinct</strong> integers <code>candidates</code> and a target integer <code>target</code>, return <em>a list of all <strong>unique combinations</strong> of </em><code>candidates</code><em> where the chosen numbers sum to </em><code>target</code><em>.</em> You may return the combinations in <strong>any order</strong>.</p>
+
+<p>The <strong>same</strong> number may be chosen from <code>candidates</code> an <strong>unlimited number of times</strong>. Two combinations are unique if the <span data-keyword="frequency-array">frequency</span> of at least one of the chosen numbers is different.</p>
+
+<p>The test cases are generated such that the number of unique combinations that sum up to <code>target</code> is less than <code>150</code> combinations for the given input.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> candidates = [2,3,6,7], target = 7
+<strong>Output:</strong> [[2,2,3],[7]]
+<strong>Explanation:</strong>
+2 and 3 are candidates, and 2 + 2 + 3 = 7. Note that 2 can be used multiple times.
+7 is a candidate, and 7 = 7.
+These are the only two combinations.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> candidates = [2,3,5], target = 8
+<strong>Output:</strong> [[2,2,2,2],[2,3,3],[3,5]]
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> candidates = [2], target = 1
+<strong>Output:</strong> []
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= candidates.length &lt;= 30</code></li>
+	<li><code>2 &lt;= candidates[i] &lt;= 40</code></li>
+	<li>All elements of <code>candidates</code> are <strong>distinct</strong>.</li>
+	<li><code>1 &lt;= target &lt;= 40</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Pruning + Backtracking
+
+> **Thinking**
+>
+> The first idea is to use each number any number of times and collect every sequence that sums to $\textit{target}$. With $n \le 30$ and $\textit{target} \le 40$, an unpruned search wastes paths that already exceed the target, and different orders of the same multiset would be counted twice.
+>
+> A combination ignores order, so each multiset should appear once. Sort first, and only take candidates from the current index rightward.
+>
+> After sorting, if the remainder $s$ is already smaller than $\textit{candidates}[i]$, everything after is larger and the branch dies. $\textit{dfs}(i,s)$ enumerates $j$ from $i$, and the recursive call stays at $j$ so the same value may be reused.
+
+We can first sort the array to facilitate pruning.
+
+Next, we design a function $\textit{dfs}(i, s)$, which means starting the search from index $i$ with a remaining target value of $s$. Here, $i$ and $s$ are both non-negative integers, the current search path is $t$, and the answer is $\textit{ans}$.
+
+In the function $\textit{dfs}(i, s)$, we first check whether $s$ is $0$. If it is, we add the current search path $t$ to the answer $\textit{ans}$, and then return. If $s \lt \textit{candidates}[i]$, it means that the elements of the current index and the following indices are all greater than the remaining target value $s$, and the path is invalid, so we return directly. Otherwise, we start the search from index $i$, and the search index range is $j \in [i, n)$, where $n$ is the length of the array $\textit{candidates}$. During the search, we add the element of the current index to the search path $t$, recursively call the function $\textit{dfs}(j, s - \textit{candidates}[j])$, and after the recursion ends, we remove the element of the current index from the search path $t$.
+
+In the main function, we just need to call the function $\textit{dfs}(0, \textit{target})$ to get the answer.
+
+The time complexity is $O(2^n n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{candidates}$. Due to pruning, the actual time complexity is much less than $O(2^n n)$.
+
+Similar problems:
+
+- [40. Combination Sum II](https://github.com/doocs/leetcode/blob/main/solution/0000-0099/0040.Combination%20Sum%20II/README_EN.md)
+- [77. Combinations](https://github.com/doocs/leetcode/blob/main/solution/0000-0099/0077.Combinations/README_EN.md)
+- [216. Combination Sum III](https://github.com/doocs/leetcode/blob/main/solution/0200-0299/0216.Combination%20Sum%20III/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    private List<List<Integer>> ans = new ArrayList<>();
+    private List<Integer> t = new ArrayList<>();
+    private int[] candidates;
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        this.candidates = candidates;
+        dfs(0, target);
+        return ans;
+    }
+
+    private void dfs(int i, int s) {
+        if (s == 0) {
+            ans.add(new ArrayList(t));
+            return;
+        }
+        if (s < candidates[i]) {
+            return;
+        }
+        for (int j = i; j < candidates.length; ++j) {
+            t.add(candidates[j]);
+            dfs(j, s - candidates[j]);
+            t.remove(t.size() - 1);
+        }
+    }
+}
+```
+
+### Solution 2: Sorting + Pruning + Backtracking(Another Form)
+
+> **Thinking**
+>
+> Method 1 already prunes correctly by looping over “who is next”. The other writing is choose-or-skip at the current index: skip goes to $i+1$; take stays at $i$ so the same value may be reused. The search tree looks different; the answers do not. It is the same algorithm unfolded as a binary tree.
+
+We can also change the implementation logic of the function $\textit{dfs}(i, s)$ to another form. In the function $\textit{dfs}(i, s)$, we first check whether $s$ is $0$. If it is, we add the current search path $t$ to the answer $\textit{ans}$, and then return. If $i \geq n$ or $s \lt \textit{candidates}[i]$, the path is invalid, so we return directly. Otherwise, we consider two situations, one is not selecting the element of the current index, that is, recursively calling the function $\textit{dfs}(i + 1, s)$, and the other is selecting the element of the current index, that is, recursively calling the function $\textit{dfs}(i, s - \textit{candidates}[i])$.
+
+The time complexity is $O(2^n n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{candidates}$. Due to pruning, the actual time complexity is much less than $O(2^n n)$.
+
+#### Java
+
+```java
+class Solution {
+    private List<List<Integer>> ans = new ArrayList<>();
+    private List<Integer> t = new ArrayList<>();
+    private int[] candidates;
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        this.candidates = candidates;
+        dfs(0, target);
+        return ans;
+    }
+
+    private void dfs(int i, int s) {
+        if (s == 0) {
+            ans.add(new ArrayList(t));
+            return;
+        }
+        if (i >= candidates.length || s < candidates[i]) {
+            return;
+        }
+        dfs(i + 1, s);
+        t.add(candidates[i]);
+        dfs(i, s - candidates[i]);
+        t.remove(t.size() - 1);
+    }
+}
+```

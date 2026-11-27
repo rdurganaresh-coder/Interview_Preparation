@@ -1,0 +1,92 @@
+# 3452. Sum of Good Numbers
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/sum-of-good-numbers/
+
+---
+
+[中文文档](/solution/3400-3499/3452.Sum%20of%20Good%20Numbers/README.md)
+
+## Description
+
+<p>Given an array of integers <code>nums</code> and an integer <code>k</code>, an element <code>nums[i]</code> is considered <strong>good</strong> if it is <strong>strictly</strong> greater than the elements at indices <code>i - k</code> and <code>i + k</code> (if those indices exist). If neither of these indices <em>exists</em>, <code>nums[i]</code> is still considered <strong>good</strong>.</p>
+
+<p>Return the <strong>sum</strong> of all the <strong>good</strong> elements in the array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,3,2,1,5,4], k = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">12</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The good numbers are <code>nums[1] = 3</code>, <code>nums[4] = 5</code>, and <code>nums[5] = 4</code> because they are strictly greater than the numbers at indices <code>i - k</code> and <code>i + k</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,1], k = 1</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The only good number is <code>nums[0] = 2</code> because it is strictly greater than <code>nums[1]</code>.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= nums.length &lt;= 100</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 1000</code></li>
+	<li><code>1 &lt;= k &lt;= floor(nums.length / 2)</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Traversal
+
+> **Thinking**
+>
+> A good number is strictly larger than the neighbors $k$ away, when they exist. $n\le 100$, so we test each index.
+>
+> A missing side imposes no constraint and must not be treated as $0$.
+>
+> Skip $i$ when a left neighbor exists and $x\le \textit{nums}[i-k]$, or a right neighbor exists and $x\le \textit{nums}[i+k]$; otherwise add $x$.
+
+We can traverse the array $\textit{nums}$ and check each element $\textit{nums}[i]$ to see if it meets the conditions:
+
+- If $i \ge k$ and $\textit{nums}[i] \le \textit{nums}[i - k]$, then $\textit{nums}[i]$ is not a good number.
+- If $i + k < \textit{len}(\textit{nums})$ and $\textit{nums}[i] \le \textit{nums}[i + k]$, then $\textit{nums}[i]$ is not a good number.
+- Otherwise, $\textit{nums}[i]$ is a good number, and we add it to the answer.
+
+After traversing, we return the answer.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int sumOfGoodNumbers(int[] nums, int k) {
+        int ans = 0;
+        int n = nums.length;
+        for (int i = 0; i < n; ++i) {
+            if (i >= k && nums[i] <= nums[i - k]) {
+                continue;
+            }
+            if (i + k < n && nums[i] <= nums[i + k]) {
+                continue;
+            }
+            ans += nums[i];
+        }
+        return ans;
+    }
+}
+```

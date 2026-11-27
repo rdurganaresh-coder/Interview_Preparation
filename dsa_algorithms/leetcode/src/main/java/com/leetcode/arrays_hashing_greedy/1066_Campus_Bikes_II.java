@@ -1,0 +1,70 @@
+package com.leetcode.arrays_hashing_greedy;
+
+class Solution1066 {
+    public int assignBikes(int[][] workers, int[][] bikes) {
+        int n = workers.length;
+        int m = bikes.length;
+        int[][] f = new int[n + 1][1 << m];
+        for (var g : f) {
+            Arrays.fill(g, 1 << 30);
+        }
+        f[0][0] = 0;
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 0; j < 1 << m; ++j) {
+                for (int k = 0; k < m; ++k) {
+                    if ((j >> k & 1) == 1) {
+                        int d = Math.abs(workers[i - 1][0] - bikes[k][0])
+                            + Math.abs(workers[i - 1][1] - bikes[k][1]);
+                        f[i][j] = Math.min(f[i][j], f[i - 1][j ^ (1 << k)] + d);
+                    }
+                }
+            }
+        }
+        return Arrays.stream(f[n]).min().getAsInt();
+    }
+
+    // ===== Generated test cases (from the problem examples) =====
+    private static String _tcShow(Object o) {
+        String s = java.util.Arrays.deepToString(new Object[] {o});
+        return s.substring(1, s.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Solution1066 _tcSol = new Solution1066();
+        System.out.println("Test 1");
+        System.out.println("  Input   : " + "workers = [[0,0],[2,1]], bikes = [[1,2],[3,3]]");
+        try {
+            int[][] workers = new int[][]{new int[]{0, 0}, new int[]{2, 1}};
+            int[][] bikes = new int[][]{new int[]{1, 2}, new int[]{3, 3}};
+            System.out.println("  Output  : " + _tcShow(_tcSol.assignBikes(workers, bikes)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "6");
+        System.out.println();
+
+        System.out.println("Test 2");
+        System.out.println("  Input   : " + "workers = [[0,0],[1,1],[2,0]], bikes = [[1,0],[2,2],[2,1]]");
+        try {
+            int[][] workers = new int[][]{new int[]{0, 0}, new int[]{1, 1}, new int[]{2, 0}};
+            int[][] bikes = new int[][]{new int[]{1, 0}, new int[]{2, 2}, new int[]{2, 1}};
+            System.out.println("  Output  : " + _tcShow(_tcSol.assignBikes(workers, bikes)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "4");
+        System.out.println();
+
+        System.out.println("Test 3");
+        System.out.println("  Input   : " + "workers = [[0,0],[1,0],[2,0],[3,0],[4,0]], bikes = [[0,999],[1,999],[2,999],[3,999],[4,999]]");
+        try {
+            int[][] workers = new int[][]{new int[]{0, 0}, new int[]{1, 0}, new int[]{2, 0}, new int[]{3, 0}, new int[]{4, 0}};
+            int[][] bikes = new int[][]{new int[]{0, 999}, new int[]{1, 999}, new int[]{2, 999}, new int[]{3, 999}, new int[]{4, 999}};
+            System.out.println("  Output  : " + _tcShow(_tcSol.assignBikes(workers, bikes)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "4995");
+        System.out.println();
+    }
+}

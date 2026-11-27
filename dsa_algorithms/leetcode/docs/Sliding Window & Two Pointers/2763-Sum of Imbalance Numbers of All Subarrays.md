@@ -1,0 +1,113 @@
+# 2763. Sum of Imbalance Numbers of All Subarrays
+
+**Difficulty:** Hard  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/sum-of-imbalance-numbers-of-all-subarrays/
+
+---
+
+[中文文档](/solution/2700-2799/2763.Sum%20of%20Imbalance%20Numbers%20of%20All%20Subarrays/README.md)
+
+## Description
+
+<p>The <strong>imbalance number</strong> of a <strong>0-indexed</strong> integer array <code>arr</code> of length <code>n</code> is defined as the number of indices in <code>sarr = sorted(arr)</code> such that:</p>
+
+<ul>
+	<li><code>0 &lt;= i &lt; n - 1</code>, and</li>
+	<li><code>sarr[i+1] - sarr[i] &gt; 1</code></li>
+</ul>
+
+<p>Here, <code>sorted(arr)</code> is the function that returns the sorted version of <code>arr</code>.</p>
+
+<p>Given a <strong>0-indexed</strong> integer array <code>nums</code>, return <em>the <strong>sum of imbalance numbers</strong> of all its <strong>subarrays</strong></em>.</p>
+
+<p>A <strong>subarray</strong> is a contiguous <strong>non-empty</strong> sequence of elements within an array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,3,1,4]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are 3 subarrays with non-zero<strong> </strong>imbalance numbers:
+- Subarray [3, 1] with an imbalance number of 1.
+- Subarray [3, 1, 4] with an imbalance number of 1.
+- Subarray [1, 4] with an imbalance number of 1.
+The imbalance number of all other subarrays is 0. Hence, the sum of imbalance numbers of all the subarrays of nums is 3. 
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,3,3,3,5]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> There are 7 subarrays with non-zero imbalance numbers:
+- Subarray [1, 3] with an imbalance number of 1.
+- Subarray [1, 3, 3] with an imbalance number of 1.
+- Subarray [1, 3, 3, 3] with an imbalance number of 1.
+- Subarray [1, 3, 3, 3, 5] with an imbalance number of 2. 
+- Subarray [3, 3, 3, 5] with an imbalance number of 1. 
+- Subarray [3, 3, 5] with an imbalance number of 1.
+- Subarray [3, 5] with an imbalance number of 1.
+The imbalance number of all other subarrays is 0. Hence, the sum of imbalance numbers of all the subarrays of nums is 8. </pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= nums.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration + Ordered Set
+
+> **Thinking**
+>
+> The imbalance of a subarray is the number of adjacent gaps greater than $1$ after sorting unique values; we need the sum over all subarrays. Sorting each subarray is tight at $n\le 1000$ unless the gaps are maintained incrementally.
+>
+> Fix the left end and insert the right-end value into a sorted list. Compare it with its predecessor and successor to see whether new gaps of size greater than $1$ appear and whether an old gap is split. $\textit{cnt}$ tracks the imbalance and is added to the answer.
+
+We can first enumerate the left endpoint $i$ of the subarray. For each $i$, we enumerate the right endpoint $j$ of the subarray from small to large, and maintain all the elements in the current subarray with an ordered list. We also use a variable $\textit{cnt}$ to maintain the unbalanced number of the current subarray.
+
+For each number $\textit{nums}[j]$, we find the first element $\textit{nums}[k]$ in the ordered list that is greater than or equal to $\textit{nums}[j]$, and the last element $\textit{nums}[h]$ that is less than $\textit{nums}[j]$:
+
+- If $\textit{nums}[k]$ exists, and the difference between $\textit{nums}[k]$ and $\textit{nums}[j]$ is more than $1$, the unbalanced number increases by $1$;
+- If $\textit{nums}[h]$ exists, and the difference between $\textit{nums}[j]$ and $\textit{nums}[h]$ is more than $1$, the unbalanced number increases by $1$;
+- If both $\textit{nums}[k]$ and $\textit{nums}[h]$ exist, then inserting the element $\textit{nums}[j]$ between $\textit{nums}[h]$ and $\textit{nums}[k]$ will reduce the unbalanced number by $1$.
+
+Then, we add the unbalanced number of the current subarray to the answer, and continue the iteration until we finish iterating over all subarrays.
+
+The time complexity is $O(n^2 \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int sumImbalanceNumbers(int[] nums) {
+        int n = nums.length;
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            TreeMap<Integer, Integer> tm = new TreeMap<>();
+            int cnt = 0;
+            for (int j = i; j < n; ++j) {
+                Integer k = tm.ceilingKey(nums[j]);
+                if (k != null && k - nums[j] > 1) {
+                    ++cnt;
+                }
+                Integer h = tm.floorKey(nums[j]);
+                if (h != null && nums[j] - h > 1) {
+                    ++cnt;
+                }
+                if (h != null && k != null && k - h > 1) {
+                    --cnt;
+                }
+                tm.merge(nums[j], 1, Integer::sum);
+                ans += cnt;
+            }
+        }
+        return ans;
+    }
+}
+```

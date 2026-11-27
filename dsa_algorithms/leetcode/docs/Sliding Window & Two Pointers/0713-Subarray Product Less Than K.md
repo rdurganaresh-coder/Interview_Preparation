@@ -1,0 +1,81 @@
+# 713. Subarray Product Less Than K
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/subarray-product-less-than-k/
+
+---
+
+[中文文档](/solution/0700-0799/0713.Subarray%20Product%20Less%20Than%20K/README.md)
+
+## Description
+
+<p>You are given an array of integers <code>nums</code> and an integer <code>k</code>.</p>
+
+<p>Return the number of contiguous subarrays where the <strong>product</strong> of all the elements in the <strong>subarray</strong> is <strong>strictly less</strong> than <code>k</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [10,5,2,6], k = 100
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> The 8 subarrays that have product less than 100 are:
+[10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6]
+Note that [10, 5, 2] is not included as the product of 100 is not strictly less than k.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3], k = 0
+<strong>Output:</strong> 0
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 3 * 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 1000</code></li>
+	<li><code>0 &lt;= k &lt;= 10<sup>6</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> Count contiguous subarrays whose product is strictly less than $k$. $n$ can be $3\times 10^4$, so enumerating both ends is $O(n^2)$.
+>
+> All values are positive, so the window product is monotone as the right end grows. Once it reaches $k$, only advancing the left end restores a legal window—each pointer moves at most once.
+>
+> Keep product $p$ and left $l$. After multiplying by $x$, divide out $\textit{nums}[l]$ while $p\ge k$. Then $r-l+1$ subarrays end at $r$. One pass suffices.
+
+We can use two pointers to maintain a sliding window, where the product of all elements in the window is less than $k$.
+
+Define two pointers $l$ and $r$ pointing to the left and right boundaries of the sliding window, initially $l = r = 0$. We use a variable $p$ to record the product of all elements in the window, initially $p = 1$.
+
+Each time, we move $r$ one step to the right, adding the element $x$ pointed to by $r$ to the window, and update $p = p \times x$. Then, if $p \geq k$, we move $l$ one step to the right in a loop and update $p = p \div \textit{nums}[l]$ until $p < k$ or $l \gt r$. Thus, the number of contiguous subarrays ending at $r$ with a product less than $k$ is $r - l + 1$. We then add this number to the answer and continue moving $r$ until $r$ reaches the end of the array.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        int ans = 0, l = 0;
+        int p = 1;
+        for (int r = 0; r < nums.length; ++r) {
+            p *= nums[r];
+            while (l <= r && p >= k) {
+                p /= nums[l++];
+            }
+            ans += r - l + 1;
+        }
+        return ans;
+    }
+}
+```

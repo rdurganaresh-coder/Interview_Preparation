@@ -1,0 +1,124 @@
+# 2459. Sort Array by Moving Items to Empty Space
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/sort-array-by-moving-items-to-empty-space/
+
+---
+
+[中文文档](/solution/2400-2499/2459.Sort%20Array%20by%20Moving%20Items%20to%20Empty%20Space/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> of size <code>n</code> containing <strong>each</strong> element from <code>0</code> to <code>n - 1</code> (<strong>inclusive</strong>). Each of the elements from <code>1</code> to <code>n - 1</code> represents an item, and the element <code>0</code> represents an empty space.</p>
+
+<p>In one operation, you can move <strong>any</strong> item to the empty space. <code>nums</code> is considered to be sorted if the numbers of all the items are in <strong>ascending</strong> order and the empty space is either at the beginning or at the end of the array.</p>
+
+<p>For example, if <code>n = 4</code>, <code>nums</code> is sorted if:</p>
+
+<ul>
+	<li><code>nums = [0,1,2,3]</code> or</li>
+	<li><code>nums = [1,2,3,0]</code></li>
+</ul>
+
+<p>...and considered to be unsorted otherwise.</p>
+
+<p>Return <em>the <strong>minimum</strong> number of operations needed to sort </em><code>nums</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [4,2,0,3,1]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+- Move item 2 to the empty space. Now, nums = [4,0,2,3,1].
+- Move item 1 to the empty space. Now, nums = [4,1,2,3,0].
+- Move item 4 to the empty space. Now, nums = [0,1,2,3,4].
+It can be proven that 3 is the minimum number of operations needed.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,4,0]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> nums is already sorted so return 0.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,0,2,4,3]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+- Move item 2 to the empty space. Now, nums = [1,2,0,4,3].
+- Move item 3 to the empty space. Now, nums = [1,2,3,4,0].
+It can be proven that 2 is the minimum number of operations needed.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == nums.length</code></li>
+	<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt; n</code></li>
+	<li>All the values of <code>nums</code> are <strong>unique</strong>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Permutation Cycle
+
+> **Thinking**
+>
+> Swaps with the blank are permutation-cycle sorting. A cycle of length $m$ costs $m-1$ if it contains the blank and $m+1$ otherwise. The target may be $0,1,\ldots,n-1$ or $1,\ldots,n-1,0$.
+>
+> Walk cycles counting $m+1$ (blank outside), then subtract $2$ if the blank is misplaced. Take the minimum of the two targets.
+
+For a permutation cycle of length $m$, if $0$ is in the cycle, the number of swaps is $m-1$; otherwise, the number of swaps is $m+1$.
+
+We find all permutation cycles, first calculate the total number of swaps assuming each cycle requires $m+1$ swaps, then check if $0$ is misplaced. If it is, it means $0$ is in a permutation cycle, so we subtract $2$ from the total number of swaps.
+
+Here, $0$ can be at position $0$ or at position $n-1$. We take the minimum of these two cases.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int sortArray(int[] nums) {
+        int n = nums.length;
+        int[] arr = new int[n];
+        for (int i = 0; i < n; ++i) {
+            arr[i] = (nums[i] - 1 + n) % n;
+        }
+        int a = f(nums, 0);
+        int b = f(arr, n - 1);
+        return Math.min(a, b);
+    }
+
+    private int f(int[] nums, int k) {
+        boolean[] vis = new boolean[nums.length];
+        int cnt = 0;
+        for (int i = 0; i < nums.length; ++i) {
+            if (i == nums[i] || vis[i]) {
+                continue;
+            }
+            ++cnt;
+            int j = nums[i];
+            while (!vis[j]) {
+                vis[j] = true;
+                ++cnt;
+                j = nums[j];
+            }
+        }
+        if (nums[k] != k) {
+            cnt -= 2;
+        }
+        return cnt;
+    }
+}
+```

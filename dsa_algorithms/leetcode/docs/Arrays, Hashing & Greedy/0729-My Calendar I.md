@@ -1,0 +1,92 @@
+# 729. My Calendar I
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/my-calendar-i/
+
+---
+
+[中文文档](/solution/0700-0799/0729.My%20Calendar%20I/README.md)
+
+## Description
+
+<p>You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a <strong>double booking</strong>.</p>
+
+<p>A <strong>double booking</strong> happens when two events have some non-empty intersection (i.e., some moment is common to both events.).</p>
+
+<p>The event can be represented as a pair of integers <code>startTime</code> and <code>endTime</code> that represents a booking on the half-open interval <code>[startTime, endTime)</code>, the range of real numbers <code>x</code> such that <code>startTime &lt;= x &lt; endTime</code>.</p>
+
+<p>Implement the <code>MyCalendar</code> class:</p>
+
+<ul>
+	<li><code>MyCalendar()</code> Initializes the calendar object.</li>
+	<li><code>boolean book(int startTime, int endTime)</code> Returns <code>true</code> if the event can be added to the calendar successfully without causing a <strong>double booking</strong>. Otherwise, return <code>false</code> and do not add the event to the calendar.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input</strong>
+[&quot;MyCalendar&quot;, &quot;book&quot;, &quot;book&quot;, &quot;book&quot;]
+[[], [10, 20], [15, 25], [20, 30]]
+<strong>Output</strong>
+[null, true, false, true]
+
+<strong>Explanation</strong>
+MyCalendar myCalendar = new MyCalendar();
+myCalendar.book(10, 20); // return True
+myCalendar.book(15, 25); // return False, It can not be booked because time 15 is already booked by another event.
+myCalendar.book(20, 30); // return True, The event can be booked, as the first event takes every time less than 20, but not including 20.</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>0 &lt;= start &lt; end &lt;= 10<sup>9</sup></code></li>
+	<li>At most <code>1000</code> calls will be made to <code>book</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Ordered Set
+
+> **Thinking**
+>
+> Bookings must not overlap; endpoints reach $10^9$ and there are about $1000$ calls. A linear scan works, but an ordered map finds the conflict in a log.
+>
+> Sorted by end time, the only interval that can meet $[\textit{start},\textit{end})$ is the first whose end is greater than $\textit{start}$. If that start is still less than $\textit{end}$, they overlap.
+>
+> Store $\textit{end}\mapsto\textit{start}$. $\textit{bisect\_right}(\textit{start})$ yields that candidate; insert on success. $O(\log n)$ per book.
+
+We can use an ordered set to store the schedule. An ordered set can perform insert, delete, and search operations in $O(\log n)$ time. The elements in the ordered set are sorted by the $\textit{endTime}$ of the schedule in ascending order.
+
+When calling the $\textit{book}(\textit{start}, \textit{end})$ method, we search for the first schedule in the ordered set with an end time greater than $\textit{start}$. If it exists and its start time is less than $\textit{end}$, it means there is a double booking, and we return $\textit{false}$. Otherwise, we insert $\textit{end}$ as the key and $\textit{start}$ as the value into the ordered set and return $\textit{true}$.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the number of schedules.
+
+#### Java
+
+```java
+class MyCalendar {
+    private final TreeMap<Integer, Integer> tm = new TreeMap<>();
+
+    public MyCalendar() {
+    }
+
+    public boolean book(int startTime, int endTime) {
+        var e = tm.ceilingEntry(startTime + 1);
+        if (e != null && e.getValue() < endTime) {
+            return false;
+        }
+        tm.put(endTime, startTime);
+        return true;
+    }
+}
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar obj = new MyCalendar();
+ * boolean param_1 = obj.book(startTime,endTime);
+ */
+```

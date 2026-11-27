@@ -1,0 +1,91 @@
+# 2661. First Completely Painted Row or Column
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/first-completely-painted-row-or-column/
+
+---
+
+[中文文档](/solution/2600-2699/2661.First%20Completely%20Painted%20Row%20or%20Column/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> integer array <code>arr</code>, and an <code>m x n</code> integer <strong>matrix</strong> <code>mat</code>. <code>arr</code> and <code>mat</code> both contain <strong>all</strong> the integers in the range <code>[1, m * n]</code>.</p>
+
+<p>Go through each index <code>i</code> in <code>arr</code> starting from index <code>0</code> and paint the cell in <code>mat</code> containing the integer <code>arr[i]</code>.</p>
+
+<p>Return <em>the smallest index</em> <code>i</code> <em>at which either a row or a column will be completely painted in</em> <code>mat</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2600-2699/2661.First%20Completely%20Painted%20Row%20or%20Column/images/image explanation for example 1" /><img alt="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2600-2699/2661.First%20Completely%20Painted%20Row%20or%20Column/images/image explanation for example 1" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2600-2699/2661.First%20Completely%20Painted%20Row%20or%20Column/images/grid1.jpg" style="width: 321px; height: 81px;" />
+<pre>
+<strong>Input:</strong> arr = [1,3,4,2], mat = [[1,4],[2,3]]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The moves are shown in order, and both the first row and second column of the matrix become fully painted at arr[2].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="image explanation for example 2" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2600-2699/2661.First%20Completely%20Painted%20Row%20or%20Column/images/grid2.jpg" style="width: 601px; height: 121px;" />
+<pre>
+<strong>Input:</strong> arr = [2,8,7,4,1,3,5,6,9], mat = [[3,2,5],[1,4,6],[8,7,9]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The second column becomes fully painted at arr[3].
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>m == mat.length</code></li>
+	<li><code>n = mat[i].length</code></li>
+	<li><code>arr.length == m * n</code></li>
+	<li><code>1 &lt;= m, n &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= m * n &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= arr[i], mat[r][c] &lt;= m * n</code></li>
+	<li>All the integers of <code>arr</code> are <strong>unique</strong>.</li>
+	<li>All the integers of <code>mat</code> are <strong>unique</strong>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table + Array Counting
+
+> **Thinking**
+>
+> Cells are painted in $\textit{arr}$ order; we want the first full row or column. Rescanning a row or column each time is too slow for $mn \le 10^5$.
+>
+> Map every value to its coordinates and increment row and column counts. A count reaching $n$ or $m$ completes that line; the first such index is the answer.
+
+We use a hash table $\textit{idx}$ to record the position of each element in the matrix $\textit{mat}$, that is $\textit{idx}[\textit{mat}[i][j]] = (i, j)$, and define two arrays $\textit{row}$ and $\textit{col}$ to record the number of colored elements in each row and each column respectively.
+
+Traverse the array $\textit{arr}$. For each element $\textit{arr}[k]$, we find its position $(i, j)$ in the matrix $\textit{mat}$, and then add $\textit{row}[i]$ and $\textit{col}[j]$ by one. If $\textit{row}[i] = n$ or $\textit{col}[j] = m$, it means that the $i$-th row or the $j$-th column has been colored, so $\textit{arr}[k]$ is the element we are looking for, and we return $k$.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns of the matrix $\textit{mat}$ respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int firstCompleteIndex(int[] arr, int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+        Map<Integer, int[]> idx = new HashMap<>();
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                idx.put(mat[i][j], new int[] {i, j});
+            }
+        }
+        int[] row = new int[m];
+        int[] col = new int[n];
+        for (int k = 0;; ++k) {
+            var x = idx.get(arr[k]);
+            int i = x[0], j = x[1];
+            ++row[i];
+            ++col[j];
+            if (row[i] == n || col[j] == m) {
+                return k;
+            }
+        }
+    }
+}
+```

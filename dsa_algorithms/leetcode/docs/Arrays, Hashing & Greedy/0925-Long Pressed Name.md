@@ -1,0 +1,84 @@
+# 925. Long Pressed Name
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/long-pressed-name/
+
+---
+
+[中文文档](/solution/0900-0999/0925.Long%20Pressed%20Name/README.md)
+
+## Description
+
+<p>Your friend is typing his <code>name</code> into a keyboard. Sometimes, when typing a character <code>c</code>, the key might get <em>long pressed</em>, and the character will be typed 1 or more times.</p>
+
+<p>You examine the <code>typed</code> characters of the keyboard. Return <code>True</code> if it is possible that it was your friends name, with some characters (possibly none) being long pressed.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> name = &quot;alex&quot;, typed = &quot;aaleex&quot;
+<strong>Output:</strong> true
+<strong>Explanation: </strong>&#39;a&#39; and &#39;e&#39; in &#39;alex&#39; were long pressed.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> name = &quot;saeed&quot;, typed = &quot;ssaaedd&quot;
+<strong>Output:</strong> false
+<strong>Explanation: </strong>&#39;e&#39; must have been pressed twice, but it was not in the typed output.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= name.length, typed.length &lt;= 1000</code></li>
+	<li><code>name</code> and <code>typed</code> consist of only lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> $\textit{typed}$ is a long-press of $\textit{name}$ if every run of identical letters may only grow, never shrink or change letter. Lengths are at most $1000$, so a linear scan of runs suffices.
+>
+> Two pointers walk both strings: the current letters must match, then each run is measured; if $\textit{name}$'s run is longer, reject. Both pointers must finish together.
+
+We use two pointers $i$ and $j$ to point to the first character of the strings $\textit{typed}$ and $\textit{name}$ respectively, and then start traversing. If `typed[j]` is not equal to `name[i]`, it means the two strings do not match, and we directly return `False`. Otherwise, we find the next position of the continuous identical characters, denoted as $x$ and $y$ respectively. If $x - i > y - j$, it means the number of characters in $\textit{typed}$ is less than the number of characters in $\textit{name}$, and we directly return `False`. Otherwise, we update $i$ and $j$ to $x$ and $y$ respectively, continue traversing, until $i$ and $j$ have traversed $\textit{name}$ and $\textit{typed}$ respectively, and return `True`.
+
+The time complexity is $O(m + n)$, and the space complexity is $O(1)$, where $m$ and $n$ are the lengths of the strings $\textit{name}$ and $\textit{typed}$ respectively.
+
+#### Java
+
+```java
+class Solution {
+    public boolean isLongPressedName(String name, String typed) {
+        int m = name.length(), n = typed.length();
+        int i = 0, j = 0;
+        while (i < m && j < n) {
+            if (name.charAt(i) != typed.charAt(j)) {
+                return false;
+            }
+            int x = i + 1;
+            while (x < m && name.charAt(x) == name.charAt(i)) {
+                ++x;
+            }
+            int y = j + 1;
+            while (y < n && typed.charAt(y) == typed.charAt(j)) {
+                ++y;
+            }
+            if (x - i > y - j) {
+                return false;
+            }
+            i = x;
+            j = y;
+        }
+        return i == m && j == n;
+    }
+}
+```

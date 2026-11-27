@@ -1,0 +1,90 @@
+# 567. Permutation in String
+
+**Difficulty:** Medium  
+**Category:** Backtracking  
+**LeetCode:** https://leetcode.com/problems/permutation-in-string/
+
+---
+
+[中文文档](/solution/0500-0599/0567.Permutation%20in%20String/README.md)
+
+## Description
+
+<p>Given two strings <code>s1</code> and <code>s2</code>, return <code>true</code> if <code>s2</code> contains a <span data-keyword="permutation-string">permutation</span> of <code>s1</code>, or <code>false</code> otherwise.</p>
+
+<p>In other words, return <code>true</code> if one of <code>s1</code>&#39;s permutations is the substring of <code>s2</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> s1 = &quot;ab&quot;, s2 = &quot;eidbaooo&quot;
+<strong>Output:</strong> true
+<strong>Explanation:</strong> s2 contains one permutation of s1 (&quot;ba&quot;).
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> s1 = &quot;ab&quot;, s2 = &quot;eidboaoo&quot;
+<strong>Output:</strong> false
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s1.length, s2.length &lt;= 10<sup>4</sup></code></li>
+	<li><code>s1</code> and <code>s2</code> consist of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sliding Window
+
+> **Thinking**
+>
+> A permutation of $\textit{s1}$ is a window of length $|\textit{s1}|$ with the same counts. Sorting every window is wasteful.
+>
+> A sliding window stores the remaining counts versus $\textit{s1}$ and $\textit{need}$ is how many letters are still off. Add the right end, drop the left, and succeed when $\textit{need}=0$. Fixed length, one scan.
+
+We use an array $\textit{cnt}$ to record the characters and their counts that need to be matched, and a variable $\textit{need}$ to record the number of different characters that still need to be matched. Initially, $\textit{cnt}$ contains the character counts from the string $\textit{s1}$, and $\textit{need}$ is the number of different characters in $\textit{s1}$.
+
+Then we traverse the string $\textit{s2}$. For each character, we decrement its corresponding value in $\textit{cnt}$. If the decremented value equals $0$, it means the current character's count in $\textit{s1}$ is satisfied, and we decrement $\textit{need}$. If the current index $i$ is greater than or equal to the length of $\textit{s1}$, we need to increment the corresponding value in $\textit{cnt}$ for $\textit{s2}[i-\textit{s1}]$. If the incremented value equals $1$, it means the current character's count in $\textit{s1}$ is no longer satisfied, and we increment $\textit{need}$. During the traversal, if the value of $\textit{need}$ equals $0$, it means all character counts are satisfied, and we have found a valid substring, so we return $\textit{true}$.
+
+Otherwise, if the traversal ends without finding a valid substring, we return $\textit{false}$.
+
+The time complexity is $O(m + n)$, and the space complexity is $O(|\Sigma|)$, where $m$ and $n$ are the lengths of strings $\textit{s1}$ and $\textit{s2}$, respectively, and $\Sigma$ is the character set. In this problem, the character set is lowercase letters, so the space complexity is constant.
+
+#### Java
+
+```java
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        int need = 0;
+        int[] cnt = new int[26];
+        for (char c : s1.toCharArray()) {
+            if (++cnt[c - 'a'] == 1) {
+                ++need;
+            }
+        }
+        int m = s1.length(), n = s2.length();
+        for (int i = 0; i < n; ++i) {
+            int c = s2.charAt(i) - 'a';
+            if (--cnt[c] == 0) {
+                --need;
+            }
+            if (i >= m) {
+                c = s2.charAt(i - m) - 'a';
+                if (++cnt[c] == 1) {
+                    ++need;
+                }
+            }
+            if (need == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```

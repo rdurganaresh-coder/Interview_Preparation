@@ -1,0 +1,112 @@
+# 1419. Minimum Number of Frogs Croaking
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-number-of-frogs-croaking/
+
+---
+
+[中文文档](/solution/1400-1499/1419.Minimum%20Number%20of%20Frogs%20Croaking/README.md)
+
+## Description
+
+<p>You are given the string <code>croakOfFrogs</code>, which represents a combination of the string <code>&quot;croak&quot;</code> from different frogs, that is, multiple frogs can croak at the same time, so multiple <code>&quot;croak&quot;</code> are mixed.</p>
+
+<p><em>Return the minimum number of </em>different<em> frogs to finish all the croaks in the given string.</em></p>
+
+<p>A valid <code>&quot;croak&quot;</code> means a frog is printing five letters <code>&#39;c&#39;</code>, <code>&#39;r&#39;</code>, <code>&#39;o&#39;</code>, <code>&#39;a&#39;</code>, and <code>&#39;k&#39;</code> <strong>sequentially</strong>. The frogs have to print all five letters to finish a croak. If the given string is not a combination of a valid <code>&quot;croak&quot;</code> return <code>-1</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> croakOfFrogs = &quot;croakcroak&quot;
+<strong>Output:</strong> 1 
+<strong>Explanation:</strong> One frog yelling &quot;croak<strong>&quot;</strong> twice.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> croakOfFrogs = &quot;crcoakroak&quot;
+<strong>Output:</strong> 2 
+<strong>Explanation:</strong> The minimum number of frogs is two. 
+The first frog could yell &quot;<strong>cr</strong>c<strong>oak</strong>roak&quot;.
+The second frog could yell later &quot;cr<strong>c</strong>oak<strong>roak</strong>&quot;.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> croakOfFrogs = &quot;croakcrook&quot;
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> The given string is an invalid combination of &quot;croak<strong>&quot;</strong> from different frogs.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= croakOfFrogs.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>croakOfFrogs</code> is either <code>&#39;c&#39;</code>, <code>&#39;r&#39;</code>, <code>&#39;o&#39;</code>, <code>&#39;a&#39;</code>, or <code>&#39;k&#39;</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Counting + Simulation
+
+> **Thinking**
+>
+> Several `croak`s interleave and the string can be length $10^5$, so we cannot match frogs one by one. Letters must advance in the order $c\to r\to o\to a\to k$.
+>
+> A 5-slot counter tracks how many calls sit at each stage. A $c$ starts a new unfinished frog; every later letter must consume the previous stage. A $k$ finishes one frog.
+>
+> The answer is the peak number of unfinished frogs. Leftover unfinished calls, or a length not divisible by $5$, yield $-1$.
+
+We note that if the string `croakOfFrogs` is composed of several valid `"croak"` characters mixed together, its length must be a multiple of $5$. Therefore, if the length of the string is not a multiple of $5$, we can directly return $-1$.
+
+Next, we map the letters `'c'`, `'r'`, `'o'`, `'a'`, `'k'` to indices $0$ to $4$, respectively, and use an array $\textit{cnt}$ of length $5$ to record the number of occurrences of each letter in the string `croakOfFrogs`, where $\textit{cnt}[i]$ represents the number of occurrences of the letter at index $i$. Additionally, we define an integer variable $x$ to represent the number of frogs that have not completed their croak, and the minimum number of frogs needed $\textit{ans}$ is the maximum value of $x$.
+
+We traverse each letter $c$ in the string `croakOfFrogs`, find the index $i$ corresponding to $c$, and then increment $\textit{cnt}[i]$ by $1$. Next, depending on the value of $i$, we perform the following operations:
+
+- If $i=0$, then a new frog starts croaking, so we increment $x$ by $1$, and then update $\textit{ans} = \max(\textit{ans}, x)$;
+- Otherwise, if $\textit{cnt}[i-1]=0$, it means that there is no frog that can make the sound $c$, and the croak cannot be completed, so we return $-1$. Otherwise, we decrement $\textit{cnt}[i-1]$ by $1$. If $i=4$, it means that a frog has completed a croak, so we decrement $x$ by $1$.
+
+After traversing, if $x=0$, it means that all frogs have completed their croaks, and we return $\textit{ans}$. Otherwise, we return $-1$.
+
+The time complexity is $O(n)$, and the space complexity is $O(C)$, where $n$ is the length of the string $\textit{croakOfFrogs}$, and $C$ is the size of the character set, in this problem $C=26$.
+
+#### Java
+
+```java
+class Solution {
+    public int minNumberOfFrogs(String croakOfFrogs) {
+        int n = croakOfFrogs.length();
+        if (n % 5 != 0) {
+            return -1;
+        }
+        int[] idx = new int[26];
+        String s = "croak";
+        for (int i = 0; i < 5; ++i) {
+            idx[s.charAt(i) - 'a'] = i;
+        }
+        int[] cnt = new int[5];
+        int ans = 0, x = 0;
+        for (int k = 0; k < n; ++k) {
+            int i = idx[croakOfFrogs.charAt(k) - 'a'];
+            ++cnt[i];
+            if (i == 0) {
+                ans = Math.max(ans, ++x);
+            } else {
+                if (--cnt[i - 1] < 0) {
+                    return -1;
+                }
+                if (i == 4) {
+                    --x;
+                }
+            }
+        }
+        return x > 0 ? -1 : ans;
+    }
+}
+```

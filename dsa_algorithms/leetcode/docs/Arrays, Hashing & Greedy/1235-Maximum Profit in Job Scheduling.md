@@ -1,0 +1,248 @@
+# 1235. Maximum Profit in Job Scheduling
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-profit-in-job-scheduling/
+
+---
+
+[中文文档](/solution/1200-1299/1235.Maximum%20Profit%20in%20Job%20Scheduling/README.md)
+
+## Description
+
+<p>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.</p>
+
+<p>You&#39;re given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.</p>
+
+<p>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1200-1299/1235.Maximum%20Profit%20in%20Job%20Scheduling/images/sample1_1584.png" style="width: 380px; height: 154px;" /></strong></p>
+
+<pre>
+<strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]
+<strong>Output:</strong> 120
+<strong>Explanation:</strong> The subset chosen is the first and fourth job. 
+Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1200-1299/1235.Maximum%20Profit%20in%20Job%20Scheduling/images/sample22_1584.png" style="width: 600px; height: 112px;" /> </strong></p>
+
+<pre>
+<strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]
+<strong>Output:</strong> 150
+<strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job. 
+Profit obtained 150 = 20 + 70 + 60.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1200-1299/1235.Maximum%20Profit%20in%20Job%20Scheduling/images/sample3_1584.png" style="width: 400px; height: 112px;" /></strong></p>
+
+<pre>
+<strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]
+<strong>Output:</strong> 6
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 * 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>1 &lt;= profit[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization Search + Binary Search
+
+> **Thinking**
+>
+> Jobs must not overlap. $n \le 5\times 10^4$ rules out subset search. Whether we take job $i$ only affects jobs that start no earlier than its end.
+>
+> After sorting by start, $\textit{dfs}(i)$ takes the better of skipping $i$ and taking $i$ then jumping to the first job with $\textit{start}\ge \textit{end}_i$. That index is a binary search on the sorted starts. Memoization evaluates each $i$ once.
+
+First, we sort the jobs by start time in ascending order, then design a function $\textit{dfs}(i)$ to represent the maximum profit that can be obtained starting from the $i$-th job. The answer is $\textit{dfs}(0)$.
+
+The calculation process of function $\textit{dfs}(i)$ is as follows:
+
+For the $i$-th job, we can choose to do it or not. If we don't do it, the maximum profit is $\textit{dfs}(i + 1)$; if we do it, we can use binary search to find the first job that starts after the end time of the $i$-th job, denoted as $j$, then the maximum profit is $\textit{profit}[i] + \textit{dfs}(j)$. We take the larger of the two. That is:
+
+$$
+\textit{dfs}(i)=\max(\textit{dfs}(i+1),\textit{profit}[i]+\textit{dfs}(j))
+$$
+
+Where $j$ is the smallest index that satisfies $\textit{startTime}[j] \ge \textit{endTime}[i]$.
+
+In this process, we can use memoization search to save the answer of each state to avoid repeated calculations.
+
+The time complexity is $O(n \log n)$, where $n$ is the number of jobs.
+
+#### Java
+
+```java
+class Solution {
+    private int[][] jobs;
+    private int[] f;
+    private int n;
+
+    public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
+        n = profit.length;
+        jobs = new int[n][3];
+        for (int i = 0; i < n; ++i) {
+            jobs[i] = new int[] {startTime[i], endTime[i], profit[i]};
+        }
+        Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
+        f = new int[n];
+        return dfs(0);
+    }
+
+    private int dfs(int i) {
+        if (i >= n) {
+            return 0;
+        }
+        if (f[i] != 0) {
+            return f[i];
+        }
+        int e = jobs[i][1], p = jobs[i][2];
+        int j = search(jobs, e, i + 1);
+        int ans = Math.max(dfs(i + 1), p + dfs(j));
+        f[i] = ans;
+        return ans;
+    }
+
+    private int search(int[][] jobs, int x, int i) {
+        int left = i, right = n;
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (jobs[mid][0] >= x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```
+
+### Solution 2: Dynamic Programming + Binary Search
+
+> **Thinking**
+>
+> Solution 1 sorts by start and fills one suffix table. Sorting by end instead, $dp[i]$ is the best profit among the first $i$ jobs: skip inherits $dp[i-1]$; take adds $dp[j]$ for the last job that ends before this start, with $j$ still from binary search.
+
+Solution 1 sorts by start and fills a suffix table. Here we sort by end and define a prefix table.
+
+First, sort the jobs, this time we sort by end time in ascending order, then define $dp[i]$, which represents the maximum profit that can be obtained from the first $i$ jobs. The answer is $dp[n]$. Initialize $dp[0]=0$.
+
+For the $i$-th job, we can choose to do it or not. If we don't do it, the maximum profit is $dp[i]$; if we do it, we can use binary search to find the last job that ends before the start time of the $i$-th job, denoted as $j$, then the maximum profit is $\textit{profit}[i] + dp[j]$. We take the larger of the two. That is:
+
+$$
+dp[i+1] = \max(dp[i], \textit{profit}[i] + dp[j])
+$$
+
+Where $j$ is the largest index that satisfies $\textit{endTime}[j] \leq \textit{startTime}[i]$.
+
+The time complexity is $O(n \log n)$, where $n$ is the number of jobs.
+
+Similar problems:
+
+- [2008. Maximum Earnings From Taxi](https://github.com/doocs/leetcode/blob/main/solution/2000-2099/2008.Maximum%20Earnings%20From%20Taxi/README.md)
+- [1751. Maximum Number of Events That Can Be Attended II](https://github.com/doocs/leetcode/blob/main/solution/1700-1799/1751.Maximum%20Number%20of%20Events%20That%20Can%20Be%20Attended%20II/README.md)
+
+#### Java
+
+```java
+class Solution {
+    public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
+        int n = profit.length;
+        int[][] jobs = new int[n][3];
+        for (int i = 0; i < n; ++i) {
+            jobs[i] = new int[] {startTime[i], endTime[i], profit[i]};
+        }
+        Arrays.sort(jobs, (a, b) -> a[1] - b[1]);
+        int[] dp = new int[n + 1];
+        for (int i = 0; i < n; ++i) {
+            int j = search(jobs, jobs[i][0], i);
+            dp[i + 1] = Math.max(dp[i], dp[j] + jobs[i][2]);
+        }
+        return dp[n];
+    }
+
+    private int search(int[][] jobs, int x, int n) {
+        int left = 0, right = n;
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (jobs[mid][1] > x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```
+
+### Solution 3: Dynamic Programming + Binary Search
+
+> **Thinking**
+>
+> Jobs must not overlap. $n \le 5\times 10^4$ rules out subset search. Whether we take job $i$ only affects jobs that start no earlier than its end.
+>
+> After sorting by start, skipping calls $i+1$ before it returns, so the chain has length $n$ and overflows the stack.
+>
+> Later indices are known if we walk from the end. Let $f[i]$ be the best profit from job $i$, with $f[n]=0$, and binary-search the next compatible job while filling $i$ from $n-1$ down to $0$.
+
+First, we sort the jobs by start time in ascending order. Let $f[i]$ be the maximum profit that can be obtained starting from the $i$-th job. The answer is $f[0]$, and $f[n] = 0$.
+
+Fill $i$ from $n - 1$ down to $0$. For the $i$-th job we can skip it, which keeps $f[i + 1]$, or take it. Binary search finds the first job $j$ that starts at or after $\textit{end}_i$. Taking it earns $\textit{profit}[i] + f[j]$. Take the larger of the two:
+
+$$
+f[i]=\max(f[i+1],\textit{profit}[i]+f[j])
+$$
+
+Where $j$ is the smallest index that satisfies $\textit{startTime}[j] \ge \textit{endTime}[i]$. Because $j > i$, $f[j]$ is already filled.
+
+The time complexity is $O(n \log n)$, where $n$ is the number of jobs.
+
+#### Java
+
+```java
+class Solution {
+    public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
+        int n = profit.length;
+        int[][] jobs = new int[n][3];
+        for (int i = 0; i < n; ++i) {
+            jobs[i] = new int[] {startTime[i], endTime[i], profit[i]};
+        }
+        Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
+        int[] f = new int[n + 1];
+        for (int i = n - 1; i >= 0; --i) {
+            int e = jobs[i][1], p = jobs[i][2];
+            int j = search(jobs, e, i + 1);
+            f[i] = Math.max(f[i + 1], p + f[j]);
+        }
+        return f[0];
+    }
+
+    private int search(int[][] jobs, int x, int i) {
+        int left = i, right = jobs.length;
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (jobs[mid][0] >= x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```

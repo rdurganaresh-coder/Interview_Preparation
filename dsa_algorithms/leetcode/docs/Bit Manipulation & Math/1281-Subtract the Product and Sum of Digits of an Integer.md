@@ -1,0 +1,74 @@
+# 1281. Subtract the Product and Sum of Digits of an Integer
+
+**Difficulty:** Easy  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/subtract-the-product-and-sum-of-digits-of-an-integer/
+
+---
+
+[中文文档](/solution/1200-1299/1281.Subtract%20the%20Product%20and%20Sum%20of%20Digits%20of%20an%20Integer/README.md)
+
+## Description
+
+Given an integer number <code>n</code>, return the difference between the product of its digits and the sum of its digits.
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 234
+<strong>Output:</strong> 15 
+<b>Explanation:</b> 
+Product of digits = 2 * 3 * 4 = 24 
+Sum of digits = 2 + 3 + 4 = 9 
+Result = 24 - 9 = 15
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 4421
+<strong>Output:</strong> 21
+<b>Explanation: 
+</b>Product of digits = 4 * 4 * 2 * 1 = 32 
+Sum of digits = 4 + 4 + 2 + 1 = 11 
+Result = 32 - 11 = 21
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10^5</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> $n \le 10^5$, so repeated division by $10$ accumulates the digit product and sum; we subtract at the end. No string conversion. The loop runs once per digit.
+
+We use two variables $x$ and $y$ to record the product of the digits and the sum of the digits respectively. At the beginning, $x=1,y=0$.
+
+When $n \gt 0$, each time we take the $\textit{mod}$ of $n$ by $10$ to get the current digit $v$, and continue the next loop by dividing $n$ by $10$. In each loop, we update $x = x \times v$, $y = y + v$.
+
+Finally, we return $x - y$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$, where $n$ is the given integer.
+
+#### Java
+
+```java
+class Solution {
+    public int subtractProductAndSum(int n) {
+        int x = 1, y = 0;
+        for (; n > 0; n /= 10) {
+            int v = n % 10;
+            x *= v;
+            y += v;
+        }
+        return x - y;
+    }
+}
+```

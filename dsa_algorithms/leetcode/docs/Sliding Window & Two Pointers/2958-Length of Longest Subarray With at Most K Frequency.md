@@ -1,0 +1,93 @@
+# 2958. Length of Longest Subarray With at Most K Frequency
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/
+
+---
+
+[中文文档](/solution/2900-2999/2958.Length%20of%20Longest%20Subarray%20With%20at%20Most%20K%20Frequency/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> and an integer <code>k</code>.</p>
+
+<p>The <strong>frequency</strong> of an element <code>x</code> is the number of times it occurs in an array.</p>
+
+<p>An array is called <strong>good</strong> if the frequency of each element in this array is <strong>less than or equal</strong> to <code>k</code>.</p>
+
+<p>Return <em>the length of the <strong>longest</strong> <strong>good</strong> subarray of</em> <code>nums</code><em>.</em></p>
+
+<p>A <strong>subarray</strong> is a contiguous non-empty sequence of elements within an array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,1,2,3,1,2], k = 2
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> The longest possible good subarray is [1,2,3,1,2,3] since the values 1, 2, and 3 occur at most twice in this subarray. Note that the subarrays [2,3,1,2,3,1] and [3,1,2,3,1,2] are also good.
+It can be shown that there are no good subarrays with length more than 6.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,1,2,1,2,1,2], k = 1
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The longest possible good subarray is [1,2] since the values 1 and 2 occur at most once in this subarray. Note that the subarray [2,1] is also good.
+It can be shown that there are no good subarrays with length more than 2.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5,5,5,5,5,5,5], k = 4
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The longest possible good subarray is [5,5,5,5] since the value 5 occurs 4 times in this subarray.
+It can be shown that there are no good subarrays with length more than 4.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>1 &lt;= k &lt;= nums.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> We want the longest subarray in which no value occurs more than $k$ times. $n \le 10^5$ forbids enumerating ends. The constraint is monotone: moving $r$ can only break it, moving $l$ can only restore it.
+>
+> A hash map counts frequencies; after inserting $x$, shrink $l$ while $\textit{cnt}[x]>k$. Update the length on a valid window.
+
+We can use two pointers $l$ and $r$ to represent the left and right endpoints of the subarray, initially both pointers point to the first element of the array.
+
+Next, we iterate over each element $x$ in the array $\textit{nums}$. For each element $x$, we increment the occurrence count of $x$, then check if the current subarray meets the requirements. If the current subarray does not meet the requirements, we move the pointer $l$ one step to the right, and decrement the occurrence count of $\textit{nums}[l]$, until the current subarray meets the requirements. Then we update the answer $\textit{ans} = \max(\textit{ans}, r - l + 1)$. Continue the iteration until $r$ reaches the end of the array.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxSubarrayLength(int[] nums, int k) {
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int l = 0, r = 0; r < nums.length; ++r) {
+            cnt.merge(nums[r], 1, Integer::sum);
+            while (cnt.get(nums[r]) > k) {
+                cnt.merge(nums[l++], -1, Integer::sum);
+            }
+            ans = Math.max(ans, r - l + 1);
+        }
+        return ans;
+    }
+}
+```

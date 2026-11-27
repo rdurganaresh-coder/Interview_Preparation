@@ -1,0 +1,158 @@
+# 983. Minimum Cost For Tickets
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/minimum-cost-for-tickets/
+
+---
+
+[中文文档](/solution/0900-0999/0983.Minimum%20Cost%20For%20Tickets/README.md)
+
+## Description
+
+<p>You have planned some train traveling one year in advance. The days of the year in which you will travel are given as an integer array <code>days</code>. Each day is an integer from <code>1</code> to <code>365</code>.</p>
+
+<p>Train tickets are sold in <strong>three different ways</strong>:</p>
+
+<ul>
+	<li>a <strong>1-day</strong> pass is sold for <code>costs[0]</code> dollars,</li>
+	<li>a <strong>7-day</strong> pass is sold for <code>costs[1]</code> dollars, and</li>
+	<li>a <strong>30-day</strong> pass is sold for <code>costs[2]</code> dollars.</li>
+</ul>
+
+<p>The passes allow that many days of consecutive travel.</p>
+
+<ul>
+	<li>For example, if we get a <strong>7-day</strong> pass on day <code>2</code>, then we can travel for <code>7</code> days: <code>2</code>, <code>3</code>, <code>4</code>, <code>5</code>, <code>6</code>, <code>7</code>, and <code>8</code>.</li>
+</ul>
+
+<p>Return <em>the minimum number of dollars you need to travel every day in the given list of days</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> days = [1,4,6,7,8,20], costs = [2,7,15]
+<strong>Output:</strong> 11
+<strong>Explanation:</strong> For example, here is one way to buy passes that lets you travel your travel plan:
+On day 1, you bought a 1-day pass for costs[0] = $2, which covered day 1.
+On day 3, you bought a 7-day pass for costs[1] = $7, which covered days 3, 4, ..., 9.
+On day 20, you bought a 1-day pass for costs[0] = $2, which covered day 20.
+In total, you spent $11 and covered all the days of your travel.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> days = [1,2,3,4,5,6,7,8,9,10,30,31], costs = [2,7,15]
+<strong>Output:</strong> 17
+<strong>Explanation:</strong> For example, here is one way to buy passes that lets you travel your travel plan:
+On day 1, you bought a 30-day pass for costs[2] = $15 which covered days 1, 2, ..., 30.
+On day 31, you bought a 1-day pass for costs[0] = $2 which covered day 31.
+In total, you spent $17 and covered all the days of your travel.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= days.length &lt;= 365</code></li>
+	<li><code>1 &lt;= days[i] &lt;= 365</code></li>
+	<li><code>days</code> is in strictly increasing order.</li>
+	<li><code>costs.length == 3</code></li>
+	<li><code>1 &lt;= costs[i] &lt;= 1000</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization Search + Binary Search
+
+> **Thinking**
+>
+> Each travel day must be covered by a $1$-, $7$-, or $30$-day pass at minimum cost. After buying a pass on trip $i$, the next uncovered trip is found by binary search. $\textit{dfs}(i)$ takes the best of the three options. There are at most $365$ trips, so memoization is enough.
+
+We define a function $\textit{dfs}(i)$, which represents the minimum cost required from the $i$-th trip to the last trip. Thus, the answer is $\textit{dfs}(0)$.
+
+The execution process of the function $\textit{dfs}(i)$ is as follows:
+
+- If $i \geq n$, it means all trips have ended, return $0$;
+- Otherwise, we need to consider three types of purchases: buying a 1-day pass, buying a 7-day pass, and buying a 30-day pass. We calculate the cost for these three purchasing methods separately and use binary search to find the index $j$ of the next trip, then recursively call $\textit{dfs}(j)$, and finally return the minimum cost among these three purchasing methods.
+
+To avoid repeated calculations, we use memoization search to save the results that have already been calculated.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ represents the number of trips.
+
+#### Java
+
+```java
+class Solution {
+    private final int[] valid = {1, 7, 30};
+    private int[] days;
+    private int[] costs;
+    private Integer[] f;
+    private int n;
+
+    public int mincostTickets(int[] days, int[] costs) {
+        n = days.length;
+        f = new Integer[n];
+        this.days = days;
+        this.costs = costs;
+        return dfs(0);
+    }
+
+    private int dfs(int i) {
+        if (i >= n) {
+            return 0;
+        }
+        if (f[i] != null) {
+            return f[i];
+        }
+        f[i] = Integer.MAX_VALUE;
+        for (int k = 0; k < 3; ++k) {
+            int j = Arrays.binarySearch(days, days[i] + valid[k]);
+            j = j < 0 ? -j - 1 : j;
+            f[i] = Math.min(f[i], dfs(j) + costs[k]);
+        }
+        return f[i];
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> Searching by trip index needs binary search. We can instead DP on calendar days: $f[i]$ is the cheapest way to finish day $i$. A non-travel day copies $f[i-1]$; a travel day takes the min over the three pass starts. The last day is at most $365$.
+
+Let's denote the last day in the $\textit{days}$ array as $m$. We can define an array $f$ of length $m + 1$, where $f[i]$ represents the minimum cost from day $1$ to day $i$.
+
+We can calculate the value of $f[i]$ in increasing order of the dates in the $\textit{days}$ array, starting from day $1$. If day $i$ is a travel day, we can consider three purchasing options: buying a 1-day pass, buying a 7-day pass, and buying a 30-day pass. We calculate the cost for these three purchasing methods separately and take the minimum cost among these three as the value of $f[i]$. If day $i$ is not a travel day, then $f[i] = f[i - 1]$.
+
+The final answer is $f[m]$.
+
+The time complexity is $O(m)$, and the space complexity is $O(m)$, where $m$ represents the last day of travel.
+
+#### Java
+
+```java
+class Solution {
+    public int mincostTickets(int[] days, int[] costs) {
+        int m = days[days.length - 1];
+        int[] f = new int[m + 1];
+        final int[] valid = {1, 7, 30};
+        for (int i = 1, j = 0; i <= m; ++i) {
+            if (i == days[j]) {
+                f[i] = Integer.MAX_VALUE;
+                for (int k = 0; k < 3; ++k) {
+                    int c = costs[k], v = valid[k];
+                    f[i] = Math.min(f[i], f[Math.max(0, i - v)] + c);
+                }
+                ++j;
+            } else {
+                f[i] = f[i - 1];
+            }
+        }
+        return f[m];
+    }
+}
+```

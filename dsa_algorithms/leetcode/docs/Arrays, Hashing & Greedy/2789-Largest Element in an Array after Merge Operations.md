@@ -1,0 +1,91 @@
+# 2789. Largest Element in an Array after Merge Operations
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/largest-element-in-an-array-after-merge-operations/
+
+---
+
+[中文文档](/solution/2700-2799/2789.Largest%20Element%20in%20an%20Array%20after%20Merge%20Operations/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> array <code>nums</code> consisting of positive integers.</p>
+
+<p>You can do the following operation on the array <strong>any</strong> number of times:</p>
+
+<ul>
+	<li>Choose an index&nbsp;<code>i</code> such that <code>0 &lt;= i &lt; nums.length - 1</code> and <code>nums[i] &lt;= nums[i + 1]</code>. Replace the element <code>nums[i + 1]</code> with <code>nums[i] + nums[i + 1]</code> and delete the element <code>nums[i]</code> from the array.</li>
+</ul>
+
+<p>Return <em>the value of the <b>largest</b> element that you can possibly obtain in the final array.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,3,7,9,3]
+<strong>Output:</strong> 21
+<strong>Explanation:</strong> We can apply the following operations on the array:
+- Choose i = 0. The resulting array will be nums = [<u>5</u>,7,9,3].
+- Choose i = 1. The resulting array will be nums = [5,<u>16</u>,3].
+- Choose i = 0. The resulting array will be nums = [<u>21</u>,3].
+The largest element in the final array is 21. It can be shown that we cannot obtain a larger element.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5,3,3]
+<strong>Output:</strong> 11
+<strong>Explanation:</strong> We can do the following operations on the array:
+- Choose i = 1. The resulting array will be nums = [5,<u>6</u>].
+- Choose i = 0. The resulting array will be nums = [<u>11</u>].
+There is only one element in the final array, which is 11.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>6</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Merge in Reverse Order
+
+> **Thinking**
+>
+> Two adjacent values may merge into their sum only when $\textit{nums}[i]\le \textit{nums}[i+1]$; we want the largest value that can appear. Merging from the left spends small numbers too early and blocks later chains.
+>
+> Scan right to left and, when $\textit{nums}[i]\le \textit{nums}[i+1]$, add the right value into $\textit{nums}[i]$, folding in an already-maximized suffix. The maximum remaining entry is the answer.
+
+According to the problem description, in order to maximize the maximum element in the merged array, we should merge the elements on the right first, making the elements on the right as large as possible, so as to perform as many merge operations as possible and finally get the maximum element.
+
+Therefore, we can traverse the array from right to left. For each position $i$, where $i \in [0, n - 2]$, if $\textit{nums}[i] \leq \textit{nums}[i + 1]$, we update $\textit{nums}[i]$ to $\textit{nums}[i] + \textit{nums}[i + 1]$. Doing so is equivalent to merging $\textit{nums}[i]$ and $\textit{nums}[i + 1]$ and deleting $\textit{nums}[i]$.
+
+In the end, the maximum element in the array is the maximum element in the merged array.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public long maxArrayValue(int[] nums) {
+        int n = nums.length;
+        long ans = nums[n - 1], t = nums[n - 1];
+        for (int i = n - 2; i >= 0; --i) {
+            if (nums[i] <= t) {
+                t += nums[i];
+            } else {
+                t = nums[i];
+            }
+            ans = Math.max(ans, t);
+        }
+        return ans;
+    }
+}
+```

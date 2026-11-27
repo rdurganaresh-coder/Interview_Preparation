@@ -1,0 +1,106 @@
+# 483. Smallest Good Base
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/smallest-good-base/
+
+---
+
+[中文文档](/solution/0400-0499/0483.Smallest%20Good%20Base/README.md)
+
+## Description
+
+<p>Given an integer <code>n</code> represented as a string, return <em>the smallest <strong>good base</strong> of</em> <code>n</code>.</p>
+
+<p>We call <code>k &gt;= 2</code> a <strong>good base</strong> of <code>n</code>, if all digits of <code>n</code> base <code>k</code> are <code>1</code>&#39;s.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = &quot;13&quot;
+<strong>Output:</strong> &quot;3&quot;
+<strong>Explanation:</strong> 13 base 3 is 111.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = &quot;4681&quot;
+<strong>Output:</strong> &quot;8&quot;
+<strong>Explanation:</strong> 4681 base 8 is 11111.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = &quot;1000000000000000000&quot;
+<strong>Output:</strong> &quot;999999999999999999&quot;
+<strong>Explanation:</strong> 1000000000000000000 base 999999999999999999 is 11.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n</code> is an integer in the range <code>[3, 10<sup>18</sup>]</code>.</li>
+	<li><code>n</code> does not contain any leading zeros.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> The smallest base $k\ge 2$ in which $n$ is all ones. $k=n-1$ always works ($11_k$), but $n$ can be $10^{18}$, so scanning $k$ is impossible.
+>
+> The number of ones $m+1$ satisfies $m<60$. Try $m$ from large to small and binary-search $k$ so that $1+k+\cdots+k^m=n$. A larger $m$ yields a smaller $k$, so going downward finds the smallest base first.
+>
+> The geometric sum is monotone in $k$, so the binary search is valid. If none hits, fall back to $n-1$.
+
+#### Java
+
+```java
+class Solution {
+    public String smallestGoodBase(String n) {
+        long num = Long.parseLong(n);
+        for (int len = 63; len >= 2; --len) {
+            long radix = getRadix(len, num);
+            if (radix != -1) {
+                return String.valueOf(radix);
+            }
+        }
+        return String.valueOf(num - 1);
+    }
+
+    private long getRadix(int len, long num) {
+        long l = 2, r = num - 1;
+        while (l < r) {
+            long mid = l + r >>> 1;
+            if (calc(mid, len) >= num)
+                r = mid;
+            else
+                l = mid + 1;
+        }
+        return calc(r, len) == num ? r : -1;
+    }
+
+    private long calc(long radix, int len) {
+        long p = 1;
+        long sum = 0;
+        for (int i = 0; i < len; ++i) {
+            if (Long.MAX_VALUE - sum < p) {
+                return Long.MAX_VALUE;
+            }
+            sum += p;
+            if (Long.MAX_VALUE / p < radix) {
+                p = Long.MAX_VALUE;
+            } else {
+                p *= radix;
+            }
+        }
+        return sum;
+    }
+}
+```

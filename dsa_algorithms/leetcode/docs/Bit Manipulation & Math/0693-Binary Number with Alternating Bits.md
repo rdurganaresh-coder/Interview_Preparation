@@ -1,0 +1,99 @@
+# 693. Binary Number with Alternating Bits
+
+**Difficulty:** Easy  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/binary-number-with-alternating-bits/
+
+---
+
+[中文文档](/solution/0600-0699/0693.Binary%20Number%20with%20Alternating%20Bits/README.md)
+
+## Description
+
+<p>Given a positive integer, check whether it has alternating bits: namely, if two adjacent bits will always have different values.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 5
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The binary representation of 5 is: 101
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 7
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The binary representation of 7 is: 111.</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 11
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The binary representation of 11 is: 1011.</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 2<sup>31</sup> - 1</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> Check that neighboring bits strictly alternate. A bit-by-bit scan is enough.
+>
+> Read the lowest bit, shift, and fail if it equals the previous bit.
+
+We cyclically right-shift $n$ until it becomes $0$, checking whether the binary bits of $n$ appear alternately. If during the loop we find that $0$ and $1$ do not appear alternately, we directly return $\textit{false}$. Otherwise, when the loop ends, we return $\textit{true}$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean hasAlternatingBits(int n) {
+        int prev = -1;
+        while (n != 0) {
+            int curr = n & 1;
+            if (prev == curr) {
+                return false;
+            }
+            prev = curr;
+            n >>= 1;
+        }
+        return true;
+    }
+}
+```
+
+### Solution 2: Bit Manipulation
+
+> **Thinking**
+>
+> The scan is $O(\log n)$. $n\oplus(n\gg 1)$ becomes a run of ones iff bits alternate; then $n\&(n+1)=0$ confirms it in constant time.
+
+Assuming $01$ appears alternately, we can convert all trailing bits to $1$ through misaligned XOR. Adding $1$ gives us a power of $2$, which is a number $n$ (where $n$ has only one bit that is $1$). Then, using $n \& (n + 1)$ can eliminate the last $1$ bit.
+
+At this point, check if it equals $0$. If so, the assumption holds, and it is an alternating $01$ sequence.
+
+The time complexity is $O(1)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean hasAlternatingBits(int n) {
+        n ^= (n >> 1);
+        return (n & (n + 1)) == 0;
+    }
+}
+```

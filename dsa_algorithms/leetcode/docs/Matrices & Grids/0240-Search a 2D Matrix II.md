@@ -1,0 +1,116 @@
+# 240. Search a 2D Matrix II
+
+**Difficulty:** Medium  
+**Category:** Matrices & Grids  
+**LeetCode:** https://leetcode.com/problems/search-a-2d-matrix-ii/
+
+---
+
+[中文文档](/solution/0200-0299/0240.Search%20a%202D%20Matrix%20II/README.md)
+
+## Description
+
+<p>Write an efficient algorithm that searches for a value <code>target</code> in an <code>m x n</code> integer matrix <code>matrix</code>. This matrix has the following properties:</p>
+
+<ul>
+	<li>Integers in each row are sorted in ascending from left to right.</li>
+	<li>Integers in each column are sorted in ascending from top to bottom.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0200-0299/0240.Search%20a%202D%20Matrix%20II/images/searchgrid2.jpg" style="width: 300px; height: 300px;" />
+<pre>
+<strong>Input:</strong> matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
+<strong>Output:</strong> true
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0200-0299/0240.Search%20a%202D%20Matrix%20II/images/searchgrid.jpg" style="width: 300px; height: 300px;" />
+<pre>
+<strong>Input:</strong> matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20
+<strong>Output:</strong> false
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>m == matrix.length</code></li>
+	<li><code>n == matrix[i].length</code></li>
+	<li><code>1 &lt;= n, m &lt;= 300</code></li>
+	<li><code>-10<sup>9</sup> &lt;= matrix[i][j] &lt;= 10<sup>9</sup></code></li>
+	<li>All the integers in each row are <strong>sorted</strong> in ascending order.</li>
+	<li>All the integers in each column are <strong>sorted</strong> in ascending order.</li>
+	<li><code>-10<sup>9</sup> &lt;= target &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> Each row (and column) is sorted, so we can binary-search $\textit{target}$ in every row. That is $O(m \log n)$ with no extra memory.
+
+Since all elements in each row are sorted in ascending order, for each row, we can use binary search to find the first element greater than or equal to $\textit{target}$, and then check if that element is equal to $\textit{target}$. If it is equal to $\textit{target}$, it means the target value is found, and we return $\textit{true}$. If it is not equal to $\textit{target}$, it means all elements in this row are less than $\textit{target}$, and we should continue searching the next row.
+
+If all rows have been searched and the target value is not found, it means the target value does not exist, and we return $\textit{false}$.
+
+The time complexity is $O(m \log n)$, and the space complexity is $O(1)$, where $m$ and $n$ are the number of rows and columns of the matrix, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        for (var row : matrix) {
+            int j = Arrays.binarySearch(row, target);
+            if (j >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+### Solution 2: Search from Bottom-Left or Top-Right
+
+> **Thinking**
+>
+> Per-row binary search ignores column order. From the bottom-left, a too-large value moves up (dropping that column above) and a too-small value moves right (dropping that row to the right).
+>
+> Each step discards a row or a column, in $O(m+n)$ time.
+
+We start the search from the bottom-left or top-right corner and move towards the top-right or bottom-left direction. Compare the current element $\textit{matrix}[i][j]$ with $\textit{target}$:
+
+- If $\textit{matrix}[i][j] = \textit{target}$, it means the target value is found, and we return $\textit{true}$.
+- If $\textit{matrix}[i][j] > \textit{target}$, it means all elements in this column from the current position upwards are greater than $\textit{target}$, so we move the $i$ pointer upwards, i.e., $i \leftarrow i - 1$.
+- If $\textit{matrix}[i][j] < \textit{target}$, it means all elements in this row from the current position to the right are less than $\textit{target}$, so we move the $j$ pointer to the right, i.e., $j \leftarrow j + 1$.
+
+If the search ends and the $\textit{target}$ is not found, return $\textit{false}$.
+
+The time complexity is $O(m + n)$, and the space complexity is $O(1)$, where $m$ and $n$ are the number of rows and columns of the matrix, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        int i = m - 1, j = 0;
+        while (i >= 0 && j < n) {
+            if (matrix[i][j] == target) {
+                return true;
+            }
+            if (matrix[i][j] > target) {
+                --i;
+            } else {
+                ++j;
+            }
+        }
+        return false;
+    }
+}
+```

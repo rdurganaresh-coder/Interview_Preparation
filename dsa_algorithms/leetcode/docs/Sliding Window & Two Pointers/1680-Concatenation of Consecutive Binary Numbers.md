@@ -1,0 +1,106 @@
+# 1680. Concatenation of Consecutive Binary Numbers
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/concatenation-of-consecutive-binary-numbers/
+
+---
+
+[中文文档](/solution/1600-1699/1680.Concatenation%20of%20Consecutive%20Binary%20Numbers/README.md)
+
+## Description
+
+<p>Given an integer <code>n</code>, return <em>the <strong>decimal value</strong> of the binary string formed by concatenating the binary representations of </em><code>1</code><em> to </em><code>n</code><em> in order, <strong>modulo </strong></em><code>10<sup>9 </sup>+ 7</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 1
+<strong>Output:</strong> 1
+<strong>Explanation: </strong>&quot;1&quot; in binary corresponds to the decimal value 1. 
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 3
+<strong>Output:</strong> 27
+<strong>Explanation: </strong>In binary, 1, 2, and 3 corresponds to &quot;1&quot;, &quot;10&quot;, and &quot;11&quot;.
+After concatenating them, we have &quot;11011&quot;, which corresponds to the decimal value 27.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 12
+<strong>Output:</strong> 505379714
+<strong>Explanation</strong>: The concatenation results in &quot;1101110010111011110001001101010111100&quot;.
+The decimal value of that is 118505380540.
+After modulo 10<sup>9</sup> + 7, the result is 505379714.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Bit Manipulation
+
+> **Thinking**
+>
+> Concatenate the binary forms of $1..n$ modulo $10^9+7$. $n$ is $10^5$, so we cannot build a string. Appending $i$ is a left shift by the bit length of $i$, then OR with $i$.
+>
+> The loop is $\textit{ans} = (\textit{ans} \ll i.\texttt{bit\_length()} \mid i) \bmod (10^9+7)$.
+
+By observing the pattern of number concatenation, we can find that when concatenating to the $i$-th number, the result $\textit{ans}$ formed by concatenating the previous $i-1$ numbers is actually shifted to the left by a certain number of bits, and then $i$ is added. The number of bits shifted is the number of binary digits in $i$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the given integer.
+
+#### Java
+
+```java
+class Solution {
+    public int concatenatedBinary(int n) {
+        final int mod = (int) 1e9 + 7;
+        long ans = 0;
+        for (int i = 1; i <= n; ++i) {
+            ans = (ans << (32 - Integer.numberOfLeadingZeros(i)) | i) % mod;
+        }
+        return (int) ans;
+    }
+}
+```
+
+### Solution 2: Bit Manipulation (Optimization)
+
+> **Thinking**
+>
+> Solution 1 calls $\texttt{bit\_length}$ every step. The width increases only when $i$ crosses a power of two, so a $\textit{shift}$ counter incremented at those $i$ avoids the extra length query.
+
+In Solution 1, we need to calculate the number of binary digits of $i$ each time, which adds some extra computation. We can use a variable $\textit{shift}$ to record the current number of bits to shift. When $i$ is a power of $2$, $\textit{shift}$ needs to be incremented by $1$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the given integer.
+
+#### Java
+
+```java
+class Solution {
+    public int concatenatedBinary(int n) {
+        final int mod = (int) 1e9 + 7;
+        long ans = 0;
+        int shift = 0;
+        for (int i = 1; i <= n; ++i) {
+            if ((i & (i - 1)) == 0) {
+                ++shift;
+            }
+            ans = (ans << shift | i) % mod;
+        }
+        return (int) ans;
+    }
+}
+```

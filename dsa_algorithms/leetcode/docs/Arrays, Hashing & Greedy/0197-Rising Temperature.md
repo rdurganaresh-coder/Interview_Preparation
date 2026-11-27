@@ -1,0 +1,76 @@
+# 197. Rising Temperature
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/rising-temperature/
+
+---
+
+[中文文档](/solution/0100-0199/0197.Rising%20Temperature/README.md)
+
+## Description
+
+<p>Table: <code>Weather</code></p>
+
+<pre>
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id is the column with unique values for this table.
+There are no different rows with the same recordDate.
+This table contains information about the temperature on a certain day.
+</pre>
+
+<p>&nbsp;</p>
+
+<p>Write a solution to find all dates&#39; <code>id</code> with higher temperatures compared to its previous calendar dates (yesterday).</p>
+
+<p>Return the result table in <strong>any order</strong>.</p>
+
+<p>The result format is in the following example.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> 
+Weather table:
++----+------------+-------------+
+| id | recordDate | temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+<strong>Output:</strong> 
++----+
+| id |
++----+
+| 2  |
+| 4  |
++----+
+<strong>Explanation:</strong> 
+In 2015-01-02, the temperature was higher than the previous day (10 -&gt; 25).
+In 2015-01-04, the temperature was higher than the previous day (20 -&gt; 30).
+</pre>
+
+## Solutions
+
+### Solution 1: Self-Join + DATEDIFF/SUBDATE Function
+
+> **Thinking**
+>
+> Days hotter than the previous calendar day — not merely the previous row. Self-join two weather rows, require a date difference of $1$, and compare temperatures.
+
+We can use self-join to compare each row in the `Weather` table with its previous row. If the temperature is higher and the date difference is one day, then it is the result we are looking for.
+
+### Solution 2
+
+> **Thinking**
+>
+> Solution 1 uses a date-difference function. Joining on $\textit{SUBDATE}(\textit{w1}.\textit{recordDate},1)=\textit{w2}.\textit{recordDate}$ lines up “yesterday” as an equality, which some planners handle more easily.

@@ -1,0 +1,97 @@
+# 418. Sentence Screen Fitting
+
+**Difficulty:** Medium  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/sentence-screen-fitting/
+
+---
+
+[中文文档](/solution/0400-0499/0418.Sentence%20Screen%20Fitting/README.md)
+
+## Description
+
+<p>Given a&nbsp;<code>rows x cols</code> screen and a <code>sentence</code> represented as a list of strings, return <em>the number of&nbsp;times the given sentence can be fitted on the screen</em>.</p>
+
+<p>The order of words in the sentence must remain unchanged, and a word cannot be split into two lines. A single space must separate two consecutive words in a line.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> sentence = [&quot;hello&quot;,&quot;world&quot;], rows = 2, cols = 8
+<strong>Output:</strong> 1
+<strong>Explanation:</strong>
+hello---
+world---
+The character &#39;-&#39; signifies an empty space on the screen.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> sentence = [&quot;a&quot;, &quot;bcd&quot;, &quot;e&quot;], rows = 3, cols = 6
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+a-bcd- 
+e-a---
+bcd-e-
+The character &#39;-&#39; signifies an empty space on the screen.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> sentence = [&quot;i&quot;,&quot;had&quot;,&quot;apple&quot;,&quot;pie&quot;], rows = 4, cols = 5
+<strong>Output:</strong> 1
+<strong>Explanation:</strong>
+i-had
+apple
+pie-i
+had--
+The character &#39;-&#39; signifies an empty space on the screen.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= sentence.length &lt;= 100</code></li>
+	<li><code>1 &lt;= sentence[i].length &lt;= 10</code></li>
+	<li><code>sentence[i]</code> consists of lowercase English letters.</li>
+	<li><code>1 &lt;= rows, cols &lt;= 2 * 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1
+
+> **Thinking**
+>
+> Testing word by word on each row is clumsy: there can be $10^4$ rows and the sentence repeats.
+>
+> Join the words with a trailing space into a cyclic string $s$, and let $\textit{cur}$ be the number of characters already covered. Each row adds $\textit{cols}$: if that landing is a space, the row ended on a word boundary and we advance one more; otherwise we rewind to the previous space, i.e. push the unfinished word to the next row.
+>
+> The number of full sentences is $\lfloor \textit{cur}/|s| \rfloor$. The trailing space encodes the mandatory gap, and the rewind forbids splitting a word.
+
+#### Java
+
+```java
+class Solution {
+    public int wordsTyping(String[] sentence, int rows, int cols) {
+        String s = String.join(" ", sentence) + " ";
+        int m = s.length();
+        int cur = 0;
+        while (rows-- > 0) {
+            cur += cols;
+            if (s.charAt(cur % m) == ' ') {
+                ++cur;
+            } else {
+                while (cur > 0 && s.charAt((cur - 1) % m) != ' ') {
+                    --cur;
+                }
+            }
+        }
+        return cur / m;
+    }
+}
+```

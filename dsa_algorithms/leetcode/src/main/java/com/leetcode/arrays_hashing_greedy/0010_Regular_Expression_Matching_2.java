@@ -1,0 +1,68 @@
+package com.leetcode.arrays_hashing_greedy;
+
+class Solution0010_2 {
+    public boolean isMatch(String s, String p) {
+        int m = s.length(), n = p.length();
+        boolean[][] f = new boolean[m + 1][n + 1];
+        f[0][0] = true;
+        for (int i = 0; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (p.charAt(j - 1) == '*') {
+                    f[i][j] = f[i][j - 2];
+                    if (i > 0 && (p.charAt(j - 2) == '.' || p.charAt(j - 2) == s.charAt(i - 1))) {
+                        f[i][j] |= f[i - 1][j];
+                    }
+                } else if (i > 0
+                    && (p.charAt(j - 1) == '.' || p.charAt(j - 1) == s.charAt(i - 1))) {
+                    f[i][j] = f[i - 1][j - 1];
+                }
+            }
+        }
+        return f[m][n];
+    }
+
+    // ===== Generated test cases (from the problem examples) =====
+    private static String _tcShow(Object o) {
+        String s = java.util.Arrays.deepToString(new Object[] {o});
+        return s.substring(1, s.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Solution0010_2 _tcSol = new Solution0010_2();
+        System.out.println("Test 1");
+        System.out.println("  Input   : " + "s = \"aa\", p = \"a\"");
+        try {
+            String s = "aa";
+            String p = "a";
+            System.out.println("  Output  : " + _tcShow(_tcSol.isMatch(s, p)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "false");
+        System.out.println();
+
+        System.out.println("Test 2");
+        System.out.println("  Input   : " + "s = \"aa\", p = \"a*\"");
+        try {
+            String s = "aa";
+            String p = "a*";
+            System.out.println("  Output  : " + _tcShow(_tcSol.isMatch(s, p)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "true");
+        System.out.println();
+
+        System.out.println("Test 3");
+        System.out.println("  Input   : " + "s = \"ab\", p = \".*\"");
+        try {
+            String s = "ab";
+            String p = ".*";
+            System.out.println("  Output  : " + _tcShow(_tcSol.isMatch(s, p)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "true");
+        System.out.println();
+    }
+}

@@ -1,0 +1,246 @@
+# 1659. Maximize Grid Happiness
+
+**Difficulty:** Hard  
+**Category:** Matrices & Grids  
+**LeetCode:** https://leetcode.com/problems/maximize-grid-happiness/
+
+---
+
+[中文文档](/solution/1600-1699/1659.Maximize%20Grid%20Happiness/README.md)
+
+## Description
+
+<p>You are given four integers, <code>m</code>, <code>n</code>, <code>introvertsCount</code>, and <code>extrovertsCount</code>. You have an <code>m x n</code> grid, and there are two types of people: introverts and extroverts. There are <code>introvertsCount</code> introverts and <code>extrovertsCount</code> extroverts.</p>
+
+<p>You should decide how many people you want to live in the grid and assign each of them one grid cell. Note that you <strong>do not</strong> have to have all the people living in the grid.</p>
+
+<p>The <strong>happiness</strong> of each person is calculated as follows:</p>
+
+<ul>
+	<li>Introverts <strong>start</strong> with <code>120</code> happiness and <strong>lose</strong> <code>30</code> happiness for each neighbor (introvert or extrovert).</li>
+	<li>Extroverts <strong>start</strong> with <code>40</code> happiness and <strong>gain</strong> <code>20</code> happiness for each neighbor (introvert or extrovert).</li>
+</ul>
+
+<p>Neighbors live in the directly adjacent cells north, east, south, and west of a person&#39;s cell.</p>
+
+<p>The <strong>grid happiness</strong> is the <strong>sum</strong> of each person&#39;s happiness. Return<em> the <strong>maximum possible grid happiness</strong>.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1600-1699/1659.Maximize%20Grid%20Happiness/images/grid_happiness.png" style="width: 261px; height: 121px;" />
+<pre>
+<strong>Input:</strong> m = 2, n = 3, introvertsCount = 1, extrovertsCount = 2
+<strong>Output:</strong> 240
+<strong>Explanation:</strong> Assume the grid is 1-indexed with coordinates (row, column).
+We can put the introvert in cell (1,1) and put the extroverts in cells (1,3) and (2,3).
+- Introvert at (1,1) happiness: 120 (starting happiness) - (0 * 30) (0 neighbors) = 120
+- Extrovert at (1,3) happiness: 40 (starting happiness) + (1 * 20) (1 neighbor) = 60
+- Extrovert at (2,3) happiness: 40 (starting happiness) + (1 * 20) (1 neighbor) = 60
+The grid happiness is 120 + 60 + 60 = 240.
+The above figure shows the grid in this example with each person&#39;s happiness. The introvert stays in the light green cell while the extroverts live on the light purple cells.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> m = 3, n = 1, introvertsCount = 2, extrovertsCount = 1
+<strong>Output:</strong> 260
+<strong>Explanation:</strong> Place the two introverts in (1,1) and (3,1) and the extrovert at (2,1).
+- Introvert at (1,1) happiness: 120 (starting happiness) - (1 * 30) (1 neighbor) = 90
+- Extrovert at (2,1) happiness: 40 (starting happiness) + (2 * 20) (2 neighbors) = 80
+- Introvert at (3,1) happiness: 120 (starting happiness) - (1 * 30) (1 neighbor) = 90
+The grid happiness is 90 + 80 + 90 = 260.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> m = 2, n = 2, introvertsCount = 4, extrovertsCount = 0
+<strong>Output:</strong> 240
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= m, n &lt;= 5</code></li>
+	<li><code>0 &lt;= introvertsCount, extrovertsCount &lt;= min(m * n, 6)</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Ternary State Compression + Memoization
+
+> **Thinking**
+>
+> The grid is at most $5\times 5$ and each cell is empty, introvert, or extrovert, with a fixed happiness delta between neighbors. Full $3^{mn}$ search is too large, but one row has only $3^n \le 243$ fillings.
+>
+> Precompute each row's own happiness $f$, the bonus $g$ between two consecutive rows, and how many introverts/extroverts that row uses.
+>
+> Memoize $\textit{dfs}(i,\textit{pre},ic,ec)$ over the current row: try every row mask, subtract people, add $f+g$, and keep the maximum.
+
+We notice that in the problem, $1 \leq m, n \leq 5$, and each grid cell has three states: no personnel assigned, introverted personnel assigned, and extroverted personnel assigned. Therefore, we can use $0$, $1$, $2$ to represent these three states, and each row in the grid can be represented by a ternary number of length $n$.
+
+We define a function $\textit{dfs}(i, \textit{pre}, ic, ec)$, which represents the maximum happiness of the grid starting from the $i$-th row, with the state of the previous row being $\textit{pre}$, $ic$ introverted people left, and $ec$ extroverted people left. The answer is $\textit{dfs}(0, 0, \textit{introvertsCount}, \textit{extrovertsCount})$.
+
+The calculation process of the function $\textit{dfs}(i, \textit{pre}, ic, ec)$ is as follows:
+
+If $i = m$, it means that all rows have been processed, so return $0$;
+
+If $ic = 0$ and $ec = 0$, it means that all people have been assigned, so return $0$;
+
+Otherwise, enumerate the current row's state $\textit{cur}$, where $\textit{cur} \in [0, 3^n)$, then calculate the happiness $f[\textit{cur}]$ of the current row, and the contribution $g[\textit{pre}][\textit{cur}]$ to the happiness between the state $\textit{pre}$ of the previous row, and recursively calculate $\textit{dfs}(i + 1, \textit{cur}, ic - ix[\textit{cur}], ec - ex[\textit{cur}])$, finally return the maximum value of $f[\textit{cur}] + g[\textit{pre}][\textit{cur}] + \textit{dfs}(i + 1, \textit{cur}, ic - ix[\textit{cur}], ec - ex[\textit{cur}])$, that is:
+
+$$
+\textit{dfs}(i, \textit{pre}, ic, ec) = \max_{\textit{cur}} \{f[\textit{cur}] + g[\textit{pre}][\textit{cur}] + \textit{dfs}(i + 1, \textit{cur}, ic - ix[\textit{cur}], ec - ex[\textit{cur}])\}
+$$
+
+Where:
+
+- $ix[\textit{cur}]$ represents the number of introverted people in state $\textit{cur}$;
+- $ex[\textit{cur}]$ represents the number of extroverted people in state $\textit{cur}$;
+- $f[\textit{cur}]$ represents the initial happiness of the people in state $\textit{cur}$;
+- $g[\textit{pre}][\textit{cur}]$ represents the contribution to happiness of two adjacent state rows.
+
+These values can be obtained through preprocessing. And we can use the method of memoization to avoid repeated calculations.
+
+The time complexity is $O(3^{2n}(m ic ec + n))$, and the space complexity is $O(3^{2n} + 3^n m ic ec)$, where $ic$ and $ec$ represent the number of introverted and extroverted people, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private int m;
+    private int mx;
+    private int[] f;
+    private int[][] g;
+    private int[][] bits;
+    private int[] ix;
+    private int[] ex;
+    private Integer[][][][] memo;
+    private final int[][] h = {{0, 0, 0}, {0, -60, -10}, {0, -10, 40}};
+
+    public int getMaxGridHappiness(int m, int n, int introvertsCount, int extrovertsCount) {
+        this.m = m;
+        mx = (int) Math.pow(3, n);
+        f = new int[mx];
+        g = new int[mx][mx];
+        bits = new int[mx][n];
+        ix = new int[mx];
+        ex = new int[mx];
+        memo = new Integer[m][mx][introvertsCount + 1][extrovertsCount + 1];
+        for (int i = 0; i < mx; ++i) {
+            int mask = i;
+            for (int j = 0; j < n; ++j) {
+                int x = mask % 3;
+                mask /= 3;
+                bits[i][j] = x;
+                if (x == 1) {
+                    ix[i]++;
+                    f[i] += 120;
+                } else if (x == 2) {
+                    ex[i]++;
+                    f[i] += 40;
+                }
+                if (j > 0) {
+                    f[i] += h[x][bits[i][j - 1]];
+                }
+            }
+        }
+        for (int i = 0; i < mx; ++i) {
+            for (int j = 0; j < mx; ++j) {
+                for (int k = 0; k < n; ++k) {
+                    g[i][j] += h[bits[i][k]][bits[j][k]];
+                }
+            }
+        }
+        return dfs(0, 0, introvertsCount, extrovertsCount);
+    }
+
+    private int dfs(int i, int pre, int ic, int ec) {
+        if (i == m || (ic == 0 && ec == 0)) {
+            return 0;
+        }
+        if (memo[i][pre][ic][ec] != null) {
+            return memo[i][pre][ic][ec];
+        }
+        int ans = 0;
+        for (int cur = 0; cur < mx; ++cur) {
+            if (ix[cur] <= ic && ex[cur] <= ec) {
+                ans = Math.max(
+                    ans, f[cur] + g[pre][cur] + dfs(i + 1, cur, ic - ix[cur], ec - ex[cur]));
+            }
+        }
+        return memo[i][pre][ic][ec] = ans;
+    }
+}
+```
+
+### Solution 2: Contour Line Memoization Search
+
+> **Thinking**
+>
+> Solution 1 transitions whole rows; $3^n$ grows quickly with width. Filling cell by cell, a contour of the last $n$ ternary digits is enough to score the left and upper neighbors.
+>
+> $\textit{dfs}(\textit{pos},\textit{pre},ic,ec)$ tries $0/1/2$ at the current cell, rolls the contour, and adds $h[up][i]+h[\textit{left}][i]$ plus $120$ or $40$ for the cell itself.
+
+We can consider searching each grid cell, each time searching a position $(i, j)$, we denote $\textit{pos} = i \times n + j$. Then its left and upper adjacent grids will affect their happiness contribution.
+
+We define a function $\textit{dfs}(\textit{pos}, \textit{pre}, ic, ec)$, which represents the maximum happiness of the grid when we search to position $\textit{pos}$, and the state of the previous $n$ grid cells is $\textit{pre}$, with $ic$ introverted people left, and $ec$ extroverted people left. The answer is $\textit{dfs}(0, 0, \textit{introvertsCount}, \textit{extrovertsCount})$.
+
+The calculation process of the function $\textit{dfs}(\textit{pos}, \textit{pre}, ic, ec)$ is as follows:
+
+If $\textit{pos} = m \times n$, it means that all grid cells have been processed, so return $0$;
+
+If $ic = 0$ and $ec = 0$, it means that all people have been assigned, so return $0$;
+
+Otherwise, we calculate the state $up = \frac{\textit{pre}}{3^{n-1}}$ of the upper adjacent grid cell of the current grid cell based on $\textit{pre}$, and the state $\textit{left} = \textit{pre} \bmod 3$ of the left adjacent grid cell (note that if $\textit{pos}$ is in the $0$-th column, then $\textit{left} = 0$).
+
+Next, we enumerate the state $i$ of the current grid cell, where $i \in [0, 3)$. Then the state of the current $n$ grid cells is $\textit{cur} = \textit{pre} \bmod 3^{n-1} \times 3 + i$, and the happiness contribution of the current grid cell and its left and upper adjacent grid cells is $h[up][i]+h[\textit{left}][i]$; the happiness of the current grid cell itself depends on whether personnel are assigned to this position, and whether the assigned personnel are introverted or extroverted. If they are introverted, the happiness is $120$, if they are extroverted, the happiness is $40$, otherwise, the happiness is $0$; then, if personnel are assigned to the current grid cell, we need to update $ic$ or $ec$ when we recursively call the function. Accumulate these happiness values, and take the maximum value as the return value of the function.
+
+Similar to Solution 1, we can also use the method of memoization to avoid repeated calculations.
+
+The time complexity is $O(3^{n+1} mn ic ec)$, and the space complexity is $O(3^n mn ic ec)$, where $ic$ and $ec$ represent the number of introverted and extroverted people, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private int m;
+    private int n;
+    private int p;
+    private final int[][] h = {{0, 0, 0}, {0, -60, -10}, {0, -10, 40}};
+    private Integer[][][][] memo;
+
+    public int getMaxGridHappiness(int m, int n, int introvertsCount, int extrovertsCount) {
+        this.m = m;
+        this.n = n;
+        p = (int) Math.pow(3, n - 1);
+        memo = new Integer[m * n][p * 3][introvertsCount + 1][extrovertsCount + 1];
+        return dfs(0, 0, introvertsCount, extrovertsCount);
+    }
+
+    private int dfs(int pos, int pre, int ic, int ec) {
+        if (pos == m * n || (ic == 0 && ec == 0)) {
+            return 0;
+        }
+        if (memo[pos][pre][ic][ec] != null) {
+            return memo[pos][pre][ic][ec];
+        }
+        int ans = 0;
+        int up = pre / p;
+        int left = pos % n == 0 ? 0 : pre % 3;
+        for (int i = 0; i < 3; ++i) {
+            if (i == 1 && (ic == 0) || (i == 2 && ec == 0)) {
+                continue;
+            }
+            int cur = pre % p * 3 + i;
+            int a = h[up][i] + h[left][i];
+            int b = dfs(pos + 1, cur, ic - (i == 1 ? 1 : 0), ec - (i == 2 ? 1 : 0));
+            int c = i == 1 ? 120 : (i == 2 ? 40 : 0);
+            ans = Math.max(ans, a + b + c);
+        }
+        return memo[pos][pre][ic][ec] = ans;
+    }
+}
+```

@@ -1,0 +1,76 @@
+# 14. Longest Common Prefix
+
+**Difficulty:** Easy  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/longest-common-prefix/
+
+---
+
+[中文文档](/solution/0000-0099/0014.Longest%20Common%20Prefix/README.md)
+
+## Description
+
+<p>Write a function to find the longest common prefix string amongst an array of strings.</p>
+
+<p>If there is no common prefix, return an empty string <code>&quot;&quot;</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> strs = [&quot;flower&quot;,&quot;flow&quot;,&quot;flight&quot;]
+<strong>Output:</strong> &quot;fl&quot;
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> strs = [&quot;dog&quot;,&quot;racecar&quot;,&quot;car&quot;]
+<strong>Output:</strong> &quot;&quot;
+<strong>Explanation:</strong> There is no common prefix among the input strings.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= strs.length &lt;= 200</code></li>
+	<li><code>0 &lt;= strs[i].length &lt;= 200</code></li>
+	<li><code>strs[i]</code> consists of only lowercase English letters if it is non-empty.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Character Comparison
+
+> **Thinking**
+>
+> The first idea is to take the first string as the prefix and shrink it against each later string. $n,m\le 200$, so even a triple loop would pass. A trie works too, but it is heavier than this problem needs.
+>
+> The prefix only ever shrinks: once a column disagrees, a longer prefix cannot exist. Align the strings vertically; position $i$ can extend the prefix only if every string matches there.
+>
+> So we compare column by column against $\textit{strs}[0]$ and return as soon as a string is too short or a character differs. No trie.
+
+We use the first string $\textit{strs}[0]$ as a benchmark, and compare whether the $i$-th character of the subsequent strings is the same as the $i$-th character of $\textit{strs}[0]$. If they are the same, we continue to compare the next character. Otherwise, we return the first $i$ characters of $\textit{strs}[0]$.
+
+If the traversal ends, it means that the first $i$ characters of all strings are the same, and we return $\textit{strs}[0]$.
+
+The time complexity is $O(nm)$, and the space complexity is $O(1)$, where $n$ and $m$ are the length of the string array and the minimum length of the strings, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        int n = strs.length;
+        for (int i = 0; i < strs[0].length(); ++i) {
+            for (int j = 1; j < n; ++j) {
+                if (strs[j].length() <= i || strs[j].charAt(i) != strs[0].charAt(i)) {
+                    return strs[0].substring(0, i);
+                }
+            }
+        }
+        return strs[0];
+    }
+}
+```

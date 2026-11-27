@@ -1,0 +1,79 @@
+# 941. Valid Mountain Array
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/valid-mountain-array/
+
+---
+
+[中文文档](/solution/0900-0999/0941.Valid%20Mountain%20Array/README.md)
+
+## Description
+
+<p>Given an array of integers <code>arr</code>, return <em><code>true</code> if and only if it is a valid mountain array</em>.</p>
+
+<p>Recall that arr is a mountain array if and only if:</p>
+
+<ul>
+	<li><code>arr.length &gt;= 3</code></li>
+	<li>There exists some <code>i</code> with <code>0 &lt; i &lt; arr.length - 1</code> such that:
+	<ul>
+		<li><code>arr[0] &lt; arr[1] &lt; ... &lt; arr[i - 1] &lt; arr[i] </code></li>
+		<li><code>arr[i] &gt; arr[i + 1] &gt; ... &gt; arr[arr.length - 1]</code></li>
+	</ul>
+	</li>
+</ul>
+<img src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0900-0999/0941.Valid%20Mountain%20Array/images/hint_valid_mountain_array.png" width="500" />
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<pre><strong>Input:</strong> arr = [2,1]
+<strong>Output:</strong> false
+</pre><p><strong class="example">Example 2:</strong></p>
+<pre><strong>Input:</strong> arr = [3,5,5]
+<strong>Output:</strong> false
+</pre><p><strong class="example">Example 3:</strong></p>
+<pre><strong>Input:</strong> arr = [0,3,2,1]
+<strong>Output:</strong> true
+</pre>
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= arr.length &lt;= 10<sup>4</sup></code></li>
+	<li><code>0 &lt;= arr[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> A mountain strictly rises then strictly falls, and needs length at least $3$. Walk inward from both ends until the sequence stops rising or falling; the two peaks must meet and cannot sit on an endpoint. Each pointer moves once.
+
+First, we check if the length of the array is less than $3$. If it is, then it definitely is not a mountain array, so we return `false` directly.
+
+Then, we use a pointer $i$ to move from the left end of the array to the right, until we find a position $i$ such that $\textit{arr}[i] > \textit{arr}[i + 1]$. After that, we use a pointer $j$ to move from the right end of the array to the left, until we find a position $j$ such that $\textit{arr}[j] > \textit{arr}[j - 1]$. If the condition $i = j$ is satisfied, then it means that the array $\textit{arr}$ is a mountain array.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public boolean validMountainArray(int[] arr) {
+        int n = arr.length;
+        if (n < 3) {
+            return false;
+        }
+        int i = 0, j = n - 1;
+        while (i + 1 < n - 1 && arr[i] < arr[i + 1]) {
+            ++i;
+        }
+        while (j - 1 > 0 && arr[j - 1] > arr[j]) {
+            --j;
+        }
+        return i == j;
+    }
+}
+```

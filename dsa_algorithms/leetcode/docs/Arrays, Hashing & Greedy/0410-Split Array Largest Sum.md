@@ -1,0 +1,100 @@
+# 410. Split Array Largest Sum
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/split-array-largest-sum/
+
+---
+
+[中文文档](/solution/0400-0499/0410.Split%20Array%20Largest%20Sum/README.md)
+
+## Description
+
+<p>Given an integer array <code>nums</code> and an integer <code>k</code>, split <code>nums</code> into <code>k</code> non-empty subarrays such that the largest sum of any subarray is <strong>minimized</strong>.</p>
+
+<p>Return <em>the minimized largest sum of the split</em>.</p>
+
+<p>A <strong>subarray</strong> is a contiguous part of the array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [7,2,5,10,8], k = 2
+<strong>Output:</strong> 18
+<strong>Explanation:</strong> There are four ways to split nums into two subarrays.
+The best way is to split it into [7,2,5] and [10,8], where the largest sum among the two subarrays is only 18.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,4,5], k = 2
+<strong>Output:</strong> 9
+<strong>Explanation:</strong> There are four ways to split nums into two subarrays.
+The best way is to split it into [1,2,3] and [4,5], where the largest sum among the two subarrays is only 9.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>6</sup></code></li>
+	<li><code>1 &lt;= k &lt;= min(50, nums.length)</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> Enumerating every way to place $k-1$ cuts is too large. A larger cap on a subarray sum only makes a feasible split easier, so feasibility is monotone in the cap.
+>
+> Binary-search the cap $\textit{mid}$. A greedy left-to-right accumulation starts a new piece whenever adding the next value would exceed $\textit{mid}$, and we ask whether at most $k$ pieces suffice. The search range is $[\max(\textit{nums}),\sum \textit{nums}]$.
+>
+> The minimum feasible cap is the answer; combinatorial search becomes a linear check.
+
+We notice that the larger the maximum sum of the subarrays, the fewer the number of subarrays. When there is a maximum sum of the subarrays that meets the condition, then a larger maximum sum of the subarrays will definitely meet the condition. This means that we can perform a binary search for the maximum sum of the subarrays to find the smallest value that meets the condition.
+
+We define the left boundary of the binary search as $\textit{left} = \max(\textit{nums})$, and the right boundary as $\textit{right} = \textit{sum}(\textit{nums})$. Then for each step of the binary search, we take the middle value $\textit{mid} = \lfloor \frac{\textit{left} + \textit{right}}{2} \rfloor$, and then determine whether there is a way to split the array so that the maximum sum of the subarrays does not exceed $\textit{mid}$. If there is, it means that $\textit{mid}$ might be the smallest value that meets the condition, so we adjust the right boundary to $\textit{mid}$. Otherwise, we adjust the left boundary to $\textit{mid} + 1$.
+
+How do we determine whether there is a way to split the array so that the maximum sum of the subarrays does not exceed $\textit{mid}$? We can use a greedy method, traverse the array from left to right, and add the elements of the array to the subarray one by one. If the current sum of the subarray is greater than $\textit{mid}$, then we add the current element to the next subarray. If we can split the array into no more than $k$ subarrays, and the maximum sum of each subarray does not exceed $\textit{mid}$, then $\textit{mid}$ is the smallest value that meets the condition. Otherwise, $\textit{mid}$ does not meet the condition.
+
+The time complexity is $O(n \log m)$, and the space complexity is $O(1)$, where $n$ and $m$ are the length of the array and the sum of all elements in the array, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int splitArray(int[] nums, int k) {
+        int left = 0, right = 0;
+        for (int x : nums) {
+            left = Math.max(left, x);
+            right += x;
+        }
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (check(nums, mid, k)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+
+    private boolean check(int[] nums, int mx, int k) {
+        int s = 1 << 30, cnt = 0;
+        for (int x : nums) {
+            s += x;
+            if (s > mx) {
+                ++cnt;
+                s = x;
+            }
+        }
+        return cnt <= k;
+    }
+}
+```

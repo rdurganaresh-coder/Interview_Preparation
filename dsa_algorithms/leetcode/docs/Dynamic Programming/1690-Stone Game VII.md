@@ -1,0 +1,179 @@
+# 1690. Stone Game VII
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/stone-game-vii/
+
+---
+
+[中文文档](/solution/1600-1699/1690.Stone%20Game%20VII/README.md)
+
+## Description
+
+<p>Alice and Bob take turns playing a game, with <strong>Alice starting first</strong>.</p>
+
+<p>There are <code>n</code> stones arranged in a row. On each player&#39;s turn, they can <strong>remove</strong> either the leftmost stone or the rightmost stone from the row and receive points equal to the <strong>sum</strong> of the remaining stones&#39; values in the row. The winner is the one with the higher score when there are no stones left to remove.</p>
+
+<p>Bob found that he will always lose this game (poor Bob, he always loses), so he decided to <strong>minimize the score&#39;s difference</strong>. Alice&#39;s goal is to <strong>maximize the difference</strong> in the score.</p>
+
+<p>Given an array of integers <code>stones</code> where <code>stones[i]</code> represents the value of the <code>i<sup>th</sup></code> stone <strong>from the left</strong>, return <em>the <strong>difference</strong> in Alice and Bob&#39;s score if they both play <strong>optimally</strong>.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> stones = [5,3,1,4,2]
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> 
+- Alice removes 2 and gets 5 + 3 + 1 + 4 = 13 points. Alice = 13, Bob = 0, stones = [5,3,1,4].
+- Bob removes 5 and gets 3 + 1 + 4 = 8 points. Alice = 13, Bob = 8, stones = [3,1,4].
+- Alice removes 3 and gets 1 + 4 = 5 points. Alice = 18, Bob = 8, stones = [1,4].
+- Bob removes 1 and gets 4 points. Alice = 18, Bob = 12, stones = [4].
+- Alice removes 4 and gets 0 points. Alice = 18, Bob = 12, stones = [].
+The score difference is 18 - 12 = 6.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> stones = [7,90,5,1,100,10,10,2]
+<strong>Output:</strong> 122</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == stones.length</code></li>
+	<li><code>2 &lt;= n &lt;= 1000</code></li>
+	<li><code>1 &lt;= stones[i] &lt;= 1000</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization Search
+
+> **Thinking**
+>
+> Each turn removes one end and scores the sum of what remains. The first-player minus second-player gap on an interval is a memoized game: $\textit{dfs}(i,j)$ is the current player's advantage.
+>
+> Prefix sums $s$ give the score after dropping the left or right end; take the larger of $s[j+1]-s[i+1]-\textit{dfs}(i+1,j)$ and $s[j]-s[i]-\textit{dfs}(i,j-1)$.
+
+First, we preprocess to get the prefix sum array $s$, where $s[i]$ represents the total sum of the first $i$ stones.
+
+Next, we design a function $\textit{dfs}(i, j)$, which represents the score difference between the first and second players when the remaining stones are $\textit{stones}[i], \textit{stones}[i + 1], \dots, \textit{stones}[j]$. The answer is $\textit{dfs}(0, n - 1)$.
+
+The calculation process of the function $\textit{dfs}(i, j)$ is as follows:
+
+- If $i > j$, it means there are no stones currently, so return $0$;
+- Otherwise, the first player has two choices, which are to remove $\textit{stones}[i]$ or $\textit{stones}[j]$, and then calculate the score difference, i.e., $a = s[j + 1] - s[i + 1] - \textit{dfs}(i + 1, j)$ and $b = s[j] - s[i] - \textit{dfs}(i, j - 1)$. We take the larger of the two as the return value of $\textit{dfs}(i, j)$.
+
+During the process, we use memoization search, i.e., use an array $f$ to record the return value of the function $\textit{dfs}(i, j)$, to avoid repeated calculations.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the number of stones.
+
+#### Java
+
+```java
+class Solution {
+    private int[] s;
+    private Integer[][] f;
+
+    public int stoneGameVII(int[] stones) {
+        int n = stones.length;
+        s = new int[n + 1];
+        f = new Integer[n][n];
+        for (int i = 0; i < n; ++i) {
+            s[i + 1] = s[i] + stones[i];
+        }
+        return dfs(0, n - 1);
+    }
+
+    private int dfs(int i, int j) {
+        if (i > j) {
+            return 0;
+        }
+        if (f[i][j] != null) {
+            return f[i][j];
+        }
+        int a = s[j + 1] - s[i + 1] - dfs(i + 1, j);
+        int b = s[j] - s[i] - dfs(i, j - 1);
+        return f[i][j] = Math.max(a, b);
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> Solution 1 already fills this interval with decreasing $i$ and increasing $j$. The $f[i][j]$ below is that same table.
+
+Solution 1 already fills this transition with decreasing $i$ and increasing $j$. Define $f[i][j]$ as the score difference between the first and second players when the remaining stones are $\textit{stones}[i], \textit{stones}[i + 1], \dots, \textit{stones}[j]$. Therefore, the answer is $f[0][n - 1]$.
+
+The state transition equation is as follows:
+
+$$
+f[i][j] = \max(s[j + 1] - s[i + 1] - f[i + 1][j], s[j] - s[i] - f[i][j - 1])
+$$
+
+When calculating $f[i][j]$, we need to ensure that $f[i + 1][j]$ and $f[i][j - 1]$ have been calculated. Therefore, we need to enumerate $i$ in descending order and $j$ in ascending order.
+
+Finally, the answer is $f[0][n - 1]$.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the number of stones.
+
+#### Java
+
+```java
+class Solution {
+    public int stoneGameVII(int[] stones) {
+        int n = stones.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; ++i) {
+            s[i + 1] = s[i] + stones[i];
+        }
+        int[][] f = new int[n][n];
+        for (int i = n - 2; i >= 0; --i) {
+            for (int j = i + 1; j < n; ++j) {
+                int a = s[j + 1] - s[i + 1] - f[i + 1][j];
+                int b = s[j] - s[i] - f[i][j - 1];
+                f[i][j] = Math.max(a, b);
+            }
+        }
+        return f[0][n - 1];
+    }
+}
+```
+
+### Solution 3: Dynamic Programming
+
+> **Thinking**
+>
+> Enumerating both players' choices is exponential. There can be $1000$ stones, and the branch that removes the left stone first always advances the left endpoint, so the search has depth $n$. The current player's advantage on $[i,j]$ depends only on shorter intervals. Let $f[i][j]$ store that difference, with a single stone worth $0$, and fill decreasing $i$ and increasing $j$: removing the left end scores $s[j+1]-s[i+1]-f[i+1][j]$, removing the right end scores $s[j]-s[i]-f[i][j-1]$, and the state keeps the larger one.
+
+Precompute the prefix sums $s$, where $s[i]$ is the sum of the first $i$ stones. Let $f[i][j]$ be the score difference between the current player and the opponent on $\textit{stones}[i], \textit{stones}[i + 1], \dots, \textit{stones}[j]$. A single stone has difference $0$. For $i$ from $n-2$ down to $0$, and for each $i$ with $j$ from $i+1$ to $n-1$, the shorter states $f[i+1][j]$ and $f[i][j-1]$ are already known. Removing the left stone scores $s[j+1]-s[i+1]-f[i+1][j]$, and removing the right stone scores $s[j]-s[i]-f[i][j-1]$. $f[i][j]$ is the larger of the two. The answer is $f[0][n-1]$.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the number of stones.
+
+#### Java
+
+```java
+class Solution {
+    public int stoneGameVII(int[] stones) {
+        int n = stones.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; ++i) {
+            s[i + 1] = s[i] + stones[i];
+        }
+        int[][] f = new int[n][n];
+        for (int i = n - 2; i >= 0; --i) {
+            for (int j = i + 1; j < n; ++j) {
+                int a = s[j + 1] - s[i + 1] - f[i + 1][j];
+                int b = s[j] - s[i] - f[i][j - 1];
+                f[i][j] = Math.max(a, b);
+            }
+        }
+        return f[0][n - 1];
+    }
+}
+```

@@ -1,0 +1,84 @@
+# 991. Broken Calculator
+
+**Difficulty:** Medium  
+**Category:** Stacks & Queues  
+**LeetCode:** https://leetcode.com/problems/broken-calculator/
+
+---
+
+[中文文档](/solution/0900-0999/0991.Broken%20Calculator/README.md)
+
+## Description
+
+<p>There is a broken calculator that has the integer <code>startValue</code> on its display initially. In one operation, you can:</p>
+
+<ul>
+	<li>multiply the number on display by <code>2</code>, or</li>
+	<li>subtract <code>1</code> from the number on display.</li>
+</ul>
+
+<p>Given two integers <code>startValue</code> and <code>target</code>, return <em>the minimum number of operations needed to display </em><code>target</code><em> on the calculator</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> startValue = 2, target = 3
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Use double operation and then decrement operation {2 -&gt; 4 -&gt; 3}.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> startValue = 5, target = 8
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Use decrement and then double {5 -&gt; 4 -&gt; 8}.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> startValue = 3, target = 10
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Use double, decrement and double {3 -&gt; 6 -&gt; 5 -&gt; 10}.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= startValue, target &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Reverse Calculation
+
+> **Thinking**
+>
+> From $\textit{startValue}$ we may double or subtract one to reach $\textit{target}$, using as few operations as possible. Both values can be $10^9$, so searching forward is too wide. Working backward, an even target must be halved and an odd one can only come from the inverse of subtract-one (add one), until it is at most the start; the remaining difference is extra subtractions.
+
+We can use a reverse calculation method, starting from $\textit{target}$. If $\textit{target}$ is odd, then $\textit{target} = \textit{target} + 1$, otherwise $\textit{target} = \textit{target} / 2$. We accumulate the number of operations until $\textit{target} \leq \textit{startValue}$. The final result is the number of operations plus $\textit{startValue} - \textit{target}$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$, where $n$ is $\textit{target}$.
+
+#### Java
+
+```java
+class Solution {
+    public int brokenCalc(int startValue, int target) {
+        int ans = 0;
+        while (startValue < target) {
+            if ((target & 1) == 1) {
+                target++;
+            } else {
+                target >>= 1;
+            }
+            ans += 1;
+        }
+        ans += startValue - target;
+        return ans;
+    }
+}
+```

@@ -1,0 +1,70 @@
+# 1613. Find the Missing IDs
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/find-the-missing-ids/
+
+---
+
+[中文文档](/solution/1600-1699/1613.Find%20the%20Missing%20IDs/README.md)
+
+## Description
+
+<p>Table: <code>Customers</code></p>
+
+<pre>
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| customer_id   | int     |
+| customer_name | varchar |
++---------------+---------+
+customer_id is the column with unique values for this table.
+Each row of this table contains the name and the id customer.
+</pre>
+
+<p>&nbsp;</p>
+
+<p>Write a solution to find the missing customer IDs. The missing IDs are ones that are not in the <code>Customers</code> table but are in the range between <code>1</code> and the <strong>maximum</strong> <code>customer_id</code> present in the table.</p>
+
+<p><strong>Notice</strong> that the maximum <code>customer_id</code> will not exceed <code>100</code>.</p>
+
+<p>Return the result table ordered by <code>ids</code> in <strong>ascending order</strong>.</p>
+
+<p>The result format is in the following example.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> 
+Customers table:
++-------------+---------------+
+| customer_id | customer_name |
++-------------+---------------+
+| 1           | Alice         |
+| 4           | Bob           |
+| 5           | Charlie       |
++-------------+---------------+
+<strong>Output:</strong> 
++-----+
+| ids |
++-----+
+| 2   |
+| 3   |
++-----+
+<strong>Explanation:</strong> 
+The maximum customer_id present in the table is 5, so in the range [1,5], IDs 2 and 3 are missing from the table.
+</pre>
+
+## Solutions
+
+### Solution 1
+
+> **Thinking**
+>
+> Missing ids are positive integers below the maximum $\texttt{customer\_id}$ that do not appear in the table. SQL has no built-in contiguous integer list, so we must build the candidate universe.
+>
+> Ids are at most $100$, so a recursive CTE yields $1$ through $100$; we then drop existing ids and keep those below the maximum.
+>
+> The outer query returns $n < \texttt{MAX}(\texttt{customer\_id})$ and $n \texttt{ NOT IN }$ the table as $\texttt{ids}$.

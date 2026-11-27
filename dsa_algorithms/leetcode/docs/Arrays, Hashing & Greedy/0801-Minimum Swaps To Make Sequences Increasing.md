@@ -1,0 +1,97 @@
+# 801. Minimum Swaps To Make Sequences Increasing
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-swaps-to-make-sequences-increasing/
+
+---
+
+[中文文档](/solution/0800-0899/0801.Minimum%20Swaps%20To%20Make%20Sequences%20Increasing/README.md)
+
+## Description
+
+<p>You are given two integer arrays of the same length <code>nums1</code> and <code>nums2</code>. In one operation, you are allowed to swap <code>nums1[i]</code> with <code>nums2[i]</code>.</p>
+
+<ul>
+	<li>For example, if <code>nums1 = [1,2,3,<u>8</u>]</code>, and <code>nums2 = [5,6,7,<u>4</u>]</code>, you can swap the element at <code>i = 3</code> to obtain <code>nums1 = [1,2,3,4]</code> and <code>nums2 = [5,6,7,8]</code>.</li>
+</ul>
+
+<p>Return <em>the minimum number of needed operations to make </em><code>nums1</code><em> and </em><code>nums2</code><em> <strong>strictly increasing</strong></em>. The test cases are generated so that the given input always makes it possible.</p>
+
+<p>An array <code>arr</code> is <strong>strictly increasing</strong> if and only if <code>arr[0] &lt; arr[1] &lt; arr[2] &lt; ... &lt; arr[arr.length - 1]</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [1,3,5,4], nums2 = [1,2,3,7]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 
+Swap nums1[3] and nums2[3]. Then the sequences are:
+nums1 = [1, 3, 5, 7] and nums2 = [1, 2, 3, 4]
+which are both strictly increasing.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [0,3,5,8,9], nums2 = [2,1,4,6,9]
+<strong>Output:</strong> 1
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= nums1.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>nums2.length == nums1.length</code></li>
+	<li><code>0 &lt;= nums1[i], nums2[i] &lt;= 2 * 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> Each index may be swapped or left as is; enumerating $2^n$ assignments is infeasible for $n\le 10^5$. Whether both sequences stay strictly increasing at a position depends only on the previous index after those two swap decisions.
+>
+> We therefore keep the minimum swaps to reach the current index with this position unswapped or swapped. Transitions follow from whether the pair is already increasing and whether a cross-swap still increases; only the previous two states are needed, so two rolling variables suffice.
+
+Define $a$ and $b$ to represent the minimum number of swaps needed to make the element sequences strictly increasing up to index $[0..i]$, with the $i$-th element not swapped and swapped, respectively. The index starts from $0$.
+
+When $i=0$, we have $a = 0$ and $b = 1$.
+
+When $i \gt 0$, we first save the previous values of $a$ and $b$ in $x$ and $y$, and then discuss the following cases:
+
+If $\textit{nums1}[i - 1] \ge \textit{nums1}[i]$ or $\textit{nums2}[i - 1] \ge \textit{nums2}[i]$, to make both sequences strictly increasing, the relative positions of the elements at indices $i-1$ and $i$ must change. That is, if the previous position was swapped, then the current position should not be swapped, so $a = y$; if the previous position was not swapped, then the current position must be swapped, so $b = x + 1$.
+
+Otherwise, the relative positions of the elements at indices $i-1$ and $i$ do not need to change, so $b = y + 1$. Additionally, if $\textit{nums1}[i - 1] \lt \textit{nums2}[i]$ and $\textit{nums2}[i - 1] \lt \textit{nums1}[i]$, the relative positions of the elements at indices $i-1$ and $i$ can change, so $a$ and $b$ can take the smaller values, thus $a = \min(a, y)$ and $b = \min(b, x + 1)$.
+
+Finally, return the smaller value between $a$ and $b$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public int minSwap(int[] nums1, int[] nums2) {
+        int a = 0, b = 1;
+        for (int i = 1; i < nums1.length; ++i) {
+            int x = a, y = b;
+            if (nums1[i - 1] >= nums1[i] || nums2[i - 1] >= nums2[i]) {
+                a = y;
+                b = x + 1;
+            } else {
+                b = y + 1;
+                if (nums1[i - 1] < nums2[i] && nums2[i - 1] < nums1[i]) {
+                    a = Math.min(a, y);
+                    b = Math.min(b, x + 1);
+                }
+            }
+        }
+        return Math.min(a, b);
+    }
+}
+```

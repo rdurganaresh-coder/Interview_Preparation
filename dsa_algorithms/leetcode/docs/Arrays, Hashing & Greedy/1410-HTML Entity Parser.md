@@ -1,0 +1,114 @@
+# 1410. HTML Entity Parser
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/html-entity-parser/
+
+---
+
+[中文文档](/solution/1400-1499/1410.HTML%20Entity%20Parser/README.md)
+
+## Description
+
+<p><strong>HTML entity parser</strong> is the parser that takes HTML code as input and replace all the entities of the special characters by the characters itself.</p>
+
+<p>The special characters and their entities for HTML are:</p>
+
+<ul>
+	<li><strong>Quotation Mark:</strong> the entity is <code>&amp;quot;</code> and symbol character is <code>&quot;</code>.</li>
+	<li><strong>Single Quote Mark:</strong> the entity is <code>&amp;apos;</code> and symbol character is <code>&#39;</code>.</li>
+	<li><strong>Ampersand:</strong> the entity is <code>&amp;amp;</code> and symbol character is <code>&amp;</code>.</li>
+	<li><strong>Greater Than Sign:</strong> the entity is <code>&amp;gt;</code> and symbol character is <code>&gt;</code>.</li>
+	<li><strong>Less Than Sign:</strong> the entity is <code>&amp;lt;</code> and symbol character is <code>&lt;</code>.</li>
+	<li><strong>Slash:</strong> the entity is <code>&amp;frasl;</code> and symbol character is <code>/</code>.</li>
+</ul>
+
+<p>Given the input <code>text</code> string to the HTML parser, you have to implement the entity parser.</p>
+
+<p>Return <em>the text after replacing the entities by the special characters</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> text = &quot;&amp;amp; is an HTML entity but &amp;ambassador; is not.&quot;
+<strong>Output:</strong> &quot;&amp; is an HTML entity but &amp;ambassador; is not.&quot;
+<strong>Explanation:</strong> The parser will replace the &amp;amp; entity by &amp;
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> text = &quot;and I quote: &amp;quot;...&amp;quot;&quot;
+<strong>Output:</strong> &quot;and I quote: \&quot;...\&quot;&quot;
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= text.length &lt;= 10<sup>5</sup></code></li>
+	<li>The string may contain any possible characters out of all the 256 ASCII characters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table + Simulation
+
+> **Thinking**
+>
+> Entities are at most $7$ characters and come from a fixed set. For $n\le 10^5$, trying prefixes of length $1$– $7$ at each index is enough.
+>
+> Map each entity to its character. On a hit, emit the replacement and skip ahead; otherwise emit the current character. This also handles overlapping cases such as `&amp;gt;`.
+
+We can use a hash table to store the corresponding character for each character entity. Then, we traverse the string, and when we encounter a character entity, we replace it with the corresponding character.
+
+The time complexity is $O(nl)$, and the space complexity is $O(l)$, where $n$ is the length of the string, and $l$ is the total length of the character entities.
+
+#### Java
+
+```java
+class Solution {
+    public String entityParser(String text) {
+        Map<String, String> d = new HashMap<>();
+        d.put("&quot;", "\"");
+        d.put("&apos;", "'");
+        d.put("&amp;", "&");
+        d.put("&gt;", ">");
+        d.put("&lt;", "<");
+        d.put("&frasl;", "/");
+        StringBuilder ans = new StringBuilder();
+        int i = 0;
+        int n = text.length();
+        while (i < n) {
+            boolean found = false;
+            for (int l = 1; l < 8; ++l) {
+                int j = i + l;
+                if (j <= n) {
+                    String t = text.substring(i, j);
+                    if (d.containsKey(t)) {
+                        ans.append(d.get(t));
+                        i = j;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                ans.append(text.charAt(i++));
+            }
+        }
+        return ans.toString();
+    }
+}
+```
+
+### Solution 2: Regular Expression Replacement
+
+> **Thinking**
+>
+> Method 1 walks prefix lengths by hand. The entity set is tiny, so joining the keys into one regular expression and calling `replace` performs the same mapping with less code.
+
+Store the entity-to-character mapping in a hash table, then build a regular expression and replace all entities in one pass.
+
+The time complexity is $O(n)$, and the space complexity is $O(l)$, where $n$ is the length of the string and $l$ is the total length of the entities.

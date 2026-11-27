@@ -1,0 +1,92 @@
+# 1535. Find the Winner of an Array Game
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/find-the-winner-of-an-array-game/
+
+---
+
+[中文文档](/solution/1500-1599/1535.Find%20the%20Winner%20of%20an%20Array%20Game/README.md)
+
+## Description
+
+<p>Given an integer array <code>arr</code> of <strong>distinct</strong> integers and an integer <code>k</code>.</p>
+
+<p>A game will be played between the first two elements of the array (i.e. <code>arr[0]</code> and <code>arr[1]</code>). In each round of the game, we compare <code>arr[0]</code> with <code>arr[1]</code>, the larger integer wins and remains at position <code>0</code>, and the smaller integer moves to the end of the array. The game ends when an integer wins <code>k</code> consecutive rounds.</p>
+
+<p>Return <em>the integer which will win the game</em>.</p>
+
+<p>It is <strong>guaranteed</strong> that there will be a winner of the game.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [2,1,3,5,4,6,7], k = 2
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> Let&#39;s see the rounds of the game:
+Round |       arr       | winner | win_count
+  1   | [2,1,3,5,4,6,7] | 2      | 1
+  2   | [2,3,5,4,6,7,1] | 3      | 1
+  3   | [3,5,4,6,7,1,2] | 5      | 1
+  4   | [5,4,6,7,1,2,3] | 5      | 2
+So we can see that 4 rounds will be played and 5 is the winner because it wins 2 consecutive games.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [3,2,1], k = 10
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 3 will win the first 10 rounds consecutively.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= arr.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= arr[i] &lt;= 10<sup>6</sup></code></li>
+	<li><code>arr</code> contains <strong>distinct</strong> integers.</li>
+	<li><code>1 &lt;= k &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Quick Thinking
+
+> **Thinking**
+>
+> Each round compares the first two values; the larger wins a game and returns to the front. $k$ can be $10^9$, so we cannot simulate that many rounds.
+>
+> Whoever wins, the next fight is always the current champion against the next unseen element. The first value that wins $k$ times in a row is the answer; if the scan finishes without that streak, the winner must be the global maximum, which never loses afterwards.
+
+We notice that each time the first two elements of the array are compared, regardless of the result, the next comparison will always be between the next element in the array and the current winner. Therefore, if we have looped $n-1$ times, the final winner must be the maximum element in the array. Otherwise, if an element has won consecutively $k$ times, then this element is the final winner.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+Similar problems:
+
+- [1535. Find the Winner of an Array Game](https://github.com/doocs/leetcode/blob/main/solution/3100-3199/3175.Find%20The%20First%20Player%20to%20win%20K%20Games%20in%20a%20Row/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    public int getWinner(int[] arr, int k) {
+        int mx = arr[0];
+        for (int i = 1, cnt = 0; i < arr.length; ++i) {
+            if (mx < arr[i]) {
+                mx = arr[i];
+                cnt = 1;
+            } else {
+                ++cnt;
+            }
+            if (cnt == k) {
+                break;
+            }
+        }
+        return mx;
+    }
+}
+```

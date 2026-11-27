@@ -1,0 +1,121 @@
+# 3411. Maximum Subarray With Equal Products
+
+**Difficulty:** Easy  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-subarray-with-equal-products/
+
+---
+
+[中文文档](/solution/3400-3499/3411.Maximum%20Subarray%20With%20Equal%20Products/README.md)
+
+## Description
+
+<p>You are given an array of <strong>positive</strong> integers <code>nums</code>.</p>
+
+<p>An array <code>arr</code> is called <strong>product equivalent</strong> if <code>prod(arr) == lcm(arr) * gcd(arr)</code>, where:</p>
+
+<ul>
+	<li><code>prod(arr)</code> is the product of all elements of <code>arr</code>.</li>
+	<li><code>gcd(arr)</code> is the <span data-keyword="gcd-function">GCD</span> of all elements of <code>arr</code>.</li>
+	<li><code>lcm(arr)</code> is the <span data-keyword="lcm-function">LCM</span> of all elements of <code>arr</code>.</li>
+</ul>
+
+<p>Return the length of the <strong>longest</strong> <strong>product equivalent</strong> <span data-keyword="subarray-nonempty">subarray</span> of <code>nums</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,2,1,2,1,1,1]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">5</span></p>
+
+<p><strong>Explanation:</strong>&nbsp;</p>
+
+<p>The longest product equivalent subarray is <code>[1, 2, 1, 1, 1]</code>, where&nbsp;<code>prod([1, 2, 1, 1, 1]) = 2</code>,&nbsp;<code>gcd([1, 2, 1, 1, 1]) = 1</code>, and&nbsp;<code>lcm([1, 2, 1, 1, 1]) = 2</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,3,4,5,6]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">3</span></p>
+
+<p><strong>Explanation:</strong>&nbsp;</p>
+
+<p>The longest product equivalent subarray is <code>[3, 4, 5].</code></p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,2,3,1,4,5,1]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">5</span></p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= nums.length &lt;= 100</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1
+
+> **Thinking**
+>
+> The product equaling $\gcd\cdot\textit{lcm}$ is an algebraic test on a subarray. With $n\le 100$ and values $\le 10$, we can enumerate every subarray while maintaining product, GCD, and LCM.
+>
+> The product grows quickly. Once it exceeds $\textit{lcm}(\textit{nums})\cdot\max(\textit{nums})$, a longer suffix cannot satisfy the identity, so the inner loop should stop.
+>
+> We fix the left end $i$, extend rightward updating $p$, $g$, and $l$, record the length when $p=g\cdot l$, and break when $p$ is already too large.
+
+#### Java
+
+```java
+class Solution {
+    public int maxLength(int[] nums) {
+        int mx = 0, ml = 1;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+            ml = lcm(ml, x);
+        }
+        int maxP = ml * mx;
+        int n = nums.length;
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            int p = 1, g = 0, l = 1;
+            for (int j = i; j < n; ++j) {
+                p *= nums[j];
+                g = gcd(g, nums[j]);
+                l = lcm(l, nums[j]);
+                if (p == g * l) {
+                    ans = Math.max(ans, j - i + 1);
+                }
+                if (p > maxP) {
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    private int lcm(int a, int b) {
+        return a / gcd(a, b) * b;
+    }
+}
+```

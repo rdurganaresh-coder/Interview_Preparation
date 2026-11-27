@@ -1,0 +1,138 @@
+# 1373. Maximum Sum BST in Binary Tree
+
+**Difficulty:** Hard  
+**Category:** Trees & Tries  
+**LeetCode:** https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/
+
+---
+
+[中文文档](/solution/1300-1399/1373.Maximum%20Sum%20BST%20in%20Binary%20Tree/README.md)
+
+## Description
+
+<p>Given a <strong>binary tree</strong> <code>root</code>, return <em>the maximum sum of all keys of <strong>any</strong> sub-tree which is also a Binary Search Tree (BST)</em>.</p>
+
+<p>Assume a BST is defined as follows:</p>
+
+<ul>
+	<li>The left subtree of a node contains only nodes with keys <strong>less than</strong> the node&#39;s key.</li>
+	<li>The right subtree of a node contains only nodes with keys <strong>greater than</strong> the node&#39;s key.</li>
+	<li>Both the left and right subtrees must also be binary search trees.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<p><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1300-1399/1373.Maximum%20Sum%20BST%20in%20Binary%20Tree/images/sample_1_1709.png" style="width: 320px; height: 250px;" /></p>
+
+<pre>
+<strong>Input:</strong> root = [1,4,3,2,4,2,5,null,null,null,null,null,null,4,6]
+<strong>Output:</strong> 20
+<strong>Explanation:</strong> Maximum sum in a valid Binary search tree is obtained in root node with key equal to 3.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<p><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1300-1399/1373.Maximum%20Sum%20BST%20in%20Binary%20Tree/images/sample_2_1709.png" style="width: 134px; height: 180px;" /></p>
+
+<pre>
+<strong>Input:</strong> root = [4,3,null,1,2]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Maximum sum in a valid Binary search tree is obtained in a single root node with key equal to 2.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> root = [-4,-2,-5]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> All values are negatives. Return an empty BST.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li>The number of nodes in the tree is in the range <code>[1, 4 * 10<sup>4</sup>]</code>.</li>
+	<li><code>-4 * 10<sup>4</sup> &lt;= Node.val &lt;= 4 * 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS
+
+> **Thinking**
+>
+> Among subtrees that are themselves BSTs, maximize the node sum. Checking BST-ness from the top repeats work. A postorder returns a quadruple: BST flag, min, max, and sum. When both children are BSTs and $l_{mx}<\textit{root}.\textit{val}<r_{mi}$, the current tree is valid and its sum updates the answer. An empty tree is a BST with min $+\infty$ and max $-\infty$.
+
+To determine whether a tree is a binary search tree, it needs to meet the following four conditions:
+
+- The left subtree is a binary search tree;
+- The right subtree is a binary search tree;
+- The maximum value of the left subtree is less than the value of the root node;
+- The minimum value of the right subtree is greater than the value of the root node.
+
+Therefore, we design a function $\textit{dfs}(\textit{root})$, the return value of the function is a quadruple $(\textit{bst}, mi, mx, s)$, where:
+
+- The number $\textit{bst}$ indicates whether the tree with $\textit{root}$ as the root is a binary search tree. If it is a binary search tree, then $\textit{bst} = 1$; otherwise $\textit{bst} = 0$;
+- The number $mi$ represents the minimum value of the tree with $\textit{root}$ as the root;
+- The number $mx$ represents the maximum value of the tree with $\textit{root}$ as the root;
+- The number $s$ represents the sum of all nodes of the tree with $\textit{root}$ as the root.
+
+The execution logic of the function $\textit{dfs}(\textit{root})$ is as follows:
+
+If $\textit{root}$ is an empty node, return $(1, +\infty, -\infty, 0)$, indicating that the empty tree is a binary search tree, the minimum value and maximum value are positive infinity and negative infinity respectively, and the sum of nodes is $0$.
+
+Otherwise, recursively calculate the left subtree and right subtree of $\textit{root}$, and get $(\textit{lbst}, \textit{lmi}, \textit{lmx}, ls)$ and $(\textit{rbst}, \textit{rmi}, \textit{rmx}, rs)$ respectively, then judge whether the $\textit{root}$ node meets the conditions of the binary search tree.
+
+If $\textit{lbst} = 1$ and $\textit{rbst} = 1$ and $\textit{lmx} < \textit{root}.\textit{val} < \textit{rmi}$, then the tree with $\textit{root}$ as the root is a binary search tree, and the sum of nodes $s= ls + rs + \textit{root}.\textit{val}$. We update the answer $\textit{ans} = \max(\textit{ans}, s)$, and return $(1, \min(\textit{lmi}, \textit{root}.\textit{val}), \max(\textit{rmx}, \textit{root}.\textit{val}), s)$.
+
+Otherwise, the tree with $\textit{root}$ as the root is not a binary search tree, we return $(0, 0, 0, 0)$.
+
+We call $\textit{dfs}(\textit{root})$ in the main function. After execution, the answer is $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes in the binary tree.
+
+#### Java
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private int ans;
+    private final int inf = 1 << 30;
+
+    public int maxSumBST(TreeNode root) {
+        dfs(root);
+        return ans;
+    }
+
+    private int[] dfs(TreeNode root) {
+        if (root == null) {
+            return new int[] {1, inf, -inf, 0};
+        }
+        var l = dfs(root.left);
+        var r = dfs(root.right);
+        int v = root.val;
+        if (l[0] == 1 && r[0] == 1 && l[2] < v && r[1] > v) {
+            int s = v + l[3] + r[3];
+            ans = Math.max(ans, s);
+            return new int[] {1, Math.min(l[1], v), Math.max(r[2], v), s};
+        }
+        return new int[4];
+    }
+}
+```

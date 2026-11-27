@@ -1,0 +1,127 @@
+# 1818. Minimum Absolute Sum Difference
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-absolute-sum-difference/
+
+---
+
+[中文文档](/solution/1800-1899/1818.Minimum%20Absolute%20Sum%20Difference/README.md)
+
+## Description
+
+<p>You are given two positive integer arrays <code>nums1</code> and <code>nums2</code>, both of length <code>n</code>.</p>
+
+<p>The <strong>absolute sum difference</strong> of arrays <code>nums1</code> and <code>nums2</code> is defined as the <strong>sum</strong> of <code>|nums1[i] - nums2[i]|</code> for each <code>0 &lt;= i &lt; n</code> (<strong>0-indexed</strong>).</p>
+
+<p>You can replace <strong>at most one</strong> element of <code>nums1</code> with <strong>any</strong> other element in <code>nums1</code> to <strong>minimize</strong> the absolute sum difference.</p>
+
+<p>Return the <em>minimum absolute sum difference <strong>after</strong> replacing at most one<strong> </strong>element in the array <code>nums1</code>.</em> Since the answer may be large, return it <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>.</p>
+
+<p><code>|x|</code> is defined as:</p>
+
+<ul>
+	<li><code>x</code> if <code>x &gt;= 0</code>, or</li>
+	<li><code>-x</code> if <code>x &lt; 0</code>.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [1,7,5], nums2 = [2,3,5]
+<strong>Output:</strong> 3
+<strong>Explanation: </strong>There are two possible optimal solutions:
+- Replace the second element with the first: [1,<u><strong>7</strong></u>,5] =&gt; [1,<u><strong>1</strong></u>,5], or
+- Replace the second element with the third: [1,<u><strong>7</strong></u>,5] =&gt; [1,<u><strong>5</strong></u>,5].
+Both will yield an absolute sum difference of <code>|1-2| + (|1-3| or |5-3|) + |5-5| = </code>3.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [2,4,6,8,10], nums2 = [2,4,6,8,10]
+<strong>Output:</strong> 0
+<strong>Explanation: </strong>nums1 is equal to nums2 so no replacement is needed. This will result in an 
+absolute sum difference of 0.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [1,10,4,4,2,7], nums2 = [9,3,5,1,7,4]
+<strong>Output:</strong> 20
+<strong>Explanation: </strong>Replace the first element with the second: [<u><strong>1</strong></u>,10,4,4,2,7] =&gt; [<u><strong>10</strong></u>,10,4,4,2,7].
+This yields an absolute sum difference of <code>|10-9| + |10-3| + |4-5| + |4-1| + |2-7| + |7-4| = 20</code>
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == nums1.length</code></li>
+	<li><code>n == nums2.length</code></li>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums1[i], nums2[i] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Binary Search
+
+> **Thinking**
+>
+> We may replace at most one entry of $\textit{nums1}$ to minimize $\sum|\textit{nums1}[i]-\textit{nums2}[i]|$. Trying every replacement value at every index is $O(n^2)$. With $n\le 10^5$ this will not pass.
+>
+> Compute the unreplaced sum $s$. The gain of replacing index $i$ is the drop from $|\textit{nums1}[i]-\textit{nums2}[i]|$ to the distance between $\textit{nums2}[i]$ and the closest value that already occurs in $\textit{nums1}$. Sort a copy of $\textit{nums1}$, binary-search the two neighbors of each $\textit{nums2}[i]$, keep the best gain $mx$, and return $s-mx$.
+
+According to the problem, we can first calculate the absolute difference sum of $\textit{nums1}$ and $\textit{nums2}$ without any replacements, denoted as $s$.
+
+Next, we enumerate each element $\textit{nums1}[i]$ in $\textit{nums1}$, replacing it with the element closest to $\textit{nums2}[i]$ that also exists in $\textit{nums1}$. Therefore, before the enumeration, we can make a copy of $\textit{nums1}$, resulting in the array $\textit{nums}$, and sort $\textit{nums}$. Then, we perform a binary search in $\textit{nums}$ for the element closest to $\textit{nums2}[i]$, denoted as $\textit{nums}[j]$, and calculate $|\textit{nums1}[i] - \textit{nums2}[i]| - |\textit{nums}[j] - \textit{nums2}[i]|$, updating the maximum value of the difference $mx$.
+
+Finally, we subtract $mx$ from $s$, which is the answer. Note the modulus operation.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums1}$.
+
+#### Java
+
+```java
+class Solution {
+    public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+        final int mod = (int) 1e9 + 7;
+        int[] nums = nums1.clone();
+        Arrays.sort(nums);
+        int s = 0, n = nums.length;
+        for (int i = 0; i < n; ++i) {
+            s = (s + Math.abs(nums1[i] - nums2[i])) % mod;
+        }
+        int mx = 0;
+        for (int i = 0; i < n; ++i) {
+            int d1 = Math.abs(nums1[i] - nums2[i]);
+            int d2 = 1 << 30;
+            int j = search(nums, nums2[i]);
+            if (j < n) {
+                d2 = Math.min(d2, Math.abs(nums[j] - nums2[i]));
+            }
+            if (j > 0) {
+                d2 = Math.min(d2, Math.abs(nums[j - 1] - nums2[i]));
+            }
+            mx = Math.max(mx, d1 - d2);
+        }
+        return (s - mx + mod) % mod;
+    }
+
+    private int search(int[] nums, int x) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            if (nums[mid] >= x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```

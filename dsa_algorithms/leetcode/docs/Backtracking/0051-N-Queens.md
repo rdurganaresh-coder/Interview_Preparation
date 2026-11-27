@@ -1,0 +1,110 @@
+# 51. N-Queens
+
+**Difficulty:** Hard  
+**Category:** Backtracking  
+**LeetCode:** https://leetcode.com/problems/n-queens/
+
+---
+
+[中文文档](/solution/0000-0099/0051.N-Queens/README.md)
+
+## Description
+
+<p>The <strong>n-queens</strong> puzzle is the problem of placing <code>n</code> queens on an <code>n x n</code> chessboard such that no two queens attack each other.</p>
+
+<p>Given an integer <code>n</code>, return <em>all distinct solutions to the <strong>n-queens puzzle</strong></em>. You may return the answer in <strong>any order</strong>.</p>
+
+<p>Each solution contains a distinct board configuration of the n-queens&#39; placement, where <code>&#39;Q&#39;</code> and <code>&#39;.&#39;</code> both indicate a queen and an empty space, respectively.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0000-0099/0051.N-Queens/images/queens.jpg" style="width: 600px; height: 268px;" />
+<pre>
+<strong>Input:</strong> n = 4
+<strong>Output:</strong> [[&quot;.Q..&quot;,&quot;...Q&quot;,&quot;Q...&quot;,&quot;..Q.&quot;],[&quot;..Q.&quot;,&quot;Q...&quot;,&quot;...Q&quot;,&quot;.Q..&quot;]]
+<strong>Explanation:</strong> There exist two distinct solutions to the 4-queens puzzle as shown above
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 1
+<strong>Output:</strong> [[&quot;Q&quot;]]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 9</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS (Backtracking)
+
+> **Thinking**
+>
+> The first idea is to try every column permutation: put the queen in row $i$ at column $p_i$, then check diagonals. $n \le 9$, so $9!$ is searchable, but we only discover a conflict after the board is full, and we still have to build the string grid.
+>
+> The waste is placing everything, then validating. One queen per row is mandatory; conflicts are only the same column or the same diagonal. Column, $i+j$, and $n-i+j$ can all be marked in $O(1)$.
+>
+> So we DFS row by row: place and mark only when legal, then backtrack. The board $g$ flips `'Q'`/`'.'` in lockstep; at row $n$ we copy one answer.
+
+We define three arrays $\textit{col}$, $dg$, and $\textit{udg}$ to represent whether there is a queen in the column, the main diagonal, and the anti-diagonal, respectively. If there is a queen at position $(i, j)$, then $\textit{col}[j]$, $dg[i + j]$, and $\textit{udg}[n - i + j]$ are all $1$. In addition, we use an array $g$ to record the current state of the chessboard, where all elements in $g$ are initially `'.'`.
+
+Next, we define a function $\textit{dfs}(i)$, which represents placing queens starting from the $i$th row.
+
+In $\textit{dfs}(i)$, if $i = n$, it means that we have completed the placement of all queens. We put the current $g$ into the answer array and end the recursion.
+
+Otherwise, we enumerate each column $j$ of the current row. If there is no queen at position $(i, j)$, that is, $\textit{col}[j]$, $dg[i + j]$, and $\textit{udg}[n - i + j]$ are all $0$, then we can place a queen, that is, change $g[i][j]$ to `'Q'`, and set $\textit{col}[j]$, $dg[i + j]$, and $\textit{udg}[n - i + j]$ to $1$. Then we continue to search the next row, that is, call $\textit{dfs}(i + 1)$. After the recursion ends, we need to change $g[i][j]$ back to `'.'` and set $\textit{col}[j]$, $dg[i + j]$, and $\textit{udg}[n - i + j]$ to $0$.
+
+In the main function, we call $\textit{dfs}(0)$ to start recursion, and finally return the answer array.
+
+The time complexity is $O(n^2n!)$, and the space complexity is $O(n)$, where $n$ is the integer given in the problem.
+
+#### Java
+
+```java
+class Solution {
+    private List<List<String>> ans = new ArrayList<>();
+    private int[] col;
+    private int[] dg;
+    private int[] udg;
+    private String[][] g;
+    private int n;
+
+    public List<List<String>> solveNQueens(int n) {
+        this.n = n;
+        col = new int[n];
+        dg = new int[n << 1];
+        udg = new int[n << 1];
+        g = new String[n][n];
+        for (int i = 0; i < n; ++i) {
+            Arrays.fill(g[i], ".");
+        }
+        dfs(0);
+        return ans;
+    }
+
+    private void dfs(int i) {
+        if (i == n) {
+            List<String> t = new ArrayList<>();
+            for (int j = 0; j < n; ++j) {
+                t.add(String.join("", g[j]));
+            }
+            ans.add(t);
+            return;
+        }
+        for (int j = 0; j < n; ++j) {
+            if (col[j] + dg[i + j] + udg[n - i + j] == 0) {
+                g[i][j] = "Q";
+                col[j] = dg[i + j] = udg[n - i + j] = 1;
+                dfs(i + 1);
+                col[j] = dg[i + j] = udg[n - i + j] = 0;
+                g[i][j] = ".";
+            }
+        }
+    }
+}
+```

@@ -1,0 +1,115 @@
+# 3027. Find the Number of Ways to Place People II
+
+**Difficulty:** Hard  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/find-the-number-of-ways-to-place-people-ii/
+
+---
+
+[中文文档](/solution/3000-3099/3027.Find%20the%20Number%20of%20Ways%20to%20Place%20People%20II/README.md)
+
+## Description
+
+<p>You are given a 2D array <code>points</code> of size <code>n x 2</code> representing integer coordinates of some points on a 2D-plane, where <code>points[i] = [x<sub>i</sub>, y<sub>i</sub>]</code>.</p>
+
+<p>We define the <strong>right</strong> direction as positive x-axis (<strong>increasing x-coordinate</strong>) and the <strong>left</strong> direction as negative x-axis (<strong>decreasing x-coordinate</strong>). Similarly, we define the <strong>up</strong> direction as positive y-axis (<strong>increasing y-coordinate</strong>) and the <strong>down</strong> direction as negative y-axis (<strong>decreasing y-coordinate</strong>)</p>
+
+<p>You have to place <code>n</code> people, including Alice and Bob, at these points such that there is <strong>exactly one</strong> person at every point. Alice wants to be alone with Bob, so Alice will build a rectangular fence with Alice&#39;s position as the <strong>upper left corner</strong> and Bob&#39;s position as the <strong>lower right corner</strong> of the fence (<strong>Note</strong> that the fence <strong>might not</strong> enclose any area, i.e. it can be a line). If any person other than Alice and Bob is either <strong>inside</strong> the fence or <strong>on</strong> the fence, Alice will be sad.</p>
+
+<p>Return <em>the number of <strong>pairs of points</strong> where you can place Alice and Bob, such that Alice <strong>does not</strong> become sad on building the fence</em>.</p>
+
+<p><strong>Note</strong> that Alice can only build a fence with Alice&#39;s position as the upper left corner, and Bob&#39;s position as the lower right corner. For example, Alice cannot build either of the fences in the picture below with four corners <code>(1, 1)</code>, <code>(1, 3)</code>, <code>(3, 1)</code>, and <code>(3, 3)</code>, because:</p>
+
+<ul>
+	<li>With Alice at <code>(3, 3)</code> and Bob at <code>(1, 1)</code>, Alice&#39;s position is not the upper left corner and Bob&#39;s position is not the lower right corner of the fence.</li>
+	<li>With Alice at <code>(1, 3)</code> and Bob at <code>(1, 1)</code>&nbsp;(as the rectangle shown in the image instead of a line),&nbsp;Bob&#39;s position is not the lower right corner of the fence.</li>
+</ul>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3000-3099/3027.Find%20the%20Number%20of%20Ways%20to%20Place%20People%20II/images/example0alicebob-1.png" style="width: 750px; height: 308px;padding: 10px; background: #fff; border-radius: .5rem;" />
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3000-3099/3027.Find%20the%20Number%20of%20Ways%20to%20Place%20People%20II/images/example1alicebob.png" style="width: 376px; height: 308px; padding: 10px; background: rgb(255, 255, 255); border-radius: 0.5rem;" />
+<pre>
+<strong>Input:</strong> points = [[1,1],[2,2],[3,3]]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no way to place Alice and Bob such that Alice can build a fence with Alice&#39;s position as the upper left corner and Bob&#39;s position as the lower right corner. Hence we return 0. 
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3000-3099/3027.Find%20the%20Number%20of%20Ways%20to%20Place%20People%20II/images/example2alicebob.png" style="width: 1321px; height: 363px; padding: 10px; background: rgb(255, 255, 255); border-radius: 0.5rem;" />
+<pre>
+<strong>Input:</strong> points = [[6,2],[4,4],[2,6]]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are two ways to place Alice and Bob such that Alice will not be sad:
+- Place Alice at (4, 4) and Bob at (6, 2).
+- Place Alice at (2, 6) and Bob at (4, 4).
+You cannot place Alice at (2, 6) and Bob at (6, 2) because the person at (4, 4) will be inside the fence.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3000-3099/3027.Find%20the%20Number%20of%20Ways%20to%20Place%20People%20II/images/example4alicebob.png" style="width: 1123px; height: 308px; padding: 10px; background: rgb(255, 255, 255); border-radius: 0.5rem;" />
+<pre>
+<strong>Input:</strong> points = [[3,1],[1,3],[1,1]]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are two ways to place Alice and Bob such that Alice will not be sad:
+- Place Alice at (1, 1) and Bob at (3, 1).
+- Place Alice at (1, 3) and Bob at (1, 1).
+You cannot place Alice at (1, 3) and Bob at (3, 1) because the person at (1, 1) will be on the fence.
+Note that it does not matter if the fence encloses any area, the first and second fences in the image are valid.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= n &lt;= 1000</code></li>
+	<li><code>points[i].length == 2</code></li>
+	<li><code>-10<sup>9</sup> &lt;= points[i][0], points[i][1] &lt;= 10<sup>9</sup></code></li>
+	<li>All <code>points[i]</code> are distinct.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting and Enumeration
+
+> **Thinking**
+>
+> The statement matches part I, but $n \le 1000$, so an $O(n^3)$ interior check would time out.
+>
+> The observation that a sorted scan needs a strictly increasing $y$ does not depend on $n$. Pair enumeration is $O(n^2)$ and fits the new limit.
+>
+> We keep the same sort and $\textit{maxY}$ scan and never test other points inside the rectangle.
+
+Enumerate the upper-left point $(x_1, y_1)$. A later point $(x_2, y_2)$ is a valid lower-right corner only when its $y$ is strictly larger than the $y$ of every lower-right point already accepted; otherwise it lies inside a rectangle that has already been formed.
+
+Sort the points by increasing $x$. When two points share $x$, sort them by decreasing $y$.
+
+For each upper-left point $(x_1, y_1)$, maintain $\textit{maxY}$, the largest $y$ among accepted lower-right points. Scan the following points $(x_2, y_2)$. If $\textit{maxY} < y_2 \le y_1$, the pair is valid: add one to the answer and set $\textit{maxY} = y_2$.
+
+After every upper-left point has been scanned, the answer is complete.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(\log n)$, where $n$ is the number of points.
+
+#### Java
+
+```java
+class Solution {
+    public int numberOfPairs(int[][] points) {
+        Arrays.sort(points, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);
+        int ans = 0;
+        int n = points.length;
+        final int inf = 1 << 30;
+        for (int i = 0; i < n; ++i) {
+            int y1 = points[i][1];
+            int maxY = -inf;
+            for (int j = i + 1; j < n; ++j) {
+                int y2 = points[j][1];
+                if (maxY < y2 && y2 <= y1) {
+                    maxY = y2;
+                    ++ans;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

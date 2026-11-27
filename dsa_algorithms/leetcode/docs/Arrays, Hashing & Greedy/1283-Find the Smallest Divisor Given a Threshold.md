@@ -1,0 +1,82 @@
+# 1283. Find the Smallest Divisor Given a Threshold
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/
+
+---
+
+[中文文档](/solution/1200-1299/1283.Find%20the%20Smallest%20Divisor%20Given%20a%20Threshold/README.md)
+
+## Description
+
+<p>Given an array of integers <code>nums</code> and an integer <code>threshold</code>, we will choose a positive integer <code>divisor</code>, divide all the array by it, and sum the division&#39;s result. Find the <strong>smallest</strong> <code>divisor</code> such that the result mentioned above is less than or equal to <code>threshold</code>.</p>
+
+<p>Each result of the division is rounded to the nearest integer greater than or equal to that element. (For example: <code>7/3 = 3</code> and <code>10/2 = 5</code>).</p>
+
+<p>The test cases are generated so&nbsp;that there will be an answer.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,5,9], threshold = 6
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> We can get a sum to 17 (1+2+5+9) if the divisor is 1. 
+If the divisor is 4 we can get a sum of 7 (1+1+2+3) and if the divisor is 5 the sum will be 5 (1+1+1+2). 
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [44,22,33,11,1], threshold = 5
+<strong>Output:</strong> 44
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 5 * 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>6</sup></code></li>
+	<li><code>nums.length &lt;= threshold &lt;= 10<sup>6</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> A larger divisor only decreases the sum of ceilings, so the predicate is monotone. $n \le 5\times 10^4$ forbids trying every divisor. We binary-search the smallest $v$ in $[1,\max \textit{nums}]$ such that $\sum \lceil \textit{nums}_i/v \rceil \le \textit{threshold}$. Each check is one linear scan.
+
+Notice that for number $v$, if the sum of results of dividing each number in $\textit{nums}$ by $v$ is less than or equal to $\textit{threshold}$, then all values greater than $v$ satisfy the condition. There is a monotonicity, so we can use binary search to find the smallest $v$ that satisfies the condition.
+
+We define the left boundary of the binary search $l=1$, $r=\max(\textit{nums})$. Each time we take $\textit{mid}=(l+r)/2$, calculate the sum of the results of dividing each number in $\textit{nums}$ by $\textit{mid}$ $s$, if $s$ is less than or equal to $\textit{threshold}$, then it means that $\textit{mid}$ satisfies the condition, we will update $r$ to $\textit{mid}$, otherwise we will update $l$ to $\textit{mid}+1$.
+
+Finally, return $l$.
+
+The time complexity is $O(n \log M)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$ and $M$ is the maximum value in the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int smallestDivisor(int[] nums, int threshold) {
+        int l = 1, r = 1000000;
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            int s = 0;
+            for (int x : nums) {
+                s += (x + mid - 1) / mid;
+            }
+            if (s <= threshold) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+}
+```

@@ -1,0 +1,91 @@
+# 220. Contains Duplicate III
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/contains-duplicate-iii/
+
+---
+
+[中文文档](/solution/0200-0299/0220.Contains%20Duplicate%20III/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> and two integers <code>indexDiff</code> and <code>valueDiff</code>.</p>
+
+<p>Find a pair of indices <code>(i, j)</code> such that:</p>
+
+<ul>
+	<li><code>i != j</code>,</li>
+	<li><code>abs(i - j) &lt;= indexDiff</code>.</li>
+	<li><code>abs(nums[i] - nums[j]) &lt;= valueDiff</code>, and</li>
+</ul>
+
+<p>Return <code>true</code><em> if such pair exists or </em><code>false</code><em> otherwise</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,1], indexDiff = 3, valueDiff = 0
+<strong>Output:</strong> true
+<strong>Explanation:</strong> We can choose (i, j) = (0, 3).
+We satisfy the three conditions:
+i != j --&gt; 0 != 3
+abs(i - j) &lt;= indexDiff --&gt; abs(0 - 3) &lt;= 3
+abs(nums[i] - nums[j]) &lt;= valueDiff --&gt; abs(1 - 1) &lt;= 0
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3
+<strong>Output:</strong> false
+<strong>Explanation:</strong> After trying all the possible pairs (i, j), we cannot satisfy the three conditions, so we return false.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>1 &lt;= indexDiff &lt;= nums.length</code></li>
+	<li><code>0 &lt;= valueDiff &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sliding Window + Ordered Set
+
+> **Thinking**
+>
+> We need a pair whose indices differ by at most $\textit{indexDiff}$ and values by at most $\textit{valueDiff}$. A hash set only tests equality, not nearest neighbors.
+>
+> Keep an ordered set of the last $\textit{indexDiff}$ values. For $v$, look up the least element $\ge v-\textit{valueDiff}$; if it is also $\le v+\textit{valueDiff}$, we are done. Then insert $v$ and drop the value that leaves the window.
+
+We maintain a sliding window of size $k$, and the elements in the window are kept in order.
+
+We traverse the array $\textit{nums}$. For each element $\textit{nums}[i]$, we look for the first element in the ordered set that is greater than or equal to $\textit{nums}[i] - t$. If the element exists, and this element is less than or equal to $\textit{nums}[i] + t$, it means we have found a pair of elements that meet the conditions, and we return `true`. Otherwise, we insert $\textit{nums}[i]$ into the ordered set, and if the size of the ordered set exceeds $k$, we need to remove the earliest added element from the ordered set.
+
+The time complexity is $O(n \log k)$, where $n$ is the length of the array $\textit{nums}$. For each element, we need $O(\log k)$ time to find the element in the ordered set, and there are $n$ elements in total, so the total time complexity is $O(n \log k)$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int indexDiff, int valueDiff) {
+        TreeSet<Long> ts = new TreeSet<>();
+        for (int i = 0; i < nums.length; ++i) {
+            Long x = ts.ceiling((long) nums[i] - (long) valueDiff);
+            if (x != null && x <= (long) nums[i] + (long) valueDiff) {
+                return true;
+            }
+            ts.add((long) nums[i]);
+            if (i >= indexDiff) {
+                ts.remove((long) nums[i - indexDiff]);
+            }
+        }
+        return false;
+    }
+}
+```

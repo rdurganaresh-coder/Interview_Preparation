@@ -1,0 +1,143 @@
+# 3135. Equalize Strings by Adding or Removing Characters at Ends
+
+**Difficulty:** Medium  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/equalize-strings-by-adding-or-removing-characters-at-ends/
+
+---
+
+[中文文档](/solution/3100-3199/3135.Equalize%20Strings%20by%20Adding%20or%20Removing%20Characters%20at%20Ends/README.md)
+
+## Description
+
+<p>Given two strings <code>initial</code> and <code>target</code>, your task is to modify <code>initial</code> by performing a series of operations to make it equal to <code>target</code>.</p>
+
+<p>In one operation, you can add or remove <strong>one character</strong> only at the <em>beginning</em> or the <em>end</em> of the string <code>initial</code>.</p>
+
+<p>Return the <strong>minimum</strong> number of operations required to <em>transform</em> <code>initial</code> into <code>target</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">initial = &quot;abcde&quot;, target = &quot;cdef&quot;</span></p>
+
+<p><strong>Output:</strong> 3</p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Remove <code>&#39;a&#39;</code> and <code>&#39;b&#39;</code> from the beginning of <code>initial</code>, then add <code>&#39;f&#39;</code> to the end.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">initial = &quot;axxy&quot;, target = &quot;yabx&quot;</span></p>
+
+<p><strong>Output:</strong> 6</p>
+
+<p><strong>Explanation:</strong></p>
+
+<table border="1">
+	<tbody>
+		<tr>
+			<th>Operation</th>
+			<th>Resulting String</th>
+		</tr>
+		<tr>
+			<td>Add <code>&#39;y&#39;</code> to the beginning</td>
+			<td><code>&quot;yaxxy&quot;</code></td>
+		</tr>
+		<tr>
+			<td>Remove from end</td>
+			<td><code>&quot;yaxx&quot;</code></td>
+		</tr>
+		<tr>
+			<td>Remove from end</td>
+			<td><code>&quot;yax&quot;</code></td>
+		</tr>
+		<tr>
+			<td>Remove from end</td>
+			<td><code>&quot;ya&quot;</code></td>
+		</tr>
+		<tr>
+			<td>Add <code>&#39;b&#39;</code> to the end</td>
+			<td><code>&quot;yab&quot;</code></td>
+		</tr>
+		<tr>
+			<td>Add <code>&#39;x&#39;</code> to the end</td>
+			<td><code>&quot;yabx&quot;</code></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">initial = &quot;xyz&quot;, target = &quot;xyz&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">0</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>No operations are needed as the strings are already equal.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= initial.length, target.length &lt;= 1000</code></li>
+	<li><code>initial</code> and <code>target</code> consist only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> Only prefixes and suffixes may be deleted or appended, so a contiguous common substring must be kept. Testing every substring of $\textit{initial}$ inside $\textit{target}$ is $O(m^2n)$.
+>
+> The operation count is the discarded prefix/suffix of $\textit{initial}$ plus the missing sides of $\textit{target}$, i.e. $m+n-2\cdot mx$ for the longest common substring length $mx$.
+>
+> Standard DP: $f[i][j]$ is the common substring ending at $\textit{initial}[i-1]$ and $\textit{target}[j-1]$, extending when the letters match. The answer uses the global maximum $mx$.
+
+Let's assume that the lengths of the strings $\textit{initial}$ and $\textit{target}$ are $m$ and $n$, respectively.
+
+According to the problem description, we only need to find the length $mx$ of the longest common substring of $\textit{initial}$ and $\textit{target}$. Then, we can delete $m - mx$ characters from $\textit{initial}$ and add $n - mx$ characters to transform $\textit{initial}$ into $\textit{target}$. Therefore, the answer is $m + n - 2 \times mx$.
+
+We can use dynamic programming to find the length $mx$ of the longest common substring of $\textit{initial}$ and $\textit{target}$. We define a two-dimensional array $f$, where $f[i][j]$ represents the length of the longest common substring ending with `initial[i - 1]` and `target[j - 1]`. Then, we can get the state transition equation:
+
+$$
+f[i][j] = \begin{cases}
+f[i - 1][j - 1] + 1, & \text{if } \textit{initial}[i - 1] = \textit{target}[j - 1], \\
+0, & \text{otherwise}.
+\end{cases}
+$$
+
+Then $mx = \max f[i][j]$, and the final answer is $m + n - 2 \times mx$.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the lengths of the strings $\textit{initial}$ and $\textit{target}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int minOperations(String initial, String target) {
+        int m = initial.length(), n = target.length();
+        int[][] f = new int[m + 1][n + 1];
+        int mx = 0;
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (initial.charAt(i - 1) == target.charAt(j - 1)) {
+                    f[i][j] = f[i - 1][j - 1] + 1;
+                    mx = Math.max(mx, f[i][j]);
+                }
+            }
+        }
+        return m + n - 2 * mx;
+    }
+}
+```

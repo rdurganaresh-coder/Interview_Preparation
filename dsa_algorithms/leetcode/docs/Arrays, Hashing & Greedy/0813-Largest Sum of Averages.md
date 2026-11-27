@@ -1,0 +1,144 @@
+# 813. Largest Sum of Averages
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/largest-sum-of-averages/
+
+---
+
+[中文文档](/solution/0800-0899/0813.Largest%20Sum%20of%20Averages/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> and an integer <code>k</code>. You can partition the array into <strong>at most</strong> <code>k</code> non-empty adjacent subarrays. The <strong>score</strong> of a partition is the sum of the averages of each subarray.</p>
+
+<p>Note that the partition must use every integer in <code>nums</code>, and that the score is not necessarily an integer.</p>
+
+<p>Return <em>the maximum <strong>score</strong> you can achieve of all the possible partitions</em>. Answers within <code>10<sup>-6</sup></code> of the actual answer will be accepted.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [9,1,2,3,9], k = 3
+<strong>Output:</strong> 20.00000
+<strong>Explanation:</strong> 
+The best choice is to partition nums into [9], [1, 2, 3], [9]. The answer is 9 + (1 + 2 + 3) / 3 + 9 = 20.
+We could have also partitioned nums into [9, 1], [2], [3, 9], for example.
+That partition would lead to a score of 5 + 2 + 6 = 13, which is worse.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,4,5,6,7], k = 4
+<strong>Output:</strong> 20.50000
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= k &lt;= nums.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Prefix Sum + Memoized Search
+
+> **Thinking**
+>
+> We split the array into at most $k$ contiguous groups and maximize the sum of group averages. The cut positions are unknown; $n,k\le 100$ allow a memoized search on “from index $i$ with $k$ groups left”.
+>
+> Prefix sums make a group average $O(1)$. When $k=1$ the suffix is one group; otherwise we try every end of the first group and recurse.
+
+We can preprocess to obtain the prefix sum array $s$, which allows us to quickly get the sum of subarrays.
+
+Next, we design a function $\textit{dfs}(i, k)$, which represents the maximum sum of averages when dividing the array starting from index $i$ into at most $k$ groups. The answer is $\textit{dfs}(0, k)$.
+
+The execution logic of the function $\textit{dfs}(i, k)$ is as follows:
+
+- When $i = n$, it means we have traversed to the end of the array, and we return $0$.
+- When $k = 1$, it means there is only one group left, and we return the average value from index $i$ to the end of the array.
+- Otherwise, we enumerate the starting position $j$ of the next group in the interval $[i + 1, n)$, calculate the average value from $i$ to $j - 1$ as $\frac{s[j] - s[i]}{j - i}$, add the result of $\textit{dfs}(j, k - 1)$, and take the maximum value of all results.
+
+The time complexity is $O(n^2k)$, and the space complexity is $O(nk)$, where $n$ represents the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    private Double[][] f;
+    private int[] s;
+    private int n;
+
+    public double largestSumOfAverages(int[] nums, int k) {
+        n = nums.length;
+        s = new int[n + 1];
+        f = new Double[n][k + 1];
+        for (int i = 0; i < n; ++i) {
+            s[i + 1] = s[i] + nums[i];
+        }
+        return dfs(0, k);
+    }
+
+    private double dfs(int i, int k) {
+        if (i == n) {
+            return 0;
+        }
+        if (k == 1) {
+            return (s[n] - s[i]) * 1.0 / (n - i);
+        }
+        if (f[i][k] != null) {
+            return f[i][k];
+        }
+        double ans = 0;
+        for (int j = i + 1; j < n; ++j) {
+            ans = Math.max(ans, (s[j] - s[i]) * 1.0 / (j - i) + dfs(j, k - 1));
+        }
+        return f[i][k] = ans;
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> The same recurrence can be tabulated to drop the recursion overhead. $f[i][j]$ is the best score using the first $i$ numbers in $j$ groups, enumerating the previous cut $h$.
+>
+> $f[i][1]$ is the average of the prefix. The answer is $f[n][k]$, still $O(n^2k)$.
+
+We can transform the memoized search from Solution 1 into dynamic programming.
+
+Define $f[i][j]$ to represent the maximum sum of averages when dividing the first $i$ elements of the array $\textit{nums}$ into at most $j$ groups. The answer is $f[n][k]$.
+
+For $f[i][j]$, we can enumerate the end position $h$ of the previous group, calculate $f[h][j-1]$, add the result of $\frac{s[i] - s[h]}{i - h}$, and take the maximum value of all results.
+
+The time complexity is $O(n^2k)$, and the space complexity is $O(nk)$, where $n$ represents the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public double largestSumOfAverages(int[] nums, int k) {
+        int n = nums.length;
+        double[][] f = new double[n + 1][k + 1];
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; ++i) {
+            s[i + 1] = s[i] + nums[i];
+        }
+        for (int i = 1; i <= n; ++i) {
+            f[i][1] = s[i] * 1.0 / i;
+            for (int j = 2; j <= Math.min(i, k); ++j) {
+                for (int h = 0; h < i; ++h) {
+                    f[i][j] = Math.max(f[i][j], f[h][j - 1] + (s[i] - s[h]) * 1.0 / (i - h));
+                }
+            }
+        }
+        return f[n][k];
+    }
+}
+```

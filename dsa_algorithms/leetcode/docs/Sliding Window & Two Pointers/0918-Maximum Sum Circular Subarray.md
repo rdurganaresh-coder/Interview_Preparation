@@ -1,0 +1,104 @@
+# 918. Maximum Sum Circular Subarray
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-sum-circular-subarray/
+
+---
+
+[中文文档](/solution/0900-0999/0918.Maximum%20Sum%20Circular%20Subarray/README.md)
+
+## Description
+
+<p>Given a <strong>circular integer array</strong> <code>nums</code> of length <code>n</code>, return <em>the maximum possible sum of a non-empty <strong>subarray</strong> of </em><code>nums</code>.</p>
+
+<p>A <strong>circular array</strong> means the end of the array connects to the beginning of the array. Formally, the next element of <code>nums[i]</code> is <code>nums[(i + 1) % n]</code> and the previous element of <code>nums[i]</code> is <code>nums[(i - 1 + n) % n]</code>.</p>
+
+<p>A <strong>subarray</strong> may only include each element of the fixed buffer <code>nums</code> at most once. Formally, for a subarray <code>nums[i], nums[i + 1], ..., nums[j]</code>, there does not exist <code>i &lt;= k1</code>, <code>k2 &lt;= j</code> with <code>k1 % n == k2 % n</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,-2,3,-2]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Subarray [3] has maximum sum 3.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5,-3,5]
+<strong>Output:</strong> 10
+<strong>Explanation:</strong> Subarray [5,5] has maximum sum 5 + 5 = 10.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [-3,-2,-3]
+<strong>Output:</strong> -2
+<strong>Explanation:</strong> Subarray [-2] has maximum sum -2.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == nums.length</code></li>
+	<li><code>1 &lt;= n &lt;= 3 * 10<sup>4</sup></code></li>
+	<li><code>-3 * 10<sup>4</sup> &lt;= nums[i] &lt;= 3 * 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Maintain Prefix Maximum
+
+> **Thinking**
+>
+> A circular maximum subarray is either a normal Kadane segment, or the total sum minus a minimum segment that wraps around. One scan maintains the prefix minimum and prefix maximum to obtain both quantities, then returns the larger of $\textit{ans}$ and $s-\textit{smi}$.
+
+The maximum sum of a circular subarray can be divided into two cases:
+
+- Case 1: The subarray with the maximum sum does not include the circular part, which is the ordinary maximum subarray sum;
+- Case 2: The subarray with the maximum sum includes the circular part, which can be transformed into: the total sum of the array minus the minimum subarray sum.
+
+Therefore, we maintain the following variables:
+
+- The minimum prefix sum $\textit{pmi}$, initially $0$;
+- The maximum prefix sum $\textit{pmx}$, initially $-\infty$;
+- The prefix sum $s$, initially $0$;
+- The minimum subarray sum $\textit{smi}$, initially $\infty$;
+- The answer $\textit{ans}$, initially $-\infty$.
+
+Next, we only need to traverse the array $\textit{nums}$. For the current element $x$ we are traversing, we perform the following update operations:
+
+- Update the prefix sum $s = s + x$;
+- Update the answer $\textit{ans} = \max(\textit{ans}, s - \textit{pmi})$, which is the answer for Case 1 (the prefix sum $s$ minus the minimum prefix sum $\textit{pmi}$ can give the maximum subarray sum);
+- Update $\textit{smi} = \min(\textit{smi}, s - \textit{pmx})$, which is the minimum subarray sum for Case 2;
+- Update $\textit{pmi} = \min(\textit{pmi}, s)$, which is the minimum prefix sum;
+- Update $\textit{pmx} = \max(\textit{pmx}, s)$, which is the maximum prefix sum.
+
+After the traversal, we return the maximum value of $\textit{ans}$ and $s - \textit{smi}$ as the answer.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int maxSubarraySumCircular(int[] nums) {
+        final int inf = 1 << 30;
+        int pmi = 0, pmx = -inf;
+        int ans = -inf, s = 0, smi = inf;
+        for (int x : nums) {
+            s += x;
+            ans = Math.max(ans, s - pmi);
+            smi = Math.min(smi, s - pmx);
+            pmi = Math.min(pmi, s);
+            pmx = Math.max(pmx, s);
+        }
+        return Math.max(ans, s - smi);
+    }
+}
+```

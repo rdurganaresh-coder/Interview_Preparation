@@ -1,0 +1,89 @@
+# 2847. Smallest Number With Given Digit Product
+
+**Difficulty:** Medium  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/smallest-number-with-given-digit-product/
+
+---
+
+[中文文档](/solution/2800-2899/2847.Smallest%20Number%20With%20Given%20Digit%20Product/README.md)
+
+## Description
+
+<p>You are given a <strong>positive</strong> integer <code>n</code>.</p>
+
+<p>Return a string representing the <strong>smallest positive</strong> integer such that the product of its digits is equal to <code>n</code>, or <code>&quot;-1&quot;</code> if no such number exists.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 105
+<strong>Output:</strong> &quot;357&quot;
+<strong>Explanation:</strong> 3 * 5 * 7 = 105. It can be shown that 357 is the smallest number with a product of digits equal to 105. So the answer would be &quot;357&quot;.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 7
+<strong>Output:</strong> &quot;7&quot;
+<strong>Explanation:</strong> Since 7 has only one digit, its product of digits would be 7. We will show that 7 is the smallest number with a product of digits equal to 7. Since the product of numbers 1 to 6 is 1 to 6 respectively, so &quot;7&quot; would be the answer.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 44
+<strong>Output:</strong> &quot;-1&quot;
+<strong>Explanation:</strong> It can be shown that there is no number such that its product of digits is equal to 44. So the answer would be &quot;-1&quot;.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>15</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Prime Factorization + Greedy
+
+> **Thinking**
+>
+> Digits must multiply to $n$ and form the smallest number. A prime factor larger than $9$ makes this impossible. Factor from $9$ down to $2$ so larger digits are used first, then emit them in increasing order; the case $n=1$ is the single digit $1$.
+
+We consider prime factorizing the number $n$. If there are prime factors greater than $9$ in $n$, then it is impossible to find a number that meets the conditions, because prime factors greater than $9$ cannot be obtained by multiplying numbers from $1$ to $9$. For example, $11$ cannot be obtained by multiplying numbers from $1$ to $9$. Therefore, we only need to consider whether there are prime factors greater than $9$ in $n$. If there are, return $-1$ directly.
+
+Otherwise, if the prime factors include $7$ and $5$, then the number $n$ can first be decomposed into several $7$s and $5$s. Two $3$s can be combined into a $9$, three $2$s can be combined into an $8$, and a $2$ and a $3$ can be combined into a $6$. Therefore, we only need to decompose the number into numbers from $2$ to $9$. We can use a greedy method, preferentially decomposing into $9$, then decomposing into $8$, and so on.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public String smallestNumber(long n) {
+        int[] cnt = new int[10];
+        for (int i = 9; i > 1; --i) {
+            while (n % i == 0) {
+                ++cnt[i];
+                n /= i;
+            }
+        }
+        if (n > 1) {
+            return "-1";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 2; i < 10; ++i) {
+            while (cnt[i] > 0) {
+                sb.append(i);
+                --cnt[i];
+            }
+        }
+        String ans = sb.toString();
+        return ans.isEmpty() ? "1" : ans;
+    }
+}
+```

@@ -1,0 +1,102 @@
+# 2472. Maximum Number of Non-overlapping Palindrome Substrings
+
+**Difficulty:** Hard  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-number-of-non-overlapping-palindrome-substrings/
+
+---
+
+[中文文档](/solution/2400-2499/2472.Maximum%20Number%20of%20Non-overlapping%20Palindrome%20Substrings/README.md)
+
+## Description
+
+<p>You are given a string <code>s</code> and a <strong>positive</strong> integer <code>k</code>.</p>
+
+<p>Select a set of <strong>non-overlapping</strong> substrings from the string <code>s</code> that satisfy the following conditions:</p>
+
+<ul>
+	<li>The <strong>length</strong> of each substring is <strong>at least</strong> <code>k</code>.</li>
+	<li>Each substring is a <strong>palindrome</strong>.</li>
+</ul>
+
+<p>Return <em>the <strong>maximum</strong> number of substrings in an optimal selection</em>.</p>
+
+<p>A <strong>substring</strong> is a contiguous sequence of characters within a string.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;abaccdbbd&quot;, k = 3
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> We can select the substrings underlined in s = &quot;<u><strong>aba</strong></u>cc<u><strong>dbbd</strong></u>&quot;. Both &quot;aba&quot; and &quot;dbbd&quot; are palindromes and have a length of at least k = 3.
+It can be shown that we cannot find a selection with more than two valid substrings.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;adbcda&quot;, k = 2
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no palindrome substring of length at least 2 in the string.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= k &lt;= s.length &lt;= 2000</code></li>
+	<li><code>s</code> consists of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Preprocessing + Dynamic Programming
+
+> **Thinking**
+>
+> We want as many non-overlapping palindromes of length at least $k$ as possible. With $n \le 2000$, enumerating partitions is too slow. Whether $s[i..j]$ is a palindrome can be precomputed in $O(n^2)$ as $g[i][j]$. The remaining choice at index $i$ is to skip $s[i]$, or take a palindrome starting at $i$ with length at least $k$ and continue after its right end. Filling $f[i]$ from the right makes each transition look only at larger indices.
+
+First, preprocess the string $s$ to get $g[i][j]$, which represents whether the substring $s[i..j]$ is a palindrome.
+
+Then, define $f[i]$ as the maximum number of non-overlapping palindrome substrings that can be selected from $s[i..]$. Initially, $f[n] = 0$. For $i$ from $n - 1$ down to $0$, we can skip $s[i]$, i.e., $f[i] = f[i + 1]$; we can also enumerate the ending index $j$ ($j \ge i + k - 1$), and if $g[i][j]$ is true, we take this palindrome and continue from $j + 1$. That is,
+
+$$
+\begin{aligned}
+f[i] &= \begin{cases}
+0, & i \geq n \\
+\max\bigl\{f[i + 1],\ \max\limits_{\substack{j \ge i + k - 1 \\ g[i][j]}} \{f[j + 1] + 1\}\bigr\}, & i < n
+\end{cases}
+\end{aligned}
+$$
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the length of the string $s$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxPalindromes(String s, int k) {
+        int n = s.length();
+        boolean[][] g = new boolean[n][n];
+        for (var row : g) {
+            Arrays.fill(row, true);
+        }
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = i + 1; j < n; ++j) {
+                g[i][j] = s.charAt(i) == s.charAt(j) && g[i + 1][j - 1];
+            }
+        }
+        int[] f = new int[n + 1];
+        for (int i = n - 1; i >= 0; --i) {
+            f[i] = f[i + 1];
+            for (int j = i + k - 1; j < n; ++j) {
+                if (g[i][j]) {
+                    f[i] = Math.max(f[i], 1 + f[j + 1]);
+                }
+            }
+        }
+        return f[0];
+    }
+}
+```

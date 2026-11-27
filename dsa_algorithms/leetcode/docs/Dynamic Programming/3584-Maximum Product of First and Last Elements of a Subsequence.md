@@ -1,0 +1,95 @@
+# 3584. Maximum Product of First and Last Elements of a Subsequence
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/maximum-product-of-first-and-last-elements-of-a-subsequence/
+
+---
+
+[中文文档](/solution/3500-3599/3584.Maximum%20Product%20of%20First%20and%20Last%20Elements%20of%20a%20Subsequence/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> and an integer <code>m</code>.</p>
+
+<p>Return the <strong>maximum</strong> product of the first and last elements of any <strong><span data-keyword="subsequence-array">subsequence</span></strong> of <code>nums</code> of size <code>m</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [-1,-9,2,3,-2,-3,1], m = 1</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">81</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The subsequence <code>[-9]</code> has the largest product of the first and last elements: <code>-9 * -9 = 81</code>. Therefore, the answer is 81.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,3,-5,5,6,-4], m = 3</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">20</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The subsequence <code>[-5, 6, -4]</code> has the largest product of the first and last elements.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,-1,2,-6,5,2,-5,7], m = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">35</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The subsequence <code>[5, 7]</code> has the largest product of the first and last elements.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>5</sup> &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= m &lt;= nums.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration + Maintaining Prefix Extremes
+
+> **Thinking**
+>
+> A subsequence of length $m$ has product equal to its first times its last. Fix the right end $i$; the left end lies at or before $i-m+1$, so the extreme products use the prefix minimum and maximum.
+>
+> While scanning, fold $\textit{nums}[i-m+1]$ into those extrema and multiply the current $x$ by both. A negative value can make either extremum optimal.
+
+We can enumerate the last element of the subsequence, assuming it is $\textit{nums}[i]$. Then the first element of the subsequence can be $\textit{nums}[j]$, where $j \leq i - m + 1$. Therefore, we use two variables $mi$ and $mx$ to maintain the prefix minimum and maximum values respectively. When traversing to $\textit{nums}[i]$, we update $mi$ and $mx$, then calculate the products of $\textit{nums}[i]$ with $mi$ and $mx$, taking the maximum value.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public long maximumProduct(int[] nums, int m) {
+        long ans = Long.MIN_VALUE;
+        int mx = Integer.MIN_VALUE;
+        int mi = Integer.MAX_VALUE;
+        for (int i = m - 1; i < nums.length; ++i) {
+            int x = nums[i];
+            int y = nums[i - m + 1];
+            mi = Math.min(mi, y);
+            mx = Math.max(mx, y);
+            ans = Math.max(ans, Math.max(1L * x * mi, 1L * x * mx));
+        }
+        return ans;
+    }
+}
+```

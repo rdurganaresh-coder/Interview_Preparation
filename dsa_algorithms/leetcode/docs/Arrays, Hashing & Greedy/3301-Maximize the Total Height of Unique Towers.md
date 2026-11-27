@@ -1,0 +1,108 @@
+# 3301. Maximize the Total Height of Unique Towers
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximize-the-total-height-of-unique-towers/
+
+---
+
+[中文文档](/solution/3300-3399/3301.Maximize%20the%20Total%20Height%20of%20Unique%20Towers/README.md)
+
+## Description
+
+<p>You are given an array <code>maximumHeight</code>, where <code>maximumHeight[i]</code> denotes the <strong>maximum</strong> height the <code>i<sup>th</sup></code> tower can be assigned.</p>
+
+<p>Your task is to assign a height to each tower so that:</p>
+
+<ol>
+	<li>The height of the <code>i<sup>th</sup></code> tower is a positive integer and does not exceed <code>maximumHeight[i]</code>.</li>
+	<li>No two towers have the same height.</li>
+</ol>
+
+<p>Return the <strong>maximum</strong> possible total sum of the tower heights. If it&#39;s not possible to assign heights, return <code>-1</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> maximumHeight<span class="example-io"> = [2,3,4,3]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">10</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>We can assign heights in the following way: <code>[1, 2, 4, 3]</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> maximumHeight<span class="example-io"> = [15,10]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">25</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>We can assign heights in the following way: <code>[15, 10]</code>.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> maximumHeight<span class="example-io"> = [2,2,1]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">-1</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>It&#39;s impossible to assign positive heights to each index so that no two towers have the same height.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= maximumHeight.length&nbsp;&lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= maximumHeight[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Greedy
+
+> **Thinking**
+>
+> Heights must be pairwise distinct and within each tower's cap. With $n \le 10^5$, enumerating assignments is infeasible. Filling short towers first can steal large integers that tall towers still need.
+>
+> To maximize the sum we should assign larger heights to towers with larger caps. After sorting $\textit{maximumHeight}$ descending, $mx$ stores the last assigned height.
+>
+> The current tower takes $\min(x, mx-1)$: it stays within its cap and strictly below the previous height. A non-positive value means no valid assignment exists.
+
+We can sort the maximum heights of the towers in descending order, then allocate the heights one by one starting from the maximum height. Use a variable $mx$ to record the current maximum allocated height.
+
+If the current height $x$ is greater than $mx - 1$, update $x$ to $mx - 1$. If $x$ is less than or equal to $0$, it means the height cannot be allocated, and we directly return $-1$. Otherwise, we add $x$ to the answer and update $mx$ to $x$.
+
+Finally, return the answer.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the length of the array $\textit{maximumHeight}$.
+
+#### Java
+
+```java
+class Solution {
+    public long maximumTotalSum(int[] maximumHeight) {
+        long ans = 0;
+        int mx = 1 << 30;
+        Arrays.sort(maximumHeight);
+        for (int i = maximumHeight.length - 1; i >= 0; --i) {
+            int x = Math.min(maximumHeight[i], mx - 1);
+            if (x <= 0) {
+                return -1;
+            }
+            ans += x;
+            mx = x;
+        }
+        return ans;
+    }
+}
+```

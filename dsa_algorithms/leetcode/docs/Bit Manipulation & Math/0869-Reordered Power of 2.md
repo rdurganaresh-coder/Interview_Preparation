@@ -1,0 +1,79 @@
+# 869. Reordered Power of 2
+
+**Difficulty:** Medium  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/reordered-power-of-2/
+
+---
+
+[中文文档](/solution/0800-0899/0869.Reordered%20Power%20of%202/README.md)
+
+## Description
+
+<p>You are given an integer <code>n</code>. We reorder the digits in any order (including the original order) such that the leading digit is not zero.</p>
+
+<p>Return <code>true</code> <em>if and only if we can do this so that the resulting number is a power of two</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 1
+<strong>Output:</strong> true
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 10
+<strong>Output:</strong> false
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration
+
+> **Thinking**
+>
+> Can a permutation of $n$’s digits be a power of two? $n\le 10^9$, so $10!$ permutations are more work than the thirty-odd powers $2^0\ldots 2^{30}$.
+>
+> Compare digit counts of $n$ with each power of two up to $10^9$. A match is a yes.
+
+We can enumerate all powers of 2 in the range $[1, 10^9]$ and check if their digit composition is the same as the given number.
+
+Define a function $f(x)$ that represents the digit composition of number $x$. We can convert the number $x$ into an array of length 10, or a string sorted by digit size.
+
+First, we calculate the digit composition of the given number $n$ as $\textit{target} = f(n)$. Then, we enumerate $i$ starting from 1, shifting $i$ left by one bit each time (equivalent to multiplying by 2), until $i$ exceeds $10^9$. For each $i$, we calculate its digit composition and compare it with $\textit{target}$. If they are the same, we return $\textit{true}$; if the enumeration ends without finding the same digit composition, we return $\textit{false}$.
+
+The time complexity is $O(\log^2 M)$, and the space complexity is $O(\log M)$, where $M$ is the upper limit of the input range ${10}^9$ for this problem.
+
+#### Java
+
+```java
+class Solution {
+    public boolean reorderedPowerOf2(int n) {
+        String target = f(n);
+        for (int i = 1; i <= 1000000000; i <<= 1) {
+            if (target.equals(f(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String f(int x) {
+        char[] cnt = new char[10];
+        for (; x > 0; x /= 10) {
+            cnt[x % 10]++;
+        }
+        return new String(cnt);
+    }
+}
+```

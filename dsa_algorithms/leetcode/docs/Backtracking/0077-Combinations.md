@@ -1,0 +1,142 @@
+# 77. Combinations
+
+**Difficulty:** Medium  
+**Category:** Backtracking  
+**LeetCode:** https://leetcode.com/problems/combinations/
+
+---
+
+[中文文档](/solution/0000-0099/0077.Combinations/README.md)
+
+## Description
+
+<p>Given two integers <code>n</code> and <code>k</code>, return <em>all possible combinations of</em> <code>k</code> <em>numbers chosen from the range</em> <code>[1, n]</code>.</p>
+
+<p>You may return the answer in <strong>any order</strong>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 4, k = 2
+<strong>Output:</strong> [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+<strong>Explanation:</strong> There are 4 choose 2 = 6 total combinations.
+Note that combinations are unordered, i.e., [1,2] and [2,1] are considered to be the same combination.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 1, k = 1
+<strong>Output:</strong> [[1]]
+<strong>Explanation:</strong> There is 1 choose 1 = 1 total combination.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 20</code></li>
+	<li><code>1 &lt;= k &lt;= n</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Backtracking (Two Ways)
+
+> **Thinking**
+>
+> The first idea is all $2^n$ subsets of $\{1,\ldots,n\}$, keep those of length $k$. $n \le 20$ might pass, but most subsets have the wrong size.
+>
+> Order does not matter; each number is in or out, and we can stop a path once its length is $k$. So $\textit{dfs}(i)$ handles $i$: push, recurse $i+1$, pop, then skip. Enumerating the next $j$ among leftovers is the other tree; both yield the same combinations. The code below is the first form.
+
+We design a function $\textit{dfs}(i)$, which represents starting the search from number $i$, with the current search path as $t$, and the answer as $\textit{ans}$.
+
+The execution logic of the function $\textit{dfs}(i)$ is as follows:
+
+- If the length of the current search path $t$ equals $k$, then add the current search path to the answer and return.
+- If $i \gt n$, it means the search has ended, return.
+- Otherwise, we can choose to add the number $i$ to the search path $t$, and then continue the search, i.e., execute $\textit{dfs}(i + 1)$, and then remove the number $i$ from the search path $t$; or we do not add the number $i$ to the search path $t$, and directly execute $\textit{dfs}(i + 1)$.
+
+The above method is actually enumerating whether to select the current number or not, and then recursively searching the next number. We can also enumerate the next number $j$ to be selected, where $i \leq j \leq n$. If the next number to be selected is $j$, then we add the number $j$ to the search path $t$, and then continue the search, i.e., execute $\textit{dfs}(j + 1)$, and then remove the number $j$ from the search path $t$.
+
+In the main function, we start the search from number $1$, i.e., execute $\textit{dfs}(1)$.
+
+The time complexity is $O(k \times C_n^k)$, and the space complexity is $O(k)$, where $C_n^k$ represents the combination number.
+
+Similar problems:
+
+- [39. Combination Sum](https://github.com/doocs/leetcode/blob/main/solution/0000-0099/0039.Combination%20Sum/README_EN.md)
+- [40. Combination Sum II](https://github.com/doocs/leetcode/blob/main/solution/0000-0099/0040.Combination%20Sum%20II/README_EN.md)
+- [216. Combination Sum III](https://github.com/doocs/leetcode/blob/main/solution/0200-0299/0216.Combination%20Sum%20III/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    private List<List<Integer>> ans = new ArrayList<>();
+    private List<Integer> t = new ArrayList<>();
+    private int n;
+    private int k;
+
+    public List<List<Integer>> combine(int n, int k) {
+        this.n = n;
+        this.k = k;
+        dfs(1);
+        return ans;
+    }
+
+    private void dfs(int i) {
+        if (t.size() == k) {
+            ans.add(new ArrayList<>(t));
+            return;
+        }
+        if (i > n) {
+            return;
+        }
+        t.add(i);
+        dfs(i + 1);
+        t.remove(t.size() - 1);
+        dfs(i + 1);
+    }
+}
+```
+
+### Solution 2
+
+> **Thinking**
+>
+> Method 1 walks a choose/skip tree of depth $n$; skip branches still scan the rest of the numbers. Method 2 enumerates the next chosen $j \in [i,n]$, so recursion depth equals how many we have picked, and the tree matches combinations of length $k$ more closely. Same answers; the loop just expands the remaining candidates.
+
+#### Java
+
+```java
+class Solution {
+    private List<List<Integer>> ans = new ArrayList<>();
+    private List<Integer> t = new ArrayList<>();
+    private int n;
+    private int k;
+
+    public List<List<Integer>> combine(int n, int k) {
+        this.n = n;
+        this.k = k;
+        dfs(1);
+        return ans;
+    }
+
+    private void dfs(int i) {
+        if (t.size() == k) {
+            ans.add(new ArrayList<>(t));
+            return;
+        }
+        if (i > n) {
+            return;
+        }
+        for (int j = i; j <= n; ++j) {
+            t.add(j);
+            dfs(j + 1);
+            t.remove(t.size() - 1);
+        }
+    }
+}
+```

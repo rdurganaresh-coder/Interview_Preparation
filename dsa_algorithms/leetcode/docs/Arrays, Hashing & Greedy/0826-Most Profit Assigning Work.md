@@ -1,0 +1,135 @@
+# 826. Most Profit Assigning Work
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/most-profit-assigning-work/
+
+---
+
+[中文文档](/solution/0800-0899/0826.Most%20Profit%20Assigning%20Work/README.md)
+
+## Description
+
+<p>You have <code>n</code> jobs and <code>m</code> workers. You are given three arrays: <code>difficulty</code>, <code>profit</code>, and <code>worker</code> where:</p>
+
+<ul>
+	<li><code>difficulty[i]</code> and <code>profit[i]</code> are the difficulty and the profit of the <code>i<sup>th</sup></code> job, and</li>
+	<li><code>worker[j]</code> is the ability of <code>j<sup>th</sup></code> worker (i.e., the <code>j<sup>th</sup></code> worker can only complete a job with difficulty at most <code>worker[j]</code>).</li>
+</ul>
+
+<p>Every worker can be assigned <strong>at most one job</strong>, but one job can be <strong>completed multiple times</strong>.</p>
+
+<ul>
+	<li>For example, if three workers attempt the same job that pays <code>$1</code>, then the total profit will be <code>$3</code>. If a worker cannot complete any job, their profit is <code>$0</code>.</li>
+</ul>
+
+<p>Return the maximum profit we can achieve after assigning the workers to the jobs.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> difficulty = [2,4,6,8,10], profit = [10,20,30,40,50], worker = [4,5,6,7]
+<strong>Output:</strong> 100
+<strong>Explanation:</strong> Workers are assigned jobs of difficulty [4,4,6,6] and they get a profit of [20,20,30,30] separately.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> difficulty = [85,47,57], profit = [24,66,99], worker = [40,25,25]
+<strong>Output:</strong> 0
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == difficulty.length</code></li>
+	<li><code>n == profit.length</code></li>
+	<li><code>m == worker.length</code></li>
+	<li><code>1 &lt;= n, m &lt;= 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= difficulty[i], profit[i], worker[i] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Two Pointers
+
+> **Thinking**
+>
+> A worker takes the most profitable job whose difficulty is at most their ability. Scanning every job per worker is slow for $n,m\le 10^4$.
+>
+> Sort workers by ability and jobs by difficulty, then advance a pointer: ability is monotone, so we can maintain the best profit so far. Each worker reads that maximum in $O(1)$.
+
+We can sort the jobs in ascending order of ability, and then sort the jobs in ascending order of difficulty.
+
+Then we traverse the workers. For each worker, we find the job with the maximum profit that he can complete, and then add this profit to the answer.
+
+The time complexity is $O(n \log n + m \log m)$, and the space complexity is $O(n)$, where $n$ and $m$ are the lengths of the arrays $\textit{profit}$ and $\textit{worker}$ respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+        Arrays.sort(worker);
+        int n = profit.length;
+        int[][] jobs = new int[n][0];
+        for (int i = 0; i < n; ++i) {
+            jobs[i] = new int[] {difficulty[i], profit[i]};
+        }
+        Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
+        int ans = 0, mx = 0, i = 0;
+        for (int w : worker) {
+            while (i < n && jobs[i][0] <= w) {
+                mx = Math.max(mx, jobs[i++][1]);
+            }
+            ans += mx;
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> The two-pointer method sorts both arrays. Difficulty is at most $10^5$, so $f[d]$ can store the best profit of exact difficulty $d$, then a prefix maximum gives the best job of difficulty $\le i$.
+>
+> Each worker is a table lookup. Workers need not be sorted, which is convenient when the difficulty range is modest.
+
+Let's denote $m = \max(\textit{difficulty})$ and define an array $f$ of length $m + 1$, where $f[i]$ represents the maximum profit among jobs with difficulty less than or equal to $i$, initially $f[i] = 0$.
+
+Then, we iterate over the jobs, and for each job $(d, p)$, if $d \leq m$, we update $f[d] = \max(f[d], p)$.
+
+Next, we iterate from $1$ to $m$, and for each $i$, we update $f[i] = \max(f[i], f[i - 1])$.
+
+Finally, we iterate over the workers, and for each worker $w$, we add $f[w]$ to the answer.
+
+The time complexity is $O(n + M)$, and the space complexity is $O(M)$, where $n$ is the length of the $\textit{profit}$ array, and $M$ is the maximum value in the $\textit{difficulty}$ array.
+
+#### Java
+
+```java
+class Solution {
+    public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+        int m = Arrays.stream(difficulty).max().getAsInt();
+        int[] f = new int[m + 1];
+        int n = profit.length;
+        for (int i = 0; i < n; ++i) {
+            int d = difficulty[i];
+            f[d] = Math.max(f[d], profit[i]);
+        }
+        for (int i = 1; i <= m; ++i) {
+            f[i] = Math.max(f[i], f[i - 1]);
+        }
+        int ans = 0;
+        for (int w : worker) {
+            ans += f[Math.min(w, m)];
+        }
+        return ans;
+    }
+}
+```

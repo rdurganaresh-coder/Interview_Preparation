@@ -1,0 +1,153 @@
+# 3318. Find X-Sum of All K-Long Subarrays I
+
+**Difficulty:** Easy  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/find-x-sum-of-all-k-long-subarrays-i/
+
+---
+
+[中文文档](/solution/3300-3399/3318.Find%20X-Sum%20of%20All%20K-Long%20Subarrays%20I/README.md)
+
+## Description
+
+<p>You are given an array <code>nums</code> of <code>n</code> integers and two integers <code>k</code> and <code>x</code>.</p>
+
+<p>The <strong>x-sum</strong> of an array is calculated by the following procedure:</p>
+
+<ul>
+	<li>Count the occurrences of all elements in the array.</li>
+	<li>Keep only the occurrences of the top <code>x</code> most frequent elements. If two elements have the same number of occurrences, the element with the <strong>bigger</strong> value is considered more frequent.</li>
+	<li>Calculate the sum of the resulting array.</li>
+</ul>
+
+<p><strong>Note</strong> that if an array has less than <code>x</code> distinct elements, its <strong>x-sum</strong> is the sum of the array.</p>
+
+<p>Return an integer array <code>answer</code> of length <code>n - k + 1</code> where <code>answer[i]</code> is the <strong>x-sum</strong> of the <span data-keyword="subarray-nonempty">subarray</span> <code>nums[i..i + k - 1]</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,1,2,2,3,4,2,3], k = 6, x = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[6,10,12]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>For subarray <code>[1, 1, 2, 2, 3, 4]</code>, only elements 1 and 2 will be kept in the resulting array. Hence, <code>answer[0] = 1 + 1 + 2 + 2</code>.</li>
+	<li>For subarray <code>[1, 2, 2, 3, 4, 2]</code>, only elements 2 and 4 will be kept in the resulting array. Hence, <code>answer[1] = 2 + 2 + 2 + 4</code>. Note that 4 is kept in the array since it is bigger than 3 and 1 which occur the same number of times.</li>
+	<li>For subarray <code>[2, 2, 3, 4, 2, 3]</code>, only elements 2 and 3 are kept in the resulting array. Hence, <code>answer[2] = 2 + 2 + 2 + 3 + 3</code>.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [3,8,7,8,7,5], k = 2, x = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[11,15,15,15,12]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Since <code>k == x</code>, <code>answer[i]</code> is equal to the sum of the subarray <code>nums[i..i + k - 1]</code>.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n == nums.length &lt;= 50</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 50</code></li>
+	<li><code>1 &lt;= x &lt;= k &lt;= nums.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table + Ordered Set
+
+> **Thinking**
+>
+> With $n \le 50$ we could rebuild frequencies in every window. To share the structure with part II, two ordered sets keep the current top-$x$ values and the rest.
+>
+> A frequency change moves a value between the sets. We delete the old pair, update the count, then insert the new pair so order stays correct.
+>
+> $s$ tracks the weighted sum of the top-$x$ set. Whenever $|l| \ne x$ we pull from or push to the other set, which yields that window's $x$-sum.
+
+We use a hash table $\textit{cnt}$ to count the occurrences of each element in the window, an ordered set $l$ to store the $x$ elements with the highest occurrences in the window, and another ordered set $r$ to store the remaining elements.
+
+We maintain a variable $s$ to represent the sum of the elements in $l$. Initially, we add the first $k$ elements to the window, update the ordered sets $l$ and $r$, and calculate the value of $s$. If the size of $l$ is less than $x$ and $r$ is not empty, we repeatedly move the largest element from $r$ to $l$ until the size of $l$ equals $x$, updating the value of $s$ in the process. If the size of $l$ is greater than $x$, we repeatedly move the smallest element from $l$ to $r$ until the size of $l$ equals $x$, updating the value of $s$ in the process. At this point, we can calculate the current window's $x-\textit{sum}$ and add it to the answer array. Then we remove the left boundary element of the window, update $\textit{cnt}$, and update the ordered sets $l$ and $r$, as well as the value of $s$. Continue traversing the array until the traversal is complete.
+
+The time complexity is $O(n \log k)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+Similar problems:
+
+- [3013. Divide an Array Into Subarrays With Minimum Cost II](/solution/3000-3099/3013.Divide%20an%20Array%20Into%20Subarrays%20With%20Minimum%20Cost%20II/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    private TreeSet<int[]> l = new TreeSet<>((a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
+    private TreeSet<int[]> r = new TreeSet<>(l.comparator());
+    private Map<Integer, Integer> cnt = new HashMap<>();
+    private int s;
+
+    public int[] findXSum(int[] nums, int k, int x) {
+        int n = nums.length;
+        int[] ans = new int[n - k + 1];
+        for (int i = 0; i < n; ++i) {
+            int v = nums[i];
+            remove(v);
+            cnt.merge(v, 1, Integer::sum);
+            add(v);
+            int j = i - k + 1;
+            if (j < 0) {
+                continue;
+            }
+            while (!r.isEmpty() && l.size() < x) {
+                var p = r.pollLast();
+                s += p[0] * p[1];
+                l.add(p);
+            }
+            while (l.size() > x) {
+                var p = l.pollFirst();
+                s -= p[0] * p[1];
+                r.add(p);
+            }
+            ans[j] = s;
+
+            remove(nums[j]);
+            cnt.merge(nums[j], -1, Integer::sum);
+            add(nums[j]);
+        }
+        return ans;
+    }
+
+    private void remove(int v) {
+        if (!cnt.containsKey(v)) {
+            return;
+        }
+        var p = new int[] {cnt.get(v), v};
+        if (l.contains(p)) {
+            l.remove(p);
+            s -= p[0] * p[1];
+        } else {
+            r.remove(p);
+        }
+    }
+
+    private void add(int v) {
+        if (!cnt.containsKey(v)) {
+            return;
+        }
+        var p = new int[] {cnt.get(v), v};
+        if (!l.isEmpty() && l.comparator().compare(l.first(), p) < 0) {
+            l.add(p);
+            s += p[0] * p[1];
+        } else {
+            r.add(p);
+        }
+    }
+}
+```

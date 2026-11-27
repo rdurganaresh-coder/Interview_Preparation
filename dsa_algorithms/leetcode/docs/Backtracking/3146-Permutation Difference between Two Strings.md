@@ -1,0 +1,95 @@
+# 3146. Permutation Difference between Two Strings
+
+**Difficulty:** Easy  
+**Category:** Backtracking  
+**LeetCode:** https://leetcode.com/problems/permutation-difference-between-two-strings/
+
+---
+
+[中文文档](/solution/3100-3199/3146.Permutation%20Difference%20between%20Two%20Strings/README.md)
+
+## Description
+
+<p>You are given two strings <code>s</code> and <code>t</code> such that every character occurs <strong>at most</strong> once in <code>s</code> and <code>t</code> is a <strong>permutation</strong> of <code>s</code>.</p>
+
+<p>The <strong>permutation difference</strong> between <code>s</code> and <code>t</code> is defined as the <strong>sum</strong> of the <strong>absolute difference</strong> between the index of the occurrence of each character in <code>s</code> and the index of the occurrence of the same character in <code>t</code>.</p>
+
+<p>Return the <strong>permutation difference</strong> between <code>s</code> and <code>t</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;abc&quot;, t = &quot;bac&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>For <code>s = &quot;abc&quot;</code> and <code>t = &quot;bac&quot;</code>, the permutation difference of <code>s</code> and <code>t</code> is equal to the sum of:</p>
+
+<ul>
+	<li>The absolute difference between the index of the occurrence of <code>&quot;a&quot;</code> in <code>s</code> and the index of the occurrence of <code>&quot;a&quot;</code> in <code>t</code>.</li>
+	<li>The absolute difference between the index of the occurrence of <code>&quot;b&quot;</code> in <code>s</code> and the index of the occurrence of <code>&quot;b&quot;</code> in <code>t</code>.</li>
+	<li>The absolute difference between the index of the occurrence of <code>&quot;c&quot;</code> in <code>s</code> and the index of the occurrence of <code>&quot;c&quot;</code> in <code>t</code>.</li>
+</ul>
+
+<p>That is, the permutation difference between <code>s</code> and <code>t</code> is equal to <code>|0 - 1| + |1 - 0| + |2 - 2| = 2</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;abcde&quot;, t = &quot;edbac&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">12</span></p>
+
+<p><strong>Explanation:</strong> The permutation difference between <code>s</code> and <code>t</code> is equal to <code>|0 - 3| + |1 - 2| + |2 - 4| + |3 - 1| + |4 - 0| = 12</code>.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s.length &lt;= 26</code></li>
+	<li>Each character occurs at most once in <code>s</code>.</li>
+	<li><code>t</code> is a permutation of <code>s</code>.</li>
+	<li><code>s</code> consists only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table or Array
+
+> **Thinking**
+>
+> The difference sums absolute index gaps of each letter in $s$ and $t$. Searching the other string per letter is quadratic.
+>
+> Both strings are permutations, so letter-to-index is a bijection and one map suffices.
+>
+> Store positions of $s$, then walk $t$ and add $|d[c]-i|$.
+
+We can use a hash table or an array of length $26$, denoted as $d$, to store the positions of each character in the string $s$.
+
+Then, we traverse the string $t$ and calculate the sum of the absolute differences between the positions of each character in the string $t$ and the positions in the string $s$.
+
+The time complexity is $O(n)$, and the space complexity is $O(|\Sigma|)$, where $n$ is the length of the string $s$, and $\Sigma$ is the character set. Here, it is lowercase English letters, so $|\Sigma| \leq 26$.
+
+#### Java
+
+```java
+class Solution {
+    public int findPermutationDifference(String s, String t) {
+        int[] d = new int[26];
+        int n = s.length();
+        for (int i = 0; i < n; ++i) {
+            d[s.charAt(i) - 'a'] = i;
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            ans += Math.abs(d[t.charAt(i) - 'a'] - i);
+        }
+        return ans;
+    }
+}
+```

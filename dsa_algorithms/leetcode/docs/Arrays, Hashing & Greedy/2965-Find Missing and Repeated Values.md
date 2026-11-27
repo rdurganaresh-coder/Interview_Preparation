@@ -1,0 +1,84 @@
+# 2965. Find Missing and Repeated Values
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/find-missing-and-repeated-values/
+
+---
+
+[中文文档](/solution/2900-2999/2965.Find%20Missing%20and%20Repeated%20Values/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> 2D integer matrix <code><font face="monospace">grid</font></code> of size <code>n * n</code> with values in the range <code>[1, n<sup>2</sup>]</code>. Each integer appears <strong>exactly once</strong> except <code>a</code> which appears <strong>twice</strong> and <code>b</code> which is <strong>missing</strong>. The task is to find the repeating and missing numbers <code>a</code> and <code>b</code>.</p>
+
+<p>Return <em>a <strong>0-indexed </strong>integer array </em><code>ans</code><em> of size </em><code>2</code><em> where </em><code>ans[0]</code><em> equals to </em><code>a</code><em> and </em><code>ans[1]</code><em> equals to </em><code>b</code><em>.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> grid = [[1,3],[2,2]]
+<strong>Output:</strong> [2,4]
+<strong>Explanation:</strong> Number 2 is repeated and number 4 is missing so the answer is [2,4].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> grid = [[9,1,7],[8,9,2],[3,4,6]]
+<strong>Output:</strong> [9,5]
+<strong>Explanation:</strong> Number 9 is repeated and number 5 is missing so the answer is [9,5].
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= n == grid.length == grid[i].length &lt;= 50</code></li>
+	<li><code>1 &lt;= grid[i][j] &lt;= n * n</code></li>
+	<li>For all <code>x</code> that <code>1 &lt;= x &lt;= n * n</code> there is exactly one <code>x</code> that is not equal to any of the grid members.</li>
+	<li>For all <code>x</code> that <code>1 &lt;= x &lt;= n * n</code> there is exactly one <code>x</code> that is equal to exactly two of the grid members.</li>
+	<li>For all <code>x</code> that <code>1 &lt;= x &lt;= n * n</code> except two of them there is exactly one pair of <code>i, j</code> that <code>0 &lt;= i, j &lt;= n - 1</code> and <code>grid[i][j] == x</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Counting
+
+> **Thinking**
+>
+> The $n \times n$ matrix should hold $1 \ldots n^2$ once each, but one value repeats and one is missing. $n \le 50$, so a count array of length $n^2+1$ and two scans suffice.
+>
+> Frequency $2$ is the repeat, frequency $0$ the missing value. No closed form is required.
+
+We create an array $\textit{cnt}$ of length $n^2 + 1$ to count the frequency of each number in the matrix.
+
+Next, we traverse $i \in [1, n^2]$. If $\textit{cnt}[i] = 2$, then $i$ is the duplicated number, and we set the first element of the answer to $i$. If $\textit{cnt}[i] = 0$, then $i$ is the missing number, and we set the second element of the answer to $i$.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the side length of the matrix.
+
+#### Java
+
+```java
+class Solution {
+    public int[] findMissingAndRepeatedValues(int[][] grid) {
+        int n = grid.length;
+        int[] cnt = new int[n * n + 1];
+        int[] ans = new int[2];
+        for (int[] row : grid) {
+            for (int x : row) {
+                if (++cnt[x] == 2) {
+                    ans[0] = x;
+                }
+            }
+        }
+        for (int x = 1;; ++x) {
+            if (cnt[x] == 0) {
+                ans[1] = x;
+                return ans;
+            }
+        }
+    }
+}
+```

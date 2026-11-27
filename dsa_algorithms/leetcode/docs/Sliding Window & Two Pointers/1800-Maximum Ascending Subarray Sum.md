@@ -1,0 +1,87 @@
+# 1800. Maximum Ascending Subarray Sum
+
+**Difficulty:** Easy  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-ascending-subarray-sum/
+
+---
+
+[中文文档](/solution/1800-1899/1800.Maximum%20Ascending%20Subarray%20Sum/README.md)
+
+## Description
+
+<p>Given an array of positive integers <code>nums</code>, return the <strong>maximum</strong> possible sum of an <span data-keyword="strictly-increasing-array">strictly increasing subarray</span> in<em> </em><code>nums</code>.</p>
+
+<p>A subarray is defined as a contiguous sequence of numbers in an array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [10,20,30,5,10,50]
+<strong>Output:</strong> 65
+<strong>Explanation: </strong>[5,10,50] is the ascending subarray with the maximum sum of 65.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [10,20,30,40,50]
+<strong>Output:</strong> 150
+<strong>Explanation: </strong>[10,20,30,40,50] is the ascending subarray with the maximum sum of 150.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [12,17,15,13,10,11,12]
+<strong>Output:</strong> 33
+<strong>Explanation: </strong>[10,11,12] is the ascending subarray with the maximum sum of 33.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Direct Simulation
+
+> **Thinking**
+>
+> We need the maximum sum of a contiguous, strictly increasing subarray. Enumerating every subarray and checking the increasing condition costs $O(n^2)$. With $n \le 100$ this would pass, yet most intervals are discarded as soon as a descent appears.
+>
+> Once two adjacent values break the order, no interval that crosses that pair can be valid. It is enough to scan from left to right and keep the sum $t$ of the current ascending run: extend and update the answer when the next value is larger, otherwise restart from the current element. A single pass yields the global maximum.
+
+We use a variable $t$ to record the current sum of the ascending subarray, and a variable $\textit{ans}$ to record the maximum sum of the ascending subarray.
+
+Traverse the array $\textit{nums}$:
+
+If the current element is the first element of the array, or the current element is greater than the previous one, then add the current element to the sum of the current ascending subarray, i.e., $t = t + \textit{nums}[i]$, and update the maximum sum of the ascending subarray $\textit{ans} = \max(\textit{ans}, t)$. Otherwise, the current element does not satisfy the condition of the ascending subarray, so reset the sum $t$ of the current ascending subarray to the current element, i.e., $t = \textit{nums}[i]$.
+
+After the traversal, return the maximum sum of the ascending subarray $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxAscendingSum(int[] nums) {
+        int ans = 0, t = 0;
+        for (int i = 0; i < nums.length; ++i) {
+            if (i == 0 || nums[i] > nums[i - 1]) {
+                t += nums[i];
+                ans = Math.max(ans, t);
+            } else {
+                t = nums[i];
+            }
+        }
+        return ans;
+    }
+}
+```

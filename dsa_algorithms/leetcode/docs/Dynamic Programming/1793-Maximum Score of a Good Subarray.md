@@ -1,0 +1,127 @@
+# 1793. Maximum Score of a Good Subarray
+
+**Difficulty:** Hard  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/maximum-score-of-a-good-subarray/
+
+---
+
+[中文文档](/solution/1700-1799/1793.Maximum%20Score%20of%20a%20Good%20Subarray/README.md)
+
+## Description
+
+<p>You are given an array of integers <code>nums</code> <strong>(0-indexed)</strong> and an integer <code>k</code>.</p>
+
+<p>The <strong>score</strong> of a subarray <code>(i, j)</code> is defined as <code>min(nums[i], nums[i+1], ..., nums[j]) * (j - i + 1)</code>. A <strong>good</strong> subarray is a subarray where <code>i &lt;= k &lt;= j</code>.</p>
+
+<p>Return <em>the maximum possible <strong>score</strong> of a <strong>good</strong> subarray.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,4,3,7,4,5], k = 3
+<strong>Output:</strong> 15
+<strong>Explanation:</strong> The optimal subarray is (1, 5) with a score of min(4,3,7,4,5) * (5-1+1) = 3 * 5 = 15. 
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5,5,4,5,4,1,1,1], k = 0
+<strong>Output:</strong> 20
+<strong>Explanation:</strong> The optimal subarray is (0, 4) with a score of min(5,5,4,5,4) * (4-0+1) = 4 * 5 = 20.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 2 * 10<sup>4</sup></code></li>
+	<li><code>0 &lt;= k &lt; nums.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Monotonic Stack
+
+> **Thinking**
+>
+> A good subarray must cover index $k$; its score is length times the minimum. $n\le 10^5$ forbids trying every window that covers $k$.
+>
+> Treat each index as the minimum: a monotonic stack finds the first strictly smaller values on both sides. If that span still covers $k$, update with $v\times\textit{width}$.
+
+We can enumerate each element $\textit{nums}[i]$ in $\textit{nums}$ as the minimum value of the subarray, and use a monotonic stack to find the first position $\textit{left}[i]$ on the left that is less than $\textit{nums}[i]$ and the first position $\textit{right}[i]$ on the right that is less than or equal to $\textit{nums}[i]$. Then, the score of the subarray with $\textit{nums}[i]$ as the minimum value is $\textit{nums}[i] \times (\textit{right}[i] - \textit{left}[i] - 1)$.
+
+It should be noted that the answer can only be updated when the left and right boundaries $\textit{left}[i]$ and $\textit{right}[i]$ satisfy $\textit{left}[i]+1 \leq k \leq \textit{right}[i]-1$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumScore(int[] nums, int k) {
+        int n = nums.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        Arrays.fill(left, -1);
+        Arrays.fill(right, n);
+        Deque<Integer> stk = new ArrayDeque<>();
+        for (int i = 0; i < n; ++i) {
+            int v = nums[i];
+            while (!stk.isEmpty() && nums[stk.peek()] >= v) {
+                stk.pop();
+            }
+            if (!stk.isEmpty()) {
+                left[i] = stk.peek();
+            }
+            stk.push(i);
+        }
+        stk.clear();
+        for (int i = n - 1; i >= 0; --i) {
+            int v = nums[i];
+            while (!stk.isEmpty() && nums[stk.peek()] > v) {
+                stk.pop();
+            }
+            if (!stk.isEmpty()) {
+                right[i] = stk.peek();
+            }
+            stk.push(i);
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            if (left[i] + 1 <= k && k <= right[i] - 1) {
+                ans = Math.max(ans, nums[i] * (right[i] - left[i] - 1));
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Two Pointers
+
+> **Thinking**
+>
+> The stack uses linear extra memory. Two pointers starting at $k$ can grow the window, always extending toward the larger neighbour so the running minimum falls as slowly as possible, updating $\textit{min}\times\textit{len}$ as they go. Extra space is $O(1)$.
+
+We can initialize two pointers at the core index `k` and expand outward to the left and right.
+By maintaining the minimum value within current window, we can find maximum score in strict linear time.
+
+**Algorithm Steps:**
+
+1. Initialize left pointer `i = k`, right pointer `j = k`, and window minimum value `min_num = nums[k]`. Set initial maximum score `max_score = nums[k]`.
+
+2. Expand pointers while `i > 0` or `j < len(nums) - 1`:
+    - **Direction**: If left boundary can't expand (`i == 0`), move right pointer `j++`. If right boundary can't expand (`j == len(nums) - 1`), move left pointer `i--`.
+    - If both sides are expandable, compare `nums[i - 1]` and `nums[j + 1]`, and expand towards the side with a larger value (i.e., if `nums[i - 1] >= nums[j + 1]`, decrement `i`; otherwise, increment `j`).
+
+3. **Update State**: after each pointer movement, update current window minimum value: `min_num = min(min_num, nums[i] or nums[j])`.
+
+4. **Calculate Score**: length of the current good subarray is `j + 1 - i`, and its score is `score = min_num * (j + 1 - i)`. Update global maximum score: `max_score = max(max_score, score)`.
+
+5. Return `max_score` once the for loop terminates.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.

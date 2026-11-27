@@ -1,0 +1,78 @@
+# 867. Transpose Matrix
+
+**Difficulty:** Easy  
+**Category:** Matrices & Grids  
+**LeetCode:** https://leetcode.com/problems/transpose-matrix/
+
+---
+
+[中文文档](/solution/0800-0899/0867.Transpose%20Matrix/README.md)
+
+## Description
+
+<p>Given a 2D integer array <code>matrix</code>, return <em>the <strong>transpose</strong> of</em> <code>matrix</code>.</p>
+
+<p>The <strong>transpose</strong> of a matrix is the matrix flipped over its main diagonal, switching the matrix&#39;s row and column indices.</p>
+
+<p><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0800-0899/0867.Transpose%20Matrix/images/hint_transpose.png" style="width: 600px; height: 197px;" /></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> matrix = [[1,2,3],[4,5,6],[7,8,9]]
+<strong>Output:</strong> [[1,4,7],[2,5,8],[3,6,9]]
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> matrix = [[1,2,3],[4,5,6]]
+<strong>Output:</strong> [[1,4],[2,5],[3,6]]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>m == matrix.length</code></li>
+	<li><code>n == matrix[i].length</code></li>
+	<li><code>1 &lt;= m, n &lt;= 1000</code></li>
+	<li><code>1 &lt;= m * n &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>9</sup> &lt;= matrix[i][j] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> A transpose swaps rows and columns. The matrix is small enough to build a new one; in-place swaps are unnecessary.
+>
+> $\textit{zip}$ over the matrix turns each column into a new row.
+
+Let $m$ be the number of rows and $n$ be the number of columns in the matrix $\textit{matrix}$. According to the definition of transpose, the transposed matrix $\textit{ans}$ will have $n$ rows and $m$ columns.
+
+For any position $(i, j)$ in $\textit{ans}$, it corresponds to the position $(j, i)$ in the matrix $\textit{matrix}$. Therefore, we traverse each element in the matrix $\textit{matrix}$ and transpose it to the corresponding position in $\textit{ans}$.
+
+After the traversal, we return $\textit{ans}$.
+
+The time complexity is $O(mn)$, and the space complexity is $O(1)$, where $m$ and $n$ are the number of rows and columns in the matrix $\textit{matrix}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int[][] transpose(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        int[][] ans = new int[n][m];
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                ans[i][j] = matrix[j][i];
+            }
+        }
+        return ans;
+    }
+}
+```

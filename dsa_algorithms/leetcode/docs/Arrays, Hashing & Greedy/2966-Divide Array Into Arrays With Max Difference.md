@@ -1,0 +1,110 @@
+# 2966. Divide Array Into Arrays With Max Difference
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/divide-array-into-arrays-with-max-difference/
+
+---
+
+[中文文档](/solution/2900-2999/2966.Divide%20Array%20Into%20Arrays%20With%20Max%20Difference/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> of size <code>n</code> where <code>n</code> is a multiple of 3 and a positive integer <code>k</code>.</p>
+
+<p>Divide the array <code>nums</code> into <code>n / 3</code> arrays of size <strong>3</strong> satisfying the following condition:</p>
+
+<ul>
+	<li>The difference between <strong>any</strong> two elements in one array is <strong>less than or equal</strong> to <code>k</code>.</li>
+</ul>
+
+<p>Return a <strong>2D</strong> array containing the arrays. If it is impossible to satisfy the conditions, return an empty array. And if there are multiple answers, return <strong>any</strong> of them.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,3,4,8,7,9,3,5,1], k = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[[1,1,3],[3,4,5],[7,8,9]]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The difference between any two elements in each array is less than or equal to 2.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,4,2,2,5,2], k = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Different ways to divide <code>nums</code> into 2 arrays of size 3 are:</p>
+
+<ul>
+	<li>[[2,2,2],[2,4,5]] (and its permutations)</li>
+	<li>[[2,2,4],[2,2,5]] (and its permutations)</li>
+</ul>
+
+<p>Because there are four 2s there will be an array with the elements 2 and 5 no matter how we divide it. since <code>5 - 2 = 3 &gt; k</code>, the condition is not satisfied and so there is no valid division.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [4,2,9,8,2,12,7,12,10,5,8,5,5,7,9,2,5,11], k = 14</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[[2,2,2],[4,5,5],[5,5,7],[7,8,8],[9,9,10],[11,12,12]]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The difference between any two elements in each array is less than or equal to 14.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == nums.length</code></li>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>n </code>is a multiple of 3</li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= k &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting
+
+> **Thinking**
+>
+> Split into triples whose max-min is at most $k$. After sorting, adjacent triples minimize the range; reaching farther only widens it.
+>
+> Every three elements, test $t[2]-t[0]$ and fail if it exceeds $k$. $n$ is a multiple of $3$ up to $10^5$, so sort then group linearly.
+
+First, we sort the array. Then, we take out three elements each time. If the difference between the maximum and minimum values of these three elements is greater than $k$, then the condition cannot be satisfied, and we return an empty array. Otherwise, we add the array composed of these three elements to the answer array.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int[][] divideArray(int[] nums, int k) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int[][] ans = new int[n / 3][];
+        for (int i = 0; i < n; i += 3) {
+            int[] t = Arrays.copyOfRange(nums, i, i + 3);
+            if (t[2] - t[0] > k) {
+                return new int[][] {};
+            }
+            ans[i / 3] = t;
+        }
+        return ans;
+    }
+}
+```

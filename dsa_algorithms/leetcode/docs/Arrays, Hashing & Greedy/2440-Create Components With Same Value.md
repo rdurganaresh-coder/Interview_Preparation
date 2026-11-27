@@ -1,0 +1,225 @@
+# 2440. Create Components With Same Value
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/create-components-with-same-value/
+
+---
+
+[中文文档](/solution/2400-2499/2440.Create%20Components%20With%20Same%20Value/README.md)
+
+## Description
+
+<p>There is an undirected tree with <code>n</code> nodes labeled from <code>0</code> to <code>n - 1</code>.</p>
+
+<p>You are given a <strong>0-indexed</strong> integer array <code><font face="monospace">nums</font></code> of length <code>n</code> where <code>nums[i]</code> represents the value of the <code>i<sup>th</sup></code> node. You are also given a 2D integer array <code>edges</code> of length <code>n - 1</code> where <code>edges[i] = [a<sub>i</sub>, b<sub>i</sub>]</code> indicates that there is an edge between nodes <code>a<sub>i</sub></code> and <code>b<sub>i</sub></code> in the tree.</p>
+
+<p>You are allowed to <strong>delete</strong> some edges, splitting the tree into multiple connected components. Let the <strong>value</strong> of a component be the sum of <strong>all</strong> <code>nums[i]</code> for which node <code>i</code> is in the component.</p>
+
+<p>Return<em> the <strong>maximum</strong> number of edges you can delete, such that every connected component in the tree has the same value.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2400-2499/2440.Create%20Components%20With%20Same%20Value/images/diagramdrawio.png" style="width: 441px; height: 351px;" />
+<pre>
+<strong>Input:</strong> nums = [6,2,2,2,6], edges = [[0,1],[1,2],[1,3],[3,4]] 
+<strong>Output:</strong> 2 
+<strong>Explanation:</strong> The above figure shows how we can delete the edges [0,1] and [3,4]. The created components are nodes [0], [1,2,3] and [4]. The sum of the values in each component equals 6. It can be proven that no better deletion exists, so the answer is 2.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2], edges = []
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There are no edges to be deleted.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 2 * 10<sup>4</sup></code></li>
+	<li><code>nums.length == n</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 50</code></li>
+	<li><code>edges.length == n - 1</code></li>
+	<li><code>edges[i].length == 2</code></li>
+	<li><code>0 &lt;= edges[i][0], edges[i][1] &lt;= n - 1</code></li>
+	<li><code>edges</code> represents a valid tree.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration of Connected Blocks
+
+> **Thinking**
+>
+> After deletions every component must have the same sum, so the number of pieces $k$ divides the total $s$ and the target $t=s/k$ is at least the maximum node. Enumerate feasible $k$ from large to small; $n\le 2\times 10^4$.
+>
+> DFS a subtree sum: exactly $t$ is cut and reported as $0$; above $t$ fails. If the root returns $0$, we can delete $k-1$ edges.
+
+Assume the number of connected blocks is $k$, then the number of edges to be deleted is $k-1$, and the value of each connected block is $\frac{s}{k}$, where $s$ is the sum of the values of all nodes in $\textit{nums}$.
+
+We enumerate $k$ from large to small. If there exists a $k$ such that $\frac{s}{k}$ is an integer, and the value of each connected block obtained is equal, then directly return $k-1$. The initial value of $k$ is $\min(n, \frac{s}{mx})$, where $mx$ is the maximum value in $\textit{nums}$.
+
+The key point is to judge whether for a given $\frac{s}{k}$, it is possible to divide several subtrees such that the value of each subtree is $\frac{s}{k}$.
+
+Here we use the `dfs` function to judge. We recursively traverse from top to bottom to calculate the value of each subtree. If the sum of the subtree values is exactly $\frac{s}{k}$, it means that the division is successful at this time. We set the value to $0$ and return it to the upper level, indicating that this subtree can be disconnected from the parent node. If the sum of the subtree values is greater than $\frac{s}{k}$, it means that the division fails at this time. We return $-1$, indicating that it cannot be divided.
+
+The time complexity is $O(n \sqrt{s})$, where $n$ and $s$ are the length of $\textit{nums}$ and the sum of the values of all nodes in $\textit{nums}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private List<Integer>[] g;
+    private int[] nums;
+    private int t;
+
+    public int componentValue(int[] nums, int[][] edges) {
+        int n = nums.length;
+        g = new List[n];
+        this.nums = nums;
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        int s = sum(nums), mx = max(nums);
+        for (int k = Math.min(n, s / mx); k > 1; --k) {
+            if (s % k == 0) {
+                t = s / k;
+                if (dfs(0, -1) == 0) {
+                    return k - 1;
+                }
+            }
+        }
+        return 0;
+    }
+
+    private int dfs(int i, int fa) {
+        int x = nums[i];
+        for (int j : g[i]) {
+            if (j != fa) {
+                int y = dfs(j, i);
+                if (y == -1) {
+                    return -1;
+                }
+                x += y;
+            }
+        }
+        if (x > t) {
+            return -1;
+        }
+        return x < t ? x : 0;
+    }
+
+    private int sum(int[] arr) {
+        int x = 0;
+        for (int v : arr) {
+            x += v;
+        }
+        return x;
+    }
+
+    private int max(int[] arr) {
+        int x = arr[0];
+        for (int v : arr) {
+            x = Math.max(x, v);
+        }
+        return x;
+    }
+}
+```
+
+### Solution 2: Enumeration + Explicit Stack
+
+> **Thinking**
+>
+> After the deletions every component must have the same sum, so the number of pieces $k$ has to divide the total $s$ and the target $t = s/k$ cannot be smaller than the heaviest node. With $n \le 2 \times 10^4$, enumerating feasible $k$ from large to small is fine; recursing from the root for each $k$ is not, because a chain makes the call depth $n$.
+>
+> Whether a candidate $k$ works depends only on the value still attached to a node when its children have already been processed. Add the node weight to every child sum that was not cut: exactly $t$ is recorded as $0$, so that edge can be deleted; less than $t$ is passed to the parent; more than $t$ rejects this $k$.
+>
+> An explicit stack of $(\textit{node}, \textit{parent}, \textit{state})$ runs that postorder. On entry we push the exit marker and then the children, and on exit we write the remaining sum. A root remainder of $0$ means the tree splits into components of value $t$, and the number of deleted edges is $k - 1$.
+
+Assume the number of connected blocks is $k$, then the number of edges to be deleted is $k-1$, and the value of each connected block is $\frac{s}{k}$, where $s$ is the sum of the values of all nodes in $\textit{nums}$.
+
+We enumerate $k$ from large to small. If there exists a $k$ such that $\frac{s}{k}$ is an integer, and the value of each connected block obtained is equal, then directly return $k-1$. The initial value of $k$ is $\min(n, \frac{s}{mx})$, where $mx$ is the maximum value in $\textit{nums}$.
+
+The key point is to judge whether for a given $\frac{s}{k}$, it is possible to divide several subtrees such that the value of each subtree is $\frac{s}{k}$.
+
+An explicit stack performs that check in postorder. When a node is left, add its weight to the child sums that were not cut: a sum equal to $\frac{s}{k}$ is stored as $0$, so the subtree can be disconnected from its parent; a smaller sum is left for the parent; a larger sum means the division fails. The division succeeds when the root remainder is $0$.
+
+The time complexity is $O(n \sqrt{s})$, and the space complexity is $O(n)$, where $n$ and $s$ are the length of $\textit{nums}$ and the sum of the values of all nodes in $\textit{nums}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int componentValue(int[] nums, int[][] edges) {
+        int n = nums.length;
+        List<Integer>[] g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        int s = sum(nums), mx = max(nums);
+        for (int k = Math.min(n, s / mx); k > 1; --k) {
+            if (s % k == 0 && check(nums, g, s / k)) {
+                return k - 1;
+            }
+        }
+        return 0;
+    }
+
+    private boolean check(int[] nums, List<Integer>[] g, int t) {
+        int n = nums.length;
+        int[] sz = new int[n];
+        Deque<int[]> stk = new ArrayDeque<>();
+        stk.push(new int[] {0, -1, 0});
+        while (!stk.isEmpty()) {
+            int[] cur = stk.pop();
+            int i = cur[0], fa = cur[1], state = cur[2];
+            if (state == 0) {
+                stk.push(new int[] {i, fa, 1});
+                for (int j : g[i]) {
+                    if (j != fa) {
+                        stk.push(new int[] {j, i, 0});
+                    }
+                }
+            } else {
+                int x = nums[i];
+                for (int j : g[i]) {
+                    if (j != fa) {
+                        x += sz[j];
+                    }
+                }
+                if (x > t) {
+                    return false;
+                }
+                sz[i] = x == t ? 0 : x;
+            }
+        }
+        return sz[0] == 0;
+    }
+
+    private int sum(int[] arr) {
+        int x = 0;
+        for (int v : arr) {
+            x += v;
+        }
+        return x;
+    }
+
+    private int max(int[] arr) {
+        int x = arr[0];
+        for (int v : arr) {
+            x = Math.max(x, v);
+        }
+        return x;
+    }
+}
+```

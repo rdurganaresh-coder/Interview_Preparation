@@ -1,0 +1,495 @@
+unsupported types (List<Integer> inorderTraversal(...))	0094_Binary_Tree_Inorder_Traversal.java
+unsupported types (List<Integer> inorderTraversal(...))	0094_Binary_Tree_Inorder_Traversal_2.java
+unsupported types (List<Integer> inorderTraversal(...))	0094_Binary_Tree_Inorder_Traversal_3.java
+unsupported types (boolean isSameTree(...))	0100_Same_Tree.java
+unsupported types (boolean isSameTree(...))	0100_Same_Tree_2.java
+unsupported types (boolean isSymmetric(...))	0101_Symmetric_Tree.java
+unsupported types (int maxDepth(...))	0104_Maximum_Depth_of_Binary_Tree.java
+unsupported types (TreeNode sortedArrayToBST(...))	0108_Convert_Sorted_Array_to_Binary_Search_Tree.java
+unsupported types (boolean isBalanced(...))	0110_Balanced_Binary_Tree.java
+unsupported types (int minDepth(...))	0111_Minimum_Depth_of_Binary_Tree.java
+unsupported types (int minDepth(...))	0111_Minimum_Depth_of_Binary_Tree_2.java
+unsupported types (List<Integer> preorderTraversal(...))	0144_Binary_Tree_Preorder_Traversal.java
+unsupported types (List<Integer> preorderTraversal(...))	0144_Binary_Tree_Preorder_Traversal_2.java
+unsupported types (List<Integer> preorderTraversal(...))	0144_Binary_Tree_Preorder_Traversal_3.java
+unsupported types (List<Integer> postorderTraversal(...))	0145_Binary_Tree_Postorder_Traversal.java
+unsupported types (List<Integer> postorderTraversal(...))	0145_Binary_Tree_Postorder_Traversal_2.java
+unsupported types (List<Integer> postorderTraversal(...))	0145_Binary_Tree_Postorder_Traversal_3.java
+unsupported types (int countNodes(...))	0222_Count_Complete_Tree_Nodes.java
+unsupported types (int countNodes(...))	0222_Count_Complete_Tree_Nodes_2.java
+unsupported types (TreeNode invertTree(...))	0226_Invert_Binary_Tree.java
+unsupported types (List<String> binaryTreePaths(...))	0257_Binary_Tree_Paths.java
+unsupported types (int closestValue(...))	0270_Closest_Binary_Search_Tree_Value.java
+unsupported types (int closestValue(...))	0270_Closest_Binary_Search_Tree_Value_2.java
+unsupported types (int sumOfLeftLeaves(...))	0404_Sum_of_Left_Leaves.java
+unsupported types (int sumOfLeftLeaves(...))	0404_Sum_of_Left_Leaves_2.java
+unsupported types (int[] findMode(...))	0501_Find_Mode_in_Binary_Search_Tree.java
+unsupported types (int[] findMode(...))	0501_Find_Mode_in_Binary_Search_Tree_2.java
+unsupported types (int getMinimumDifference(...))	0530_Minimum_Absolute_Difference_in_BST.java
+unsupported types (int getMinimumDifference(...))	0530_Minimum_Absolute_Difference_in_BST_2.java
+unsupported types (int diameterOfBinaryTree(...))	0543_Diameter_of_Binary_Tree.java
+unsupported types (int maxDepth(...))	0559_Maximum_Depth_of_N_ary_Tree.java
+unsupported types (int findTilt(...))	0563_Binary_Tree_Tilt.java
+unsupported types (boolean isSubtree(...))	0572_Subtree_of_Another_Tree.java
+unsupported types (List<Integer> preorder(...))	0589_N_ary_Tree_Preorder_Traversal.java
+unsupported types (List<Integer> preorder(...))	0589_N_ary_Tree_Preorder_Traversal_2.java
+unsupported types (List<Integer> preorder(...))	0589_N_ary_Tree_Preorder_Traversal_3.java
+unsupported types (List<Integer> postorder(...))	0590_N_ary_Tree_Postorder_Traversal.java
+unsupported types (List<Integer> postorder(...))	0590_N_ary_Tree_Postorder_Traversal_2.java
+unsupported types (List<Integer> postorder(...))	0590_N_ary_Tree_Postorder_Traversal_3.java
+unsupported types (TreeNode mergeTrees(...))	0617_Merge_Two_Binary_Trees.java
+unsupported types (List<Double> averageOfLevels(...))	0637_Average_of_Levels_in_Binary_Tree.java
+unsupported types (List<Double> averageOfLevels(...))	0637_Average_of_Levels_in_Binary_Tree_2.java
+unsupported types (boolean findTarget(...))	0653_Two_Sum_IV_Input_is_a_BST.java
+unsupported types (boolean findTarget(...))	0653_Two_Sum_IV_Input_is_a_BST_2.java
+unsupported types (boolean findTarget(...))	0653_Two_Sum_IV_Input_is_a_BST_3.java
+unsupported types (int findSecondMinimumValue(...))	0671_Second_Minimum_Node_In_a_Binary_Tree.java
+unsupported types (TreeNode searchBST(...))	0700_Search_in_a_Binary_Search_Tree.java
+unsupported types (int minDiffInBST(...))	0783_Minimum_Distance_Between_BST_Nodes.java
+unsupported types (boolean leafSimilar(...))	0872_Leaf_Similar_Trees.java
+unsupported types (TreeNode increasingBST(...))	0897_Increasing_Order_Search_Tree.java
+unsupported types (int rangeSumBST(...))	0938_Range_Sum_of_BST.java
+unsupported types (boolean isUnivalTree(...))	0965_Univalued_Binary_Tree.java
+unsupported types (boolean isCousins(...))	0993_Cousins_in_Binary_Tree.java
+unsupported types (boolean isCousins(...))	0993_Cousins_in_Binary_Tree_2.java
+unsupported types (int sumRootToLeaf(...))	1022_Sum_of_Root_To_Leaf_Binary_Numbers.java
+unsupported types (TreeNode getTargetCopy(...))	1379_Find_a_Corresponding_Node_of_a_Binary_Tree_in_a_Clone_of_That_Tree.java
+unsupported types (boolean evaluateTree(...))	2331_Evaluate_Boolean_Binary_Tree.java
+unsupported types (char getKthCharacter(...))	2689_Extract_Kth_Character_From_The_Rope_Tree.java
+unsupported types (List<TreeNode> generateTrees(...))	0095_Unique_Binary_Search_Trees_II.java
+unsupported types (boolean isValidBST(...))	0098_Validate_Binary_Search_Tree.java
+unsupported types (void recoverTree(...))	0099_Recover_Binary_Search_Tree.java
+unsupported types (List<List<Integer>> levelOrder(...))	0102_Binary_Tree_Level_Order_Traversal.java
+unsupported types (List<List<Integer>> zigzagLevelOrder(...))	0103_Binary_Tree_Zigzag_Level_Order_Traversal.java
+unsupported types (TreeNode buildTree(...))	0105_Construct_Binary_Tree_from_Preorder_and_Inorder_Traversal.java
+unsupported types (List<TreeNode> getBinaryTrees(...))	0105_Construct_Binary_Tree_from_Preorder_and_Inorder_Traversal_2.java
+unsupported types (TreeNode buildTree(...))	0106_Construct_Binary_Tree_from_Inorder_and_Postorder_Traversal.java
+unsupported types (List<List<Integer>> levelOrderBottom(...))	0107_Binary_Tree_Level_Order_Traversal_II.java
+unsupported types (TreeNode sortedListToBST(...))	0109_Convert_Sorted_List_to_Binary_Search_Tree.java
+unsupported types (void flatten(...))	0114_Flatten_Binary_Tree_to_Linked_List.java
+unsupported types (int sumNumbers(...))	0129_Sum_Root_to_Leaf_Numbers.java
+unsupported types (TreeNode upsideDownBinaryTree(...))	0156_Binary_Tree_Upside_Down.java
+no class Solution	0173_Binary_Search_Tree_Iterator.java
+no class Solution	0173_Binary_Search_Tree_Iterator_2.java
+unsupported types (List<Integer> rightSideView(...))	0199_Binary_Tree_Right_Side_View.java
+unsupported types (List<Integer> rightSideView(...))	0199_Binary_Tree_Right_Side_View_2.java
+no class Solution	0208_Implement_Trie_Prefix_Tree.java
+unsupported types (int kthSmallest(...))	0230_Kth_Smallest_Element_in_a_BST.java
+unsupported types (int kthSmallest(...))	0230_Kth_Smallest_Element_in_a_BST_2.java
+unsupported types (TreeNode lowestCommonAncestor(...))	0235_Lowest_Common_Ancestor_of_a_Binary_Search_Tree.java
+unsupported types (TreeNode lowestCommonAncestor(...))	0235_Lowest_Common_Ancestor_of_a_Binary_Search_Tree_2.java
+unsupported types (TreeNode lowestCommonAncestor(...))	0236_Lowest_Common_Ancestor_of_a_Binary_Tree.java
+unsupported types (TreeNode inorderSuccessor(...))	0285_Inorder_Successor_in_BST.java
+unsupported types (int longestConsecutive(...))	0298_Binary_Tree_Longest_Consecutive_Sequence.java
+unsupported types (List<List<Integer>> verticalOrder(...))	0314_Binary_Tree_Vertical_Order_Traversal.java
+unsupported types (List<List<Integer>> verticalOrder(...))	0314_Binary_Tree_Vertical_Order_Traversal_2.java
+unsupported types (int largestBSTSubtree(...))	0333_Largest_BST_Subtree.java
+unsupported types (List<List<Integer>> findLeaves(...))	0366_Find_Leaves_of_Binary_Tree.java
+unsupported types (Node treeToDoublyList(...))	0426_Convert_Binary_Search_Tree_to_Sorted_Doubly_Linked_List.java
+unsupported types (Node construct(...))	0427_Construct_Quad_Tree.java
+unsupported types (List<List<Integer>> levelOrder(...))	0429_N_ary_Tree_Level_Order_Traversal.java
+unsupported types (List<List<Integer>> levelOrder(...))	0429_N_ary_Tree_Level_Order_Traversal_2.java
+no class Solution	0449_Serialize_and_Deserialize_BST.java
+unsupported types (TreeNode deleteNode(...))	0450_Delete_Node_in_a_BST.java
+unsupported types (Node inorderSuccessor(...))	0510_Inorder_Successor_in_BST_II.java
+unsupported types (int findBottomLeftValue(...))	0513_Find_Bottom_Left_Tree_Value.java
+unsupported types (int findBottomLeftValue(...))	0513_Find_Bottom_Left_Tree_Value_2.java
+unsupported types (List<Integer> largestValues(...))	0515_Find_Largest_Value_in_Each_Tree_Row.java
+unsupported types (List<Integer> largestValues(...))	0515_Find_Largest_Value_in_Each_Tree_Row_2.java
+unsupported types (TreeNode str2tree(...))	0536_Construct_Binary_Tree_from_String.java
+unsupported types (TreeNode convertBST(...))	0538_Convert_BST_to_Greater_Tree.java
+unsupported types (TreeNode convertBST(...))	0538_Convert_BST_to_Greater_Tree_2.java
+unsupported types (TreeNode convertBST(...))	0538_Convert_BST_to_Greater_Tree_3.java
+unsupported types (List<Integer> boundaryOfBinaryTree(...))	0545_Boundary_of_Binary_Tree.java
+unsupported types (int longestConsecutive(...))	0549_Binary_Tree_Longest_Consecutive_Sequence_II.java
+unsupported types (Node intersect(...))	0558_Logical_OR_of_Two_Binary_Grids_Represented_as_Quad_Trees.java
+unsupported types (String tree2str(...))	0606_Construct_String_from_Binary_Tree.java
+unsupported types (String tree2str(...))	0606_Construct_String_from_Binary_Tree_2.java
+unsupported types (TreeNode addOneRow(...))	0623_Add_One_Row_to_Tree.java
+unsupported types (TreeNode addOneRow(...))	0623_Add_One_Row_to_Tree_2.java
+unsupported types (TreeNode constructMaximumBinaryTree(...))	0654_Maximum_Binary_Tree.java
+unsupported types (TreeNode constructMaximumBinaryTree(...))	0654_Maximum_Binary_Tree_2.java
+unsupported types (TreeNode constructMaximumBinaryTree(...))	0654_Maximum_Binary_Tree_3.java
+unsupported types (TreeNode constructMaximumBinaryTree(...))	0654_Maximum_Binary_Tree_4.java
+unsupported types (TreeNode constructMaximumBinaryTree(...))	0654_Maximum_Binary_Tree_5.java
+unsupported types (List<List<String>> printTree(...))	0655_Print_Binary_Tree.java
+unsupported types (List<List<String>> printTree(...))	0655_Print_Binary_Tree_2.java
+unsupported types (int widthOfBinaryTree(...))	0662_Maximum_Width_of_Binary_Tree.java
+unsupported types (int widthOfBinaryTree(...))	0662_Maximum_Width_of_Binary_Tree_2.java
+unsupported types (boolean checkEqualTree(...))	0663_Equal_Tree_Partition.java
+unsupported types (TreeNode trimBST(...))	0669_Trim_a_Binary_Search_Tree.java
+unsupported types (TreeNode trimBST(...))	0669_Trim_a_Binary_Search_Tree_2.java
+unsupported types (TreeNode insertIntoBST(...))	0701_Insert_into_a_Binary_Search_Tree.java
+unsupported types (int findClosestLeaf(...))	0742_Closest_Leaf_in_a_Binary_Tree.java
+unsupported types (TreeNode[] splitBST(...))	0776_Split_BST.java
+unsupported types (TreeNode pruneTree(...))	0814_Binary_Tree_Pruning.java
+unsupported types (List<Integer> distanceK(...))	0863_All_Nodes_Distance_K_in_Binary_Tree.java
+unsupported types (TreeNode constructFromPrePost(...))	0889_Construct_Binary_Tree_from_Preorder_and_Postorder_Traversal.java
+unsupported types (TreeNode constructFromPrePost(...))	0889_Construct_Binary_Tree_from_Preorder_and_Postorder_Traversal_2.java
+unsupported types (List<TreeNode> allPossibleFBT(...))	0894_All_Possible_Full_Binary_Trees.java
+no class Solution	0919_Complete_Binary_Tree_Inserter.java
+unsupported types (boolean flipEquiv(...))	0951_Flip_Equivalent_Binary_Trees.java
+unsupported types (boolean isCompleteTree(...))	0958_Check_Completeness_of_a_Binary_Tree.java
+unsupported types (List<Integer> flipMatchVoyage(...))	0971_Flip_Binary_Tree_To_Match_Preorder_Traversal.java
+unsupported types (int distributeCoins(...))	0979_Distribute_Coins_in_Binary_Tree.java
+unsupported types (String smallestFromLeaf(...))	0988_Smallest_String_Starting_From_Leaf.java
+unsupported types (TreeNode insertIntoMaxTree(...))	0998_Maximum_Binary_Tree_II.java
+unsupported types (TreeNode insertIntoMaxTree(...))	0998_Maximum_Binary_Tree_II_2.java
+unsupported types (TreeNode bstFromPreorder(...))	1008_Construct_Binary_Search_Tree_from_Preorder_Traversal.java
+unsupported types (int maxAncestorDiff(...))	1026_Maximum_Difference_Between_Node_and_Ancestor.java
+unsupported types (TreeNode bstToGst(...))	1038_Binary_Search_Tree_to_Greater_Sum_Tree.java
+unsupported types (TreeNode bstToGst(...))	1038_Binary_Search_Tree_to_Greater_Sum_Tree_2.java
+unsupported types (TreeNode sufficientSubset(...))	1080_Insufficient_Nodes_in_Root_to_Leaf_Paths.java
+unsupported types (TreeNode lcaDeepestLeaves(...))	1123_Lowest_Common_Ancestor_of_Deepest_Leaves.java
+unsupported types (boolean btreeGameWinningMove(...))	1145_Binary_Tree_Coloring_Game.java
+unsupported types (int maxLevelSum(...))	1161_Maximum_Level_Sum_of_a_Binary_Tree.java
+unsupported types (int maxLevelSum(...))	1161_Maximum_Level_Sum_of_a_Binary_Tree_2.java
+no class Solution	1261_Find_Elements_in_a_Contaminated_Binary_Tree.java
+unsupported types (int deepestLeavesSum(...))	1302_Deepest_Leaves_Sum.java
+unsupported types (int deepestLeavesSum(...))	1302_Deepest_Leaves_Sum_2.java
+unsupported types (List<Integer> getAllElements(...))	1305_All_Elements_in_Two_Binary_Search_Trees.java
+unsupported types (TreeNode removeLeafNodes(...))	1325_Delete_Leaves_With_a_Given_Value.java
+unsupported types (int maxProduct(...))	1339_Maximum_Product_of_Splitted_Binary_Tree.java
+unsupported types (boolean isSubPath(...))	1367_Linked_List_in_Binary_Tree.java
+unsupported types (int longestZigZag(...))	1372_Longest_ZigZag_Path_in_a_Binary_Tree.java
+unsupported types (int longestZigZag(...))	1372_Longest_ZigZag_Path_in_a_Binary_Tree_2.java
+unsupported types (TreeNode balanceBST(...))	1382_Balance_a_Binary_Search_Tree.java
+unsupported types (boolean isValidSequence(...))	1430_Check_If_a_String_Is_a_Valid_Sequence_from_Root_to_Leaves_Path_in_a_Binary_Tree.java
+unsupported types (int goodNodes(...))	1448_Count_Good_Nodes_in_Binary_Tree.java
+unsupported types (int goodNodes(...))	1448_Count_Good_Nodes_in_Binary_Tree_2.java
+unsupported types (int pseudoPalindromicPaths(...))	1457_Pseudo_Palindromic_Paths_in_a_Binary_Tree.java
+unsupported types (int pseudoPalindromicPaths(...))	1457_Pseudo_Palindromic_Paths_in_a_Binary_Tree_2.java
+unsupported types (NodeCopy copyRandomBinaryTree(...))	1485_Clone_Binary_Tree_With_Random_Pointer.java
+unsupported types (Node cloneTree(...))	1490_Clone_N_ary_Tree.java
+unsupported types (Node findRoot(...))	1506_Find_Root_of_N_Ary_Tree.java
+unsupported types (int diameter(...))	1522_Diameter_of_N_Ary_Tree.java
+unsupported types (int diameter(...))	1522_Diameter_of_N_Ary_Tree_2.java
+unsupported types (int diameter(...))	1522_Diameter_of_N_Ary_Tree_3.java
+unsupported types (int diameter(...))	1522_Diameter_of_N_Ary_Tree_4.java
+unsupported types (int countPairs(...))	1530_Number_of_Good_Leaf_Nodes_Pairs.java
+no class Solution	1586_Binary_Search_Tree_Iterator_II.java
+no class Solution	1586_Binary_Search_Tree_Iterator_II_2.java
+unsupported types (TreeNode findNearestRightNode(...))	1602_Find_Nearest_Right_Node_in_Binary_Tree.java
+unsupported types (TreeNode findNearestRightNode(...))	1602_Find_Nearest_Right_Node_in_Binary_Tree_2.java
+unsupported types (boolean isEvenOddTree(...))	1609_Even_Odd_Tree.java
+unsupported types (boolean isEvenOddTree(...))	1609_Even_Odd_Tree_2.java
+unsupported types (boolean checkEquivalence(...))	1612_Check_If_Two_Expression_Trees_are_Equivalent.java
+unsupported types (boolean checkEquivalence(...))	1612_Check_If_Two_Expression_Trees_are_Equivalent_2.java
+no class Solution	1628_Design_an_Expression_Tree_With_Evaluate_Function.java
+unsupported types (TreeNode lowestCommonAncestor(...))	1644_Lowest_Common_Ancestor_of_a_Binary_Tree_II.java
+unsupported types (Node lowestCommonAncestor(...))	1650_Lowest_Common_Ancestor_of_a_Binary_Tree_III.java
+unsupported types (Node lowestCommonAncestor(...))	1650_Lowest_Common_Ancestor_of_a_Binary_Tree_III_2.java
+unsupported types (TreeNode correctBinaryTree(...))	1660_Correct_a_Binary_Tree.java
+unsupported types (Node flipBinaryTree(...))	1666_Change_the_Root_of_a_Binary_Tree.java
+unsupported types (TreeNode lowestCommonAncestor(...))	1676_Lowest_Common_Ancestor_of_a_Binary_Tree_IV.java
+unsupported types (int findDistance(...))	1740_Find_Distance_in_a_Binary_Tree.java
+no class Solution	1804_Implement_Trie_II_Prefix_Tree.java
+no class Solution	1993_Operations_on_Tree.java
+no class Solution	1993_Operations_on_Tree_2.java
+unsupported types (String getDirections(...))	2096_Step_By_Step_Directions_From_a_Binary_Tree_Node_to_Another.java
+unsupported types (String getDirections(...))	2096_Step_By_Step_Directions_From_a_Binary_Tree_Node_to_Another_2.java
+unsupported types (String getDirections(...))	2096_Step_By_Step_Directions_From_a_Binary_Tree_Node_to_Another_3.java
+unsupported types (String getDirections(...))	2096_Step_By_Step_Directions_From_a_Binary_Tree_Node_to_Another_4.java
+unsupported types (TreeNode createBinaryTree(...))	2196_Create_Binary_Tree_From_Descriptions.java
+unsupported types (int amountOfTime(...))	2385_Amount_of_Time_for_Binary_Tree_to_Be_Infected.java
+unsupported types (int amountOfTime(...))	2385_Amount_of_Time_for_Binary_Tree_to_Be_Infected_2.java
+unsupported types (TreeNode reverseOddLevels(...))	2415_Reverse_Odd_Levels_of_Binary_Tree.java
+unsupported types (int minimumOperations(...))	2471_Minimum_Number_of_Operations_to_Sort_a_Binary_Tree_by_Level.java
+unsupported types (List<List<Integer>> closestNodes(...))	2476_Closest_Nodes_Queries_in_a_Binary_Search_Tree.java
+unsupported types (long kthLargestLevelSum(...))	2583_Kth_Largest_Sum_in_a_Binary_Tree.java
+unsupported types (long kthLargestLevelSum(...))	2583_Kth_Largest_Sum_in_a_Binary_Tree_2.java
+unsupported types (TreeNode replaceValueInTree(...))	2641_Cousins_in_Binary_Tree_II.java
+unsupported types (TreeNode replaceValueInTree(...))	2641_Cousins_in_Binary_Tree_II_2.java
+unsupported types (int heightOfTree(...))	2773_Height_of_Special_Binary_Tree.java
+unsupported types (int minimumLevel(...))	3157_Find_the_Level_of_Tree_with_Minimum_Sum.java
+unsupported types (int kthLargestPerfectSubtree(...))	3319_K_th_Largest_Perfect_Subtree_Size_in_Binary_Tree.java
+unsupported types (int maxPathSum(...))	0124_Binary_Tree_Maximum_Path_Sum.java
+unsupported types (List<Integer> closestKValues(...))	0272_Closest_Binary_Search_Tree_Value_II.java
+no class Solution	0297_Serialize_and_Deserialize_Binary_Tree.java
+no class Solution	0428_Serialize_and_Deserialize_N_ary_Tree.java
+no class Solution	0431_Encode_N_ary_Tree_to_Binary_Tree.java
+unsupported types (int minCameraCover(...))	0968_Binary_Tree_Cameras.java
+unsupported types (int minCameraCover(...))	0968_Binary_Tree_Cameras_2.java
+unsupported types (List<List<Integer>> verticalTraversal(...))	0987_Vertical_Order_Traversal_of_a_Binary_Tree.java
+unsupported types (TreeNode recoverFromPreorder(...))	1028_Recover_a_Tree_From_Preorder_Traversal.java
+unsupported types (int maxSumBST(...))	1373_Maximum_Sum_BST_in_Binary_Tree.java
+no class Solution	1483_Kth_Ancestor_of_a_Tree_Node.java
+unsupported types (int minimumFlips(...))	2313_Minimum_Flips_in_Binary_Tree_to_Get_Result.java
+unsupported types (int[] treeQueries(...))	2458_Height_of_Binary_Tree_After_Subtree_Removal_Queries.java
+unsupported types (boolean hasCycle(...))	0141_Linked_List_Cycle.java
+unsupported types (boolean hasCycle(...))	0141_Linked_List_Cycle_2.java
+unsupported types (ListNode removeElements(...))	0203_Remove_Linked_List_Elements.java
+unsupported types (ListNode reverseList(...))	0206_Reverse_Linked_List.java
+unsupported types (ListNode reverseList(...))	0206_Reverse_Linked_List_2.java
+unsupported types (boolean isPalindrome(...))	0234_Palindrome_Linked_List.java
+unsupported types (ListNode middleNode(...))	0876_Middle_of_the_Linked_List.java
+unsupported types (int getDecimalValue(...))	1290_Convert_Binary_Number_in_a_Linked_List_to_Integer.java
+unsupported types (ListNode deleteNodes(...))	1474_Delete_N_Nodes_After_M_Nodes_of_a_Linked_List.java
+unsupported types (String gameResult(...))	3062_Winner_of_the_Linked_List_Game.java
+unsupported types (ListNode frequenciesOfElements(...))	3063_Linked_List_Frequency.java
+unsupported types (int[] toArray(...))	3263_Convert_Doubly_Linked_List_to_Array_I.java
+unsupported types (ListNode swapPairs(...))	0024_Swap_Nodes_in_Pairs.java
+unsupported types (ListNode swapPairs(...))	0024_Swap_Nodes_in_Pairs_2.java
+unsupported types (ListNode reverseBetween(...))	0092_Reverse_Linked_List_II.java
+unsupported types (ListNode detectCycle(...))	0142_Linked_List_Cycle_II.java
+unsupported types (void deleteNode(...))	0237_Delete_Node_in_a_Linked_List.java
+unsupported types (ListNode oddEvenList(...))	0328_Odd_Even_Linked_List.java
+unsupported types (ListNode plusOne(...))	0369_Plus_One_Linked_List.java
+no examples found	0382_Linked_List_Random_Node.java
+unsupported types (Node flatten(...))	0430_Flatten_a_Multilevel_Doubly_Linked_List.java
+no class Solution	0707_Design_Linked_List.java
+no class Solution	0707_Design_Linked_List_2.java
+unsupported types (Node insert(...))	0708_Insert_into_a_Sorted_Circular_Linked_List.java
+unsupported types (ListNode[] splitListToParts(...))	0725_Split_Linked_List_in_Parts.java
+unsupported types (int numComponents(...))	0817_Linked_List_Components.java
+unsupported types (int[] nextLargerNodes(...))	1019_Next_Greater_Node_In_Linked_List.java
+unsupported types (ListNode removeZeroSumSublists(...))	1171_Remove_Zero_Sum_Consecutive_Nodes_from_Linked_List.java
+unsupported types (void printLinkedListInReverse(...))	1265_Print_Immutable_Linked_List_in_Reverse.java
+unsupported types (ListNode swapNodes(...))	1721_Swapping_Nodes_in_a_Linked_List.java
+unsupported types (ListNode deleteDuplicatesUnsorted(...))	1836_Remove_Duplicates_From_an_Unsorted_Linked_List.java
+unsupported types (ListNode sortLinkedList(...))	2046_Sort_Linked_List_Already_Sorted_Using_Absolute_Values.java
+unsupported types (ListNode reverseEvenLengthGroups(...))	2074_Reverse_Nodes_in_Even_Length_Groups.java
+unsupported types (ListNode deleteMiddle(...))	2095_Delete_the_Middle_Node_of_a_Linked_List.java
+unsupported types (int pairSum(...))	2130_Maximum_Twin_Sum_of_a_Linked_List.java
+unsupported types (int pairSum(...))	2130_Maximum_Twin_Sum_of_a_Linked_List_2.java
+unsupported types (ListNode mergeNodes(...))	2181_Merge_Nodes_in_Between_Zeros.java
+unsupported types (ListNode removeNodes(...))	2487_Remove_Nodes_From_Linked_List.java
+unsupported types (ListNode removeNodes(...))	2487_Remove_Nodes_From_Linked_List_2.java
+unsupported types (ListNode[] splitCircularLinkedList(...))	2674_Split_a_Circular_Linked_List.java
+unsupported types (ListNode insertGreatestCommonDivisors(...))	2807_Insert_Greatest_Common_Divisors_in_Linked_List.java
+unsupported types (ListNode doubleIt(...))	2816_Double_a_Number_Represented_as_a_Linked_List.java
+unsupported types (ListNode modifiedList(...))	3217_Delete_Nodes_From_Linked_List_Present_in_Array.java
+unsupported types (int[] toArray(...))	3294_Convert_Doubly_Linked_List_to_Array_II.java
+unsupported types (ListNode reverseKGroup(...))	0025_Reverse_Nodes_in_k_Group.java
+unsupported types (boolean hasPathSum(...))	0112_Path_Sum.java
+unsupported types (List<List<Integer>> pathSum(...))	0113_Path_Sum_II.java
+unsupported types (Node cloneGraph(...))	0133_Clone_Graph.java
+unsupported types (int pathSum(...))	0437_Path_Sum_III.java
+unsupported types (int longestUnivaluePath(...))	0687_Longest_Univalue_Path.java
+unsupported types (int findShortestPath(...))	1778_Shortest_Path_in_a_Hidden_Grid.java
+unsupported types (int findShortestPath(...))	1810_Minimum_Path_Cost_in_a_Hidden_Grid.java
+no class Solution	1724_Checking_Existence_of_Edge_Length_Limited_Paths_II.java
+no class Solution	2642_Design_Graph_With_Shortest_Path_Calculator.java
+no class Solution	0703_Kth_Largest_Element_in_a_Stream.java
+unsupported types (ListNode mergeKLists(...))	0023_Merge_k_Sorted_Lists.java
+no class Solution	0295_Find_Median_from_Data_Stream.java
+no class Solution	1286_Iterator_for_Combination.java
+no class Solution	1286_Iterator_for_Combination_2.java
+unsupported types (ListNode partition(...))	0086_Partition_List.java
+unsupported types (int rob(...))	0337_House_Robber_III.java
+no class Solution	0225_Implement_Stack_using_Queues.java
+no class Solution	0232_Implement_Queue_using_Stacks.java
+no class Solution	0155_Min_Stack.java
+no class Solution	0622_Design_Circular_Queue.java
+no class Solution	1188_Design_Bounded_Blocking_Queue.java
+no class Solution	1381_Design_a_Stack_With_Increment_Operation.java
+no class Solution	1670_Design_Front_Middle_Back_Queue.java
+no class Solution	0716_Max_Stack.java
+no class Solution	0895_Maximum_Frequency_Stack.java
+no class Solution	0895_Maximum_Frequency_Stack_2.java
+no class Solution	1172_Dinner_Plate_Stacks.java
+unsupported types (int removeDuplicates(...))	0026_Remove_Duplicates_from_Sorted_Array.java
+unsupported types (ListNode deleteDuplicates(...))	0083_Remove_Duplicates_from_Sorted_List.java
+no class Solution	0170_Two_Sum_III_Data_structure_design.java
+unsupported types (int removeDuplicates(...))	0080_Remove_Duplicates_from_Sorted_Array_II.java
+unsupported types (ListNode deleteDuplicates(...))	0082_Remove_Duplicates_from_Sorted_List_II.java
+unsupported types (boolean twoSumBSTs(...))	1214_Two_Sum_BSTs.java
+no class Solution	2349_Design_a_Number_Container_System.java
+no class Solution	2526_Find_Consecutive_Integers_from_a_Data_Stream.java
+no class Solution	0381_Insert_Delete_GetRandom_O_1_Duplicates_allowed.java
+no class Solution	1157_Online_Majority_Element_In_Subarray.java
+no class Solution	0346_Moving_Average_from_Data_Stream.java
+no class Solution	0346_Moving_Average_from_Data_Stream_2.java
+no class Solution	0604_Design_Compressed_String_Iterator.java
+no class Solution	0705_Design_HashSet.java
+no class Solution	0705_Design_HashSet_2.java
+no class Solution	0706_Design_HashMap.java
+no class Solution	1603_Design_Parking_System.java
+no class Solution	1656_Design_an_Ordered_Stream.java
+no class Solution	3242_Design_Neighbor_Sum_Service.java
+no class Solution	0146_LRU_Cache.java
+no class Solution	0211_Design_Add_and_Search_Words_Data_Structure.java
+no class Solution	0281_Zigzag_Iterator.java
+no class Solution	0284_Peeking_Iterator.java
+no class Solution	0341_Flatten_Nested_List_Iterator.java
+no class Solution	0348_Design_Tic_Tac_Toe.java
+no class Solution	0353_Design_Snake_Game.java
+no class Solution	0355_Design_Twitter.java
+no class Solution	0362_Design_Hit_Counter.java
+no class Solution	0379_Design_Phone_Directory.java
+unsupported types (int rand10(...))	0470_Implement_Rand10_Using_Rand7.java
+no class Solution	0635_Design_Log_Storage_System.java
+no class Solution	0641_Design_Circular_Deque.java
+no class Solution	0676_Implement_Magic_Dictionary.java
+no class Solution	0900_RLE_Iterator.java
+no class Solution	1166_Design_File_System.java
+no class Solution	1244_Design_A_Leaderboard.java
+no class Solution	1396_Design_Underground_System.java
+no class Solution	1472_Design_Browser_History.java
+no class Solution	1500_Design_a_File_Sharing_System.java
+no class Solution	1797_Design_Authentication_Manager.java
+no class Solution	2043_Simple_Bank_System.java
+no class Solution	2166_Design_Bitset.java
+no class Solution	2241_Design_an_ATM_Machine.java
+no class Solution	2353_Design_a_Food_Rating_System.java
+no class Solution	2408_Design_SQL.java
+no class Solution	2502_Design_Memory_Allocator.java
+no class Solution	2502_Design_Memory_Allocator_2.java
+no class Solution	2590_Design_a_Todo_List.java
+no class Solution	2671_Frequency_Tracker.java
+unsupported types (int findPattern(...))	3023_Find_Pattern_in_Infinite_Stream_I.java
+no class Solution	3391_Design_a_3D_Binary_Matrix_with_Efficient_Layer_Tracking.java
+no class Solution	3408_Design_Task_Manager.java
+no class Solution	3484_Design_Spreadsheet.java
+no class Solution	3508_Implement_Router.java
+no class Solution	0352_Data_Stream_as_Disjoint_Intervals.java
+no class Solution	0460_LFU_Cache.java
+no class Solution	0588_Design_In_Memory_File_System.java
+no class Solution	0642_Design_Search_Autocomplete_System.java
+no class Solution	1032_Stream_of_Characters.java
+no class Solution	1206_Design_Skiplist.java
+no class Solution	1912_Design_Movie_Rental_System.java
+no class Solution	2296_Design_a_Text_Editor.java
+no class Solution	3369_Design_an_Array_Statistics_Tracker.java
+no examples found	0497_Random_Point_in_Non_overlapping_Rectangles.java
+no examples found	0519_Random_Flip_Matrix.java
+unsupported types (int[][] spiralMatrix(...))	2326_Spiral_Matrix_IV.java
+unsupported types (int countShips(...))	1274_Number_of_Ships_in_a_Rectangle.java
+unsupported types (int[] sortByBits(...))	1356_Sort_Integers_by_The_Number_of_1_Bits.java
+unsupported types (List<List<Integer>> findSolution(...))	1237_Find_Positive_Integer_Solution_for_a_Given_Equation.java
+unsupported types (List<List<Integer>> findSolution(...))	1237_Find_Positive_Integer_Solution_for_a_Given_Equation_2.java
+unsupported types (int getIndex(...))	1533_Find_the_Index_of_the_Large_Integer.java
+unsupported types (int getImportance(...))	0690_Employee_Importance.java
+no class Solution	1348_Tweet_Counts_Per_Frequency.java
+no class Solution	1352_Product_of_the_Last_K_Numbers.java
+no class Solution	1357_Apply_Discount_Every_n_Orders.java
+no class Solution	1570_Dot_Product_of_Two_Sparse_Vectors.java
+unsupported types (List<Interval> employeeFreeTime(...))	0759_Employee_Free_Time.java
+unsupported types (int read(...))	0157_Read_N_Characters_Given_Read4.java
+no class Solution	0244_Shortest_Word_Distance_II.java
+no class Solution	0271_Encode_and_Decode_Strings.java
+no class Solution	0288_Unique_Word_Abbreviation.java
+unsupported types (String smallestStringWithSwaps(...))	1202_Smallest_String_With_Swaps.java
+unsupported types (int maxFont(...))	1618_Maximum_Font_to_Fit_a_Sentence_in_a_Screen.java
+no class Solution	2424_Longest_Uploaded_Prefix.java
+unsupported types (int read(...))	0158_Read_N_Characters_Given_read4_II_Call_Multiple_Times.java
+no class Solution	0745_Prefix_and_Suffix_Search.java
+no class Solution	0745_Prefix_and_Suffix_Search_2.java
+no class Solution	2227_Encrypt_and_Decrypt_Strings.java
+unsupported types (ListNode mergeTwoLists(...))	0021_Merge_Two_Sorted_Lists.java
+unsupported types (ListNode mergeTwoLists(...))	0021_Merge_Two_Sorted_Lists_2.java
+unsupported types (int removeElement(...))	0027_Remove_Element.java
+unsupported types (ListNode getIntersectionNode(...))	0160_Intersection_of_Two_Linked_Lists.java
+unsupported types (int firstBadVersion(...))	0278_First_Bad_Version.java
+no class Solution	0303_Range_Sum_Query_Immutable.java
+no class Solution	0359_Logger_Rate_Limiter.java
+unsupported types (int guessNumber(...))	0374_Guess_Number_Higher_or_Lower.java
+no class Solution	0933_Number_of_Recent_Calls.java
+no class Solution	0933_Number_of_Recent_Calls_2.java
+no class Solution	1114_Print_in_Order.java
+no public instance method	1185_Day_of_the_Week.java
+no class Solution	1279_Traffic_Light_Controlled_Intersection.java
+unsupported types (List<Integer> getLonelyNodes(...))	1469_Find_All_The_Lonely_Nodes.java
+unsupported types (boolean isThree(...))	1952_Three_Divisors.java
+unsupported types (boolean isThree(...))	1952_Three_Divisors_2.java
+unsupported types (boolean checkTree(...))	2236_Root_Equals_Sum_of_Children.java
+unsupported types (int houseCount(...))	2728_Count_Houses_in_a_Circular_Street.java
+unsupported types (ListNode addTwoNumbers(...))	0002_Add_Two_Numbers.java
+unsupported types (ListNode removeNthFromEnd(...))	0019_Remove_Nth_Node_From_End_of_List.java
+unsupported types (ListNode rotateRight(...))	0061_Rotate_List.java
+unsupported types (Node connect(...))	0116_Populating_Next_Right_Pointers_in_Each_Node.java
+unsupported types (Node connect(...))	0116_Populating_Next_Right_Pointers_in_Each_Node_2.java
+unsupported types (Node connect(...))	0117_Populating_Next_Right_Pointers_in_Each_Node_II.java
+unsupported types (Node connect(...))	0117_Populating_Next_Right_Pointers_in_Each_Node_II_2.java
+unsupported types (Node copyRandomList(...))	0138_Copy_List_with_Random_Pointer.java
+unsupported types (Node copyRandomList(...))	0138_Copy_List_with_Random_Pointer_2.java
+unsupported types (void reorderList(...))	0143_Reorder_List.java
+unsupported types (ListNode insertionSortList(...))	0147_Insertion_Sort_List.java
+unsupported types (ListNode sortList(...))	0148_Sort_List.java
+unsupported types (int countUnivalSubtrees(...))	0250_Count_Univalue_Subtrees.java
+no class Solution	0251_Flatten_2D_Vector.java
+unsupported types (int findCelebrity(...))	0277_Find_the_Celebrity.java
+no class Solution	0304_Range_Sum_Query_2D_Immutable.java
+unsupported types (boolean isAdditiveNumber(...))	0306_Additive_Number.java
+no class Solution	0307_Range_Sum_Query_Mutable.java
+no class Solution	0307_Range_Sum_Query_Mutable_2.java
+no class Solution	0308_Range_Sum_Query_2D_Mutable.java
+no class Solution	0308_Range_Sum_Query_2D_Mutable_2.java
+unsupported types (int depthSum(...))	0339_Nested_List_Weight_Sum.java
+unsupported types (int depthSumInverse(...))	0364_Nested_List_Weight_Sum_II.java
+no class Solution	0380_Insert_Delete_GetRandom_O_1.java
+no examples found	0384_Shuffle_an_Array.java
+unsupported types (NestedInteger deserialize(...))	0385_Mini_Parser.java
+unsupported types (NestedInteger deserialize(...))	0385_Mini_Parser_2.java
+no examples found	0398_Random_Pick_Index.java
+unsupported types (ListNode addTwoNumbers(...))	0445_Add_Two_Numbers_II.java
+no examples found	0478_Generate_Random_Point_in_a_Circle.java
+unsupported types (int[] findFrequentTreeSum(...))	0508_Most_Frequent_Subtree_Sum.java
+unsupported types (int[] findFrequentTreeSum(...))	0508_Most_Frequent_Subtree_Sum_2.java
+no examples found	0528_Random_Pick_with_Weight.java
+no class Solution	0535_Encode_and_Decode_TinyURL.java
+unsupported types (List<TreeNode> findDuplicateSubtrees(...))	0652_Find_Duplicate_Subtrees.java
+no class Solution	0677_Map_Sum_Pairs.java
+unsupported types (int search(...))	0702_Search_in_a_Sorted_Array_of_Unknown_Size.java
+no class Solution	0729_My_Calendar_I.java
+no class Solution	0731_My_Calendar_II.java
+no class Solution	0731_My_Calendar_II_2.java
+no class Solution	0855_Exam_Room.java
+unsupported types (TreeNode subtreeWithAllDeepest(...))	0865_Smallest_Subtree_with_all_the_Deepest_Nodes.java
+no class Solution	0901_Online_Stock_Span.java
+no class Solution	0911_Online_Election.java
+no class Solution	0981_Time_Based_Key_Value_Store.java
+unsupported types (String baseNeg2(...))	1017_Convert_to_Base_2.java
+unsupported types (List<TreeNode> delNodes(...))	1110_Delete_Nodes_And_Return_Forest.java
+no class Solution	1115_Print_FooBar_Alternately.java
+no class Solution	1116_Print_Zero_Even_Odd.java
+no class Solution	1117_Building_H2O.java
+unsupported types (double maximumAverageSubtree(...))	1120_Maximum_Average_Subtree.java
+no class Solution	1146_Snapshot_Array.java
+no class Solution	1195_Fizz_Buzz_Multithreaded.java
+unsupported types (List<String> crawl(...))	1236_Web_Crawler.java
+unsupported types (List<Integer> numOfBurgers(...))	1276_Number_of_Burgers_with_No_Waste_of_Ingredients.java
+unsupported types (int sumEvenGrandparent(...))	1315_Sum_of_Nodes_with_Even_Valued_Grandparent.java
+unsupported types (int leftMostColumnWithOne(...))	1428_Leftmost_Column_with_at_Least_a_One.java
+no class Solution	1429_First_Unique_Number.java
+no class Solution	1429_First_Unique_Number_2.java
+no class Solution	1476_Subrectangle_Queries.java
+unsupported types (int guessMajority(...))	1538_Guess_the_Majority_in_a_Hidden_Array.java
+no class Solution	1600_Throne_Inheritance.java
+no class Solution	1600_Throne_Inheritance_2.java
+unsupported types (PolyNode addPoly(...))	1634_Add_Two_Polynomials_Represented_as_Linked_Lists.java
+unsupported types (ListNode mergeInBetween(...))	1669_Merge_In_Between_Linked_Lists.java
+no class Solution	1845_Seat_Reservation_Manager.java
+no class Solution	1865_Finding_Pairs_With_a_Certain_Sum.java
+unsupported types (int equalToDescendants(...))	1973_Count_Nodes_Equal_to_Sum_of_Descendants.java
+unsupported types (int equalToDescendants(...))	1973_Count_Nodes_Equal_to_Sum_of_Descendants_2.java
+no class Solution	2013_Detect_Squares.java
+no class Solution	2034_Stock_Price_Fluctuation.java
+unsupported types (int[] nodesBetweenCriticalPoints(...))	2058_Find_the_Minimum_and_Maximum_Number_of_Nodes_Between_Critical_Points.java
+no class Solution	2069_Walking_Robot_Simulation_II.java
+no class Solution	2080_Range_Frequency_Queries.java
+unsupported types (int averageOfSubtree(...))	2265_Count_Nodes_Equal_to_Average_of_Subtree.java
+no class Solution	2336_Smallest_Number_in_Infinite_Set.java
+unsupported types (int[][] differenceOfDistinctValues(...))	2711_Difference_of_Number_of_Distinct_Values_on_Diagonals.java
+unsupported types (int numberOfCategories(...))	2782_Number_of_Unique_Categories.java
+unsupported types (int countBlocks(...))	2936_Number_of_Equal_Numbers_Blocks.java
+unsupported types (int countBlocks(...))	2936_Number_of_Equal_Numbers_Blocks_2.java
+unsupported types (void computeLPS(...))	3006_Find_Beautiful_Indices_in_the_Given_Array_I.java
+unsupported types (int findNumber(...))	3064_Guess_the_Number_Using_Bitwise_Questions_I.java
+no examples found	3094_Guess_the_Number_Using_Bitwise_Questions_II.java
+no class Solution	0432_All_O_one_Data_Structure.java
+unsupported types (void cleanRoom(...))	0489_Robot_Room_Cleaner.java
+no examples found	0710_Random_Pick_with_Blacklist.java
+no class Solution	0715_Range_Module.java
+no class Solution	0732_My_Calendar_III.java
+unsupported types (int findInMountainArray(...))	1095_Find_in_Mountain_Array.java
+no class Solution	1622_Fancy_Sequence.java
+no class Solution	1622_Fancy_Sequence_2.java
+no class Solution	1825_Finding_MK_Average.java
+no class Solution	1825_Finding_MK_Average_2.java
+no class Solution	2276_Count_Integers_in_Intervals.java
+no class Solution	2286_Booking_Concert_Tickets_in_Groups.java
+unsupported types (int houseCount(...))	2753_Count_Houses_in_a_Circular_Street_II.java
+unsupported types (int countGreatEnoughNodes(...))	2792_Count_Nodes_That_Are_Great_Enough.java
+unsupported types (void computeLPS(...))	3008_Find_Beautiful_Indices_in_the_Given_Array_II.java
+unsupported types (int compareTo(...))	3510_Minimum_Pair_Removal_to_Sort_Array_II.java

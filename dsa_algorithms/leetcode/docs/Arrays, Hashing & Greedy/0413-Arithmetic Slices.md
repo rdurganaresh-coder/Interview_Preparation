@@ -1,0 +1,93 @@
+# 413. Arithmetic Slices
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/arithmetic-slices/
+
+---
+
+[中文文档](/solution/0400-0499/0413.Arithmetic%20Slices/README.md)
+
+## Description
+
+<p>An integer array is called arithmetic if it consists of <strong>at least three elements</strong> and if the difference between any two consecutive elements is the same.</p>
+
+<ul>
+	<li>For example, <code>[1,3,5,7,9]</code>, <code>[7,7,7,7]</code>, and <code>[3,-1,-5,-9]</code> are arithmetic sequences.</li>
+</ul>
+
+<p>Given an integer array <code>nums</code>, return <em>the number of arithmetic <strong>subarrays</strong> of</em> <code>nums</code>.</p>
+
+<p>A <strong>subarray</strong> is a contiguous subsequence of the array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,4]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> We have 3 arithmetic slices in nums: [1, 2, 3], [2, 3, 4] and [1,2,3,4] itself.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1]
+<strong>Output:</strong> 0
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 5000</code></li>
+	<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Iteration and Counting
+
+> **Thinking**
+>
+> Checking every subarray of length at least $3$ is $O(n^2)$. With $n\le 5000$ that might pass, yet a run with a fixed difference contributes a closed-form count.
+>
+> One scan keeps the current difference and a counter $\textit{cnt}$ of new slices inside the run: grow $\textit{cnt}$ while the difference stays, otherwise reset.
+>
+> A run of length $L$ contributes $1+2+\cdots+(L-2)$ slices; adding $\textit{cnt}$ at each step evaluates that sum.
+
+We use $d$ to represent the current difference between two adjacent elements, and $\textit{cnt}$ to represent the length of the current arithmetic sequence. Initially, $d = 3000$, $\textit{cnt} = 2$.
+
+We iterate through the array `nums`. For two adjacent elements $a$ and $b$, if $b - a = d$, it means that the current element $b$ also belongs to the current arithmetic sequence, and we increment $\textit{cnt}$ by 1. Otherwise, it means that the current element $b$ does not belong to the current arithmetic sequence, and we update $d = b - a$, and $\textit{cnt} = 2$. If $\textit{cnt} \ge 3$, it means that the length of the current arithmetic sequence is at least 3, and the number of arithmetic sequences is $\textit{cnt} - 2$, which we add to the answer.
+
+After the iteration, we can get the answer.
+
+In the code implementation, we can also initialize $\textit{cnt}$ to $0$, and when resetting $\textit{cnt}$, we directly set $\textit{cnt}$ to $0$. When adding to the answer, we directly add $\textit{cnt}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+Similar problems:
+
+- [1513. Number of Substrings With Only 1s](https://github.com/doocs/leetcode/blob/main/solution/1500-1599/1513.Number%20of%20Substrings%20With%20Only%201s/README_EN.md)
+- [2348. Number of Zero-Filled Subarrays](https://github.com/doocs/leetcode/blob/main/solution/2300-2399/2348.Number%20of%20Zero-Filled%20Subarrays/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    public int numberOfArithmeticSlices(int[] nums) {
+        int ans = 0, cnt = 0;
+        int d = 3000;
+        for (int i = 0; i < nums.length - 1; ++i) {
+            if (nums[i + 1] - nums[i] == d) {
+                ++cnt;
+            } else {
+                d = nums[i + 1] - nums[i];
+                cnt = 0;
+            }
+            ans += cnt;
+        }
+        return ans;
+    }
+}
+```

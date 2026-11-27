@@ -1,0 +1,191 @@
+# 834. Sum of Distances in Tree
+
+**Difficulty:** Hard  
+**Category:** Trees & Tries  
+**LeetCode:** https://leetcode.com/problems/sum-of-distances-in-tree/
+
+---
+
+[中文文档](/solution/0800-0899/0834.Sum%20of%20Distances%20in%20Tree/README.md)
+
+## Description
+
+<p>There is an undirected connected tree with <code>n</code> nodes labeled from <code>0</code> to <code>n - 1</code> and <code>n - 1</code> edges.</p>
+
+<p>You are given the integer <code>n</code> and the array <code>edges</code> where <code>edges[i] = [a<sub>i</sub>, b<sub>i</sub>]</code> indicates that there is an edge between nodes <code>a<sub>i</sub></code> and <code>b<sub>i</sub></code> in the tree.</p>
+
+<p>Return an array <code>answer</code> of length <code>n</code> where <code>answer[i]</code> is the sum of the distances between the <code>i<sup>th</sup></code> node in the tree and all other nodes.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0800-0899/0834.Sum%20of%20Distances%20in%20Tree/images/lc-sumdist1.jpg" style="width: 304px; height: 224px;" />
+<pre>
+<strong>Input:</strong> n = 6, edges = [[0,1],[0,2],[2,3],[2,4],[2,5]]
+<strong>Output:</strong> [8,12,6,10,10,10]
+<strong>Explanation:</strong> The tree is shown above.
+We can see that dist(0,1) + dist(0,2) + dist(0,3) + dist(0,4) + dist(0,5)
+equals 1 + 1 + 2 + 2 + 2 = 8.
+Hence, answer[0] = 8, and so on.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0800-0899/0834.Sum%20of%20Distances%20in%20Tree/images/lc-sumdist2.jpg" style="width: 64px; height: 65px;" />
+<pre>
+<strong>Input:</strong> n = 1, edges = []
+<strong>Output:</strong> [0]
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0800-0899/0834.Sum%20of%20Distances%20in%20Tree/images/lc-sumdist3.jpg" style="width: 144px; height: 145px;" />
+<pre>
+<strong>Input:</strong> n = 2, edges = [[1,0]]
+<strong>Output:</strong> [1,1]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 3 * 10<sup>4</sup></code></li>
+	<li><code>edges.length == n - 1</code></li>
+	<li><code>edges[i].length == 2</code></li>
+	<li><code>0 &lt;= a<sub>i</sub>, b<sub>i</sub> &lt; n</code></li>
+	<li><code>a<sub>i</sub> != b<sub>i</sub></code></li>
+	<li>The given input represents a valid tree.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Tree DP (Re-rooting)
+
+> **Thinking**
+>
+> We need the sum of distances from every node. $n\le 3\cdot 10^4$, so a DFS from each root is quadratic. After rerooting, neighboring answers differ only by subtree size versus the rest of the tree.
+>
+> Root at $0$ to get $\textit{ans}[0]$ and subtree sizes, then a second DFS pushes $t-\textit{size}[j]+n-\textit{size}[j]$ to each child. Two traversals fill every answer.
+
+First, we run a DFS to calculate the size of each node's subtree, recorded in the array $\textit{size}$, and compute the sum of distances from node $0$ to all other nodes, recorded in $\textit{ans}[0]$.
+
+Next, we run another DFS to enumerate the sum of distances from each node when it is considered as the root. Suppose the answer for the current node $i$ is $t$. When we move from node $i$ to node $j$, the sum of distances changes to $t - \textit{size}[j] + n - \textit{size}[j]$, meaning the sum of distances to node $j$ and its subtree nodes decreases by $\textit{size}[j]$, while the sum of distances to other nodes increases by $n - \textit{size}[j]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes in the tree.
+
+Similar problems:
+
+- [2581. Count Number of Possible Root Nodes](https://github.com/doocs/leetcode/blob/main/solution/2500-2599/2581.Count%20Number%20of%20Possible%20Root%20Nodes/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    private int n;
+    private int[] ans;
+    private int[] size;
+    private List<Integer>[] g;
+
+    public int[] sumOfDistancesInTree(int n, int[][] edges) {
+        this.n = n;
+        g = new List[n];
+        ans = new int[n];
+        size = new int[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        dfs1(0, -1, 0);
+        dfs2(0, -1, ans[0]);
+        return ans;
+    }
+
+    private void dfs1(int i, int fa, int d) {
+        ans[0] += d;
+        size[i] = 1;
+        for (int j : g[i]) {
+            if (j != fa) {
+                dfs1(j, i, d + 1);
+                size[i] += size[j];
+            }
+        }
+    }
+
+    private void dfs2(int i, int fa, int t) {
+        ans[i] = t;
+        for (int j : g[i]) {
+            if (j != fa) {
+                dfs2(j, i, t - size[j] + n - size[j]);
+            }
+        }
+    }
+}
+```
+
+### Solution 2: Re-rooting DP + Explicit Stack
+
+> **Thinking**
+>
+> We need the sum of distances from every node. With $n\le 3\cdot 10^4$, a walk from each root is quadratic. After rerooting, neighboring answers differ only by subtree size versus the rest of the tree. Recursion along a chain uses a call depth equal to $n$ and overflows Python once the chain reaches length $1000$. Subtree sizes are known only after the children finish, so the first walk is a post-order stack: state $0$ adds the depth and pushes the children, and state $1$ totals $\textit{size}$. The second answer depends only on the parent's answer and the finished sizes, so a pre-order stack passes $t-\textit{size}[j]+n-\textit{size}[j]$ to each child.
+
+Root the tree at $0$ and walk in post-order. The stack holds a node, its parent, a depth, and a state. In state $0$, add the depth to $\textit{ans}[0]$, push the same node with state $1$, and push every child. In state $1$, every child size is already stored, and $\textit{size}[i]$ is $1$ plus those sizes.
+
+Then reroot with an explicit stack. It starts with $(0,-1,\textit{ans}[0])$. When node $i$ is popped, write the current sum $t$ into $\textit{ans}[i]$. Moving from $i$ to a child $j$ decreases the distances inside $j$'s subtree by $\textit{size}[j]$ and increases the distances to every other node by $n-\textit{size}[j]$, so the pushed sum is $t-\textit{size}[j]+n-\textit{size}[j]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes in the tree.
+
+Similar problems:
+
+- [2581. Count Number of Possible Root Nodes](https://github.com/doocs/leetcode/blob/main/solution/2500-2599/2581.Count%20Number%20of%20Possible%20Root%20Nodes/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    public int[] sumOfDistancesInTree(int n, int[][] edges) {
+        List<Integer>[] g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        int[] ans = new int[n];
+        int[] size = new int[n];
+        Deque<int[]> stk = new ArrayDeque<>();
+        stk.push(new int[] {0, -1, 0, 0});
+        while (!stk.isEmpty()) {
+            int[] f = stk.pop();
+            int i = f[0], fa = f[1], d = f[2], state = f[3];
+            if (state == 0) {
+                ans[0] += d;
+                stk.push(new int[] {i, fa, d, 1});
+                for (int j : g[i]) {
+                    if (j != fa) {
+                        stk.push(new int[] {j, i, d + 1, 0});
+                    }
+                }
+            } else {
+                size[i] = 1;
+                for (int j : g[i]) {
+                    if (j != fa) {
+                        size[i] += size[j];
+                    }
+                }
+            }
+        }
+        Deque<int[]> walk = new ArrayDeque<>();
+        walk.push(new int[] {0, -1, ans[0]});
+        while (!walk.isEmpty()) {
+            int[] f = walk.pop();
+            int i = f[0], fa = f[1], t = f[2];
+            ans[i] = t;
+            for (int j : g[i]) {
+                if (j != fa) {
+                    walk.push(new int[] {j, i, t - size[j] + n - size[j]});
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

@@ -1,0 +1,102 @@
+# 2615. Sum of Distances
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/sum-of-distances/
+
+---
+
+[中文文档](/solution/2600-2699/2615.Sum%20of%20Distances/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> integer array <code>nums</code>.</p>
+
+<p>There exists an array <code>arr</code> of length <code>nums.length</code>, where <code>arr[i]</code> is the sum of <code>|i - j|</code> over all <code>j</code> such that <code>nums[j] == nums[i]</code> and <code>j != i</code>. If there is no such <code>j</code>, set <code>arr[i]</code> to be 0.</p>
+
+<p>Return the array <code>arr</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,3,1,1,2]
+<strong>Output:</strong> [5,0,3,4,0]
+<strong>Explanation:</strong> 
+When i = 0, nums[0] == nums[2] and nums[0] == nums[3]. Therefore, arr[0] = |0 - 2| + |0 - 3| = 5. 
+When i = 1, arr[1] = 0 because there is no other index with value 3.
+When i = 2, nums[2] == nums[0] and nums[2] == nums[3]. Therefore, arr[2] = |2 - 0| + |2 - 3| = 3. 
+When i = 3, nums[3] == nums[0] and nums[3] == nums[2]. Therefore, arr[3] = |3 - 0| + |3 - 2| = 4. 
+When i = 4, arr[4] = 0 because there is no other index with value 2. 
+
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [0,5,3]
+<strong>Output:</strong> [0,0,0]
+<strong>Explanation:</strong> Since each element in nums is distinct, arr[i] = 0 for all i.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Note:</strong> This question is the same as <a href="https://leetcode.com/problems/intervals-between-identical-elements/description/" target="_blank"> 2121: Intervals Between Identical Elements.</a></p>
+
+## Solutions
+
+### Solution 1: Hash Map + Prefix Sum
+
+> **Thinking**
+>
+> Each index needs the sum of distances to all equal values. Scanning every peer from every position is quadratic when $n \le 10^5$.
+>
+> Indices of one value are already sorted. When we move to the next index, the left contribution grows by the left count times the gap, and the right contribution shrinks by the right count; two running totals scan the group in linear time.
+>
+> Group indices by value, then apply that prefix transfer on each group.
+
+First, use a hash map $d$ to record the list of indices for each element in the array $\textit{nums}$, that is, $d[x]$ represents the list of all indices in $\textit{nums}$ where the value is $x$.
+
+For each list of indices $\textit{idx}$ in the hash map $d$, we can calculate the value of $\textit{arr}[i]$ for each index $i$ in $\textit{idx}$. For the first index $\textit{idx}[0]$, the sum of distances to all indices on the right is $\textit{right} = \sum_{i=0}^{m-1} - \textit{idx}[0] \times m$. Then, we iterate through $\textit{idx}$, and for each iteration, compute $\textit{ans}[\textit{idx}[i]] = \textit{left} + \textit{right}$, then update $\textit{left}$ and $\textit{right}$ as follows: $\textit{left} = \textit{left} + (\textit{idx}[i+1] - \textit{idx}[i]) \times (i+1)$, and $\textit{right} = \textit{right} - (\textit{idx}[i+1] - \textit{idx}[i]) \times (m-i-1)$.
+
+After the iteration, we obtain the array $\textit{arr}$ corresponding to each element in $\textit{nums}$, which is stored in $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public long[] distance(int[] nums) {
+        int n = nums.length;
+        long[] ans = new long[n];
+        Map<Integer, List<Integer>> d = new HashMap<>();
+        for (int i = 0; i < n; ++i) {
+            d.computeIfAbsent(nums[i], k -> new ArrayList<>()).add(i);
+        }
+        for (var idx : d.values()) {
+            int m = idx.size();
+            long left = 0;
+            long right = -1L * m * idx.get(0);
+            for (int i : idx) {
+                right += i;
+            }
+            for (int i = 0; i < m; ++i) {
+                ans[idx.get(i)] = left + right;
+                if (i + 1 < m) {
+                    left += (idx.get(i + 1) - idx.get(i)) * (i + 1L);
+                    right -= (idx.get(i + 1) - idx.get(i)) * (m - i - 1L);
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

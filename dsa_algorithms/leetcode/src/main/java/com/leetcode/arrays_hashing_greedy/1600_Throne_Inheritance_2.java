@@ -1,0 +1,44 @@
+package com.leetcode.arrays_hashing_greedy;
+
+class ThroneInheritance1600_2 {
+    private String king;
+    private Set<String> dead = new HashSet<>();
+    private Map<String, List<String>> g = new HashMap<>();
+
+    public ThroneInheritance1600_2(String kingName) {
+        king = kingName;
+    }
+
+    public void birth(String parentName, String childName) {
+        g.computeIfAbsent(parentName, k -> new ArrayList<>()).add(childName);
+    }
+
+    public void death(String name) {
+        dead.add(name);
+    }
+
+    public List<String> getInheritanceOrder() {
+        List<String> ans = new ArrayList<>();
+        Deque<String> stk = new ArrayDeque<>();
+        stk.push(king);
+        while (!stk.isEmpty()) {
+            String x = stk.pop();
+            if (!dead.contains(x)) {
+                ans.add(x);
+            }
+            List<String> children = g.getOrDefault(x, List.of());
+            for (int i = children.size() - 1; i >= 0; --i) {
+                stk.push(children.get(i));
+            }
+        }
+        return ans;
+    }
+}
+
+/**
+ * Your ThroneInheritance1600_2 object will be instantiated and called as such:
+ * ThroneInheritance1600_2 obj = new ThroneInheritance1600_2(kingName);
+ * obj.birth(parentName,childName);
+ * obj.death(name);
+ * List<String> param_3 = obj.getInheritanceOrder();
+ */

@@ -1,0 +1,120 @@
+# 318. Maximum Product of Word Lengths
+
+**Difficulty:** Medium  
+**Category:** SQL & Database  
+**LeetCode:** https://leetcode.com/problems/maximum-product-of-word-lengths/
+
+---
+
+[中文文档](/solution/0300-0399/0318.Maximum%20Product%20of%20Word%20Lengths/README.md)
+
+## Description
+
+<p>Given a string array <code>words</code>, return <em>the maximum value of</em> <code>length(word[i]) * length(word[j])</code> <em>where the two words do not share common letters</em>. If no such two words exist, return <code>0</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> words = [&quot;abcw&quot;,&quot;baz&quot;,&quot;foo&quot;,&quot;bar&quot;,&quot;xtfn&quot;,&quot;abcdef&quot;]
+<strong>Output:</strong> 16
+<strong>Explanation:</strong> The two words can be &quot;abcw&quot;, &quot;xtfn&quot;.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> words = [&quot;a&quot;,&quot;ab&quot;,&quot;abc&quot;,&quot;d&quot;,&quot;cd&quot;,&quot;bcd&quot;,&quot;abcd&quot;]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The two words can be &quot;ab&quot;, &quot;cd&quot;.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> words = [&quot;a&quot;,&quot;aa&quot;,&quot;aaa&quot;,&quot;aaaa&quot;]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> No such pair of words.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= words.length &lt;= 1000</code></li>
+	<li><code>1 &lt;= words[i].length &lt;= 1000</code></li>
+	<li><code>words[i]</code> consists only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Bit Manipulation
+
+> **Thinking**
+>
+> A product counts only when two words share no letter. Set intersection is $O(\sigma)$ per pair; we need a cheaper disjointness test.
+>
+> Pack each word into a $26$-bit mask; bitwise AND zero means disjoint. Check every pair $i>j$ and keep the max product. $n\le 1000$ allows $O(n^2)$.
+
+The problem requires us to find two strings without common letters, so that their length product is maximized. We can represent each string with a binary number $\textit{mask}[i]$, where each bit of this binary number indicates whether the string contains a certain letter. If two strings do not have common letters, then the bitwise AND result of the two binary numbers corresponding to these strings is $0$, that is, $\textit{mask}[i] \& \textit{mask}[j] = 0$.
+
+We traverse each string. For the current string $\textit{words}[i]$ we are traversing, we first calculate the corresponding binary number $\textit{mask}[i]$, and then traverse all strings $\textit{words}[j]$ where $j \in [0, i)$. We check whether $\textit{mask}[i] \& \textit{mask}[j] = 0$ holds. If it holds, we update the answer to $\max(\textit{ans}, |\textit{words}[i]| \times |\textit{words}[j]|)$.
+
+After the traversal, we return the answer.
+
+The time complexity is $O(n^2 + L)$, and the space complexity is $O(n)$, where $n$ is the length of the string array $\textit{words}$, and $L$ is the sum of the lengths of all strings in the string array.
+
+#### Java
+
+```java
+class Solution {
+    public int maxProduct(String[] words) {
+        int n = words.length;
+        int[] mask = new int[n];
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            for (char c : words[i].toCharArray()) {
+                mask[i] |= 1 << (c - 'a');
+            }
+            for (int j = 0; j < i; ++j) {
+                if ((mask[i] & mask[j]) == 0) {
+                    ans = Math.max(ans, words[i].length() * words[j].length());
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2
+
+> **Thinking**
+>
+> Method 1 compares words that share a mask many times. Store the longest word per mask and compare only against seen masks. Duplicate alphabets collapse to one length.
+
+#### Java
+
+```java
+class Solution {
+    public int maxProduct(String[] words) {
+        Map<Integer, Integer> mask = new HashMap<>();
+        int ans = 0;
+        for (var s : words) {
+            int a = s.length();
+            int x = 0;
+            for (char c : s.toCharArray()) {
+                x |= 1 << (c - 'a');
+            }
+            for (var e : mask.entrySet()) {
+                int y = e.getKey(), b = e.getValue();
+                if ((x & y) == 0) {
+                    ans = Math.max(ans, a * b);
+                }
+            }
+            mask.merge(x, a, Math::max);
+        }
+        return ans;
+    }
+}
+```

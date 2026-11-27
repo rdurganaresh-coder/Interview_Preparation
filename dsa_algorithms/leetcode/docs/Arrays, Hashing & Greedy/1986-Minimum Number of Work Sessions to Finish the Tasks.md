@@ -1,0 +1,117 @@
+# 1986. Minimum Number of Work Sessions to Finish the Tasks
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
+
+---
+
+[中文文档](/solution/1900-1999/1986.Minimum%20Number%20of%20Work%20Sessions%20to%20Finish%20the%20Tasks/README.md)
+
+## Description
+
+<p>There are <code>n</code> tasks assigned to you. The task times are represented as an integer array <code>tasks</code> of length <code>n</code>, where the <code>i<sup>th</sup></code> task takes <code>tasks[i]</code> hours to finish. A <strong>work session</strong> is when you work for <strong>at most</strong> <code>sessionTime</code> consecutive hours and then take a break.</p>
+
+<p>You should finish the given tasks in a way that satisfies the following conditions:</p>
+
+<ul>
+	<li>If you start a task in a work session, you must complete it in the <strong>same</strong> work session.</li>
+	<li>You can start a new task <strong>immediately</strong> after finishing the previous one.</li>
+	<li>You may complete the tasks in <strong>any order</strong>.</li>
+</ul>
+
+<p>Given <code>tasks</code> and <code>sessionTime</code>, return <em>the <strong>minimum</strong> number of <strong>work sessions</strong> needed to finish all the tasks following the conditions above.</em></p>
+
+<p>The tests are generated such that <code>sessionTime</code> is <strong>greater</strong> than or <strong>equal</strong> to the <strong>maximum</strong> element in <code>tasks[i]</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> tasks = [1,2,3], sessionTime = 3
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> You can finish the tasks in two work sessions.
+- First work session: finish the first and the second tasks in 1 + 2 = 3 hours.
+- Second work session: finish the third task in 3 hours.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> tasks = [3,1,3,1,1], sessionTime = 8
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> You can finish the tasks in two work sessions.
+- First work session: finish all the tasks except the last one in 3 + 1 + 3 + 1 = 8 hours.
+- Second work session: finish the last task in 1 hour.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> tasks = [1,2,3,4,5], sessionTime = 15
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> You can finish all the tasks in one work session.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == tasks.length</code></li>
+	<li><code>1 &lt;= n &lt;= 14</code></li>
+	<li><code>1 &lt;= tasks[i] &lt;= 10</code></li>
+	<li><code>max(tasks[i]) &lt;= sessionTime &lt;= 15</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: State Compression Dynamic Programming + Subset Enumeration
+
+> **Thinking**
+>
+> Tasks must fill sessions of capacity $\textit{sessionTime}$, using as few sessions as possible. $n\le 14$ admits subset DP.
+>
+> Mark subsets that fit in one session, then for each mask $i$ try every submask $j$: if $j$ is feasible, $f[i]=\min(f[i\oplus j]+1)$.
+>
+> $f[2^n-1]$ is the session count.
+
+We note that $n$ does not exceed $14$, so we can consider using state compression dynamic programming to solve this problem.
+
+We use a binary number $i$ of length $n$ to represent the current task state, where the $j$-th bit of $i$ is $1$ if and only if the $j$-th task is completed. We use $f[i]$ to represent the minimum number of work sessions needed to complete all tasks with state $i$.
+
+We can enumerate all subsets $j$ of $i$, where each bit of the binary representation of $j$ is a subset of the corresponding bit of the binary representation of $i$, i.e., $j \subseteq i$. If the tasks corresponding to $j$ can be completed in one work session, then we can update $f[i]$ using $f[i \oplus j] + 1$, where $i \oplus j$ represents the bitwise XOR of $i$ and $j$.
+
+The final answer is $f[2^n - 1]$.
+
+The time complexity is $O(n 3^n)$, and the space complexity is $O(2^n)$, where $n$ is the number of tasks.
+
+#### Java
+
+```java
+class Solution {
+    public int minSessions(int[] tasks, int sessionTime) {
+        int n = tasks.length;
+        boolean[] ok = new boolean[1 << n];
+        for (int i = 1; i < 1 << n; ++i) {
+            int t = 0;
+            for (int j = 0; j < n; ++j) {
+                if ((i >> j & 1) == 1) {
+                    t += tasks[j];
+                }
+            }
+            ok[i] = t <= sessionTime;
+        }
+        int[] f = new int[1 << n];
+        Arrays.fill(f, 1 << 30);
+        f[0] = 0;
+        for (int i = 1; i < 1 << n; ++i) {
+            for (int j = i; j > 0; j = (j - 1) & i) {
+                if (ok[j]) {
+                    f[i] = Math.min(f[i], f[i ^ j] + 1);
+                }
+            }
+        }
+        return f[(1 << n) - 1];
+    }
+}
+```

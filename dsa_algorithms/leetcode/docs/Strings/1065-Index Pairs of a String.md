@@ -1,0 +1,126 @@
+# 1065. Index Pairs of a String
+
+**Difficulty:** Easy  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/index-pairs-of-a-string/
+
+---
+
+[中文文档](/solution/1000-1099/1065.Index%20Pairs%20of%20a%20String/README.md)
+
+## Description
+
+<p>Given a string <code>text</code> and an array of strings <code>words</code>, return <em>an array of all index pairs </em><code>[i, j]</code><em> so that the substring </em><code>text[i...j]</code><em> is in <code>words</code></em>.</p>
+
+<p>Return the pairs <code>[i, j]</code> in sorted order (i.e., sort them by their first coordinate, and in case of ties sort them by their second coordinate).</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> text = &quot;thestoryofleetcodeandme&quot;, words = [&quot;story&quot;,&quot;fleet&quot;,&quot;leetcode&quot;]
+<strong>Output:</strong> [[3,7],[9,13],[10,17]]
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> text = &quot;ababa&quot;, words = [&quot;aba&quot;,&quot;ab&quot;]
+<strong>Output:</strong> [[0,1],[0,2],[2,3],[2,4]]
+<strong>Explanation:</strong> Notice that matches can overlap, see &quot;aba&quot; is found in [0,2] and [2,4].
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= text.length &lt;= 100</code></li>
+	<li><code>1 &lt;= words.length &lt;= 20</code></li>
+	<li><code>1 &lt;= words[i].length &lt;= 50</code></li>
+	<li><code>text</code> and <code>words[i]</code> consist of lowercase English letters.</li>
+	<li>All the strings of <code>words</code> are <strong>unique</strong>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1
+
+> **Thinking**
+>
+> Every substring of $\textit{text}$ can be tested against the word list. Both sides are short, so a set of words plus all slices $[i,j]$ is enough.
+>
+> The set answers in expected constant time, and enumerating indices already yields sorted pairs.
+
+#### Java
+
+```java
+class Solution {
+    public int[][] indexPairs(String text, String[] words) {
+        Set<String> s = new HashSet<>(Arrays.asList(words));
+        int n = text.length();
+        List<int[]> ans = new ArrayList<>();
+        for (int i = 0; i < n; ++i) {
+            for (int j = i; j < n; ++j) {
+                if (s.contains(text.substring(i, j + 1))) {
+                    ans.add(new int[] {i, j});
+                }
+            }
+        }
+        return ans.toArray(new int[ans.size()][2]);
+    }
+}
+```
+
+### Solution 2
+
+> **Thinking**
+>
+> Trying every slice wastes failed lookups on long text. Shared prefixes let us walk a trie from each start and stop at the first mismatch.
+>
+> Insert the words, then from each $i$ extend the node to the right and record $[i,j]$ at end marks.
+
+#### Java
+
+```java
+class Trie {
+    Trie[] children = new Trie[26];
+    boolean isEnd = false;
+
+    void insert(String word) {
+        Trie node = this;
+        for (char c : word.toCharArray()) {
+            c -= 'a';
+            if (node.children[c] == null) {
+                node.children[c] = new Trie();
+            }
+            node = node.children[c];
+        }
+        node.isEnd = true;
+    }
+}
+
+class Solution {
+    public int[][] indexPairs(String text, String[] words) {
+        Trie trie = new Trie();
+        for (String w : words) {
+            trie.insert(w);
+        }
+        int n = text.length();
+        List<int[]> ans = new ArrayList<>();
+        for (int i = 0; i < n; ++i) {
+            Trie node = trie;
+            for (int j = i; j < n; ++j) {
+                int idx = text.charAt(j) - 'a';
+                if (node.children[idx] == null) {
+                    break;
+                }
+                node = node.children[idx];
+                if (node.isEnd) {
+                    ans.add(new int[] {i, j});
+                }
+            }
+        }
+        return ans.toArray(new int[ans.size()][2]);
+    }
+}
+```

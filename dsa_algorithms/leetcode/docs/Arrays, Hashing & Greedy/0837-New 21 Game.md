@@ -1,0 +1,314 @@
+# 837. New 21 Game
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/new-21-game/
+
+---
+
+[中文文档](/solution/0800-0899/0837.New%2021%20Game/README.md)
+
+## Description
+
+<p>Alice plays the following game, loosely based on the card game <strong>&quot;21&quot;</strong>.</p>
+
+<p>Alice starts with <code>0</code> points and draws numbers while she has less than <code>k</code> points. During each draw, she gains an integer number of points randomly from the range <code>[1, maxPts]</code>, where <code>maxPts</code> is an integer. Each draw is independent and the outcomes have equal probabilities.</p>
+
+<p>Alice stops drawing numbers when she gets <code>k</code> <strong>or more points</strong>.</p>
+
+<p>Return the probability that Alice has <code>n</code> or fewer points.</p>
+
+<p>Answers within <code>10<sup>-5</sup></code> of the actual answer are considered accepted.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 10, k = 1, maxPts = 10
+<strong>Output:</strong> 1.00000
+<strong>Explanation:</strong> Alice gets a single card, then stops.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 6, k = 1, maxPts = 10
+<strong>Output:</strong> 0.60000
+<strong>Explanation:</strong> Alice gets a single card, then stops.
+In 6 out of 10 possibilities, she is at or below 6 points.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 21, k = 17, maxPts = 10
+<strong>Output:</strong> 0.73278
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>0 &lt;= k &lt;= n &lt;= 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= maxPts &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoized Search
+
+> **Thinking**
+>
+> We add a uniform integer in $[1,\textit{maxPts}]$ until the total reaches $k$, and want the probability it is still $\le n$. Expanding every draw is impossible for $k,n\le 10^4$; memoize on the current total.
+>
+> $\textit{dfs}(i)$ is the success probability from total $i$. For $i\ge k$ we stop and test $i\le n$; $i=k-1$ has a closed form. Other states use a difference of neighbors so each transition is $O(1)$ instead of $O(\textit{maxPts})$.
+
+We design a function $\textit{dfs}(i)$, which represents the probability that when the current score is $i$, the final score does not exceed $n$ when we stop drawing numbers. The answer is $\textit{dfs}(0)$.
+
+The calculation method of function $\textit{dfs}(i)$ is as follows:
+
+- If $i \ge k$, then we stop drawing numbers. If $i \le n$, return $1$, otherwise return $0$;
+- Otherwise, we can draw the next number $j$ in the range $[1,..\textit{maxPts}]$, then $\textit{dfs}(i) = \frac{1}{\textit{maxPts}} \sum_{j=1}^{\textit{maxPts}} \textit{dfs}(i+j)$.
+
+Here we can use memoized search to accelerate the calculation.
+
+The time complexity of the above method is $O(k \textit{maxPts})$, which will exceed the time limit, so we need to optimize it.
+
+When $i \lt k$, the following equation holds:
+
+$$
+\begin{aligned}
+\textit{dfs}(i) &= (\textit{dfs}(i + 1) + \textit{dfs}(i + 2) + \cdots + \textit{dfs}(i + \textit{maxPts})) / \textit{maxPts} & (1)
+\end{aligned}
+$$
+
+When $i \lt k - 1$, the following equation holds:
+
+$$
+\begin{aligned}
+\textit{dfs}(i+1) &= (\textit{dfs}(i + 2) + \textit{dfs}(i + 3) + \cdots + \textit{dfs}(i + \textit{maxPts} + 1)) / \textit{maxPts} & (2)
+\end{aligned}
+$$
+
+Therefore, when $i \lt k-1$, we subtract equation $(2)$ from equation $(1)$ to get:
+
+$$
+\begin{aligned}
+\textit{dfs}(i) - \textit{dfs}(i+1) &= (\textit{dfs}(i + 1) - \textit{dfs}(i + \textit{maxPts} + 1)) / \textit{maxPts}
+\end{aligned}
+$$
+
+That is:
+
+$$
+\begin{aligned}
+\textit{dfs}(i) &= \textit{dfs}(i + 1) + (\textit{dfs}(i + 1) - \textit{dfs}(i + \textit{maxPts} + 1)) / \textit{maxPts}
+\end{aligned}
+$$
+
+If $i=k-1$, we have:
+
+$$
+\begin{aligned}
+\textit{dfs}(i) &= \textit{dfs}(k - 1) = (\textit{dfs}(k) + \textit{dfs}(k + 1) + \cdots + \textit{dfs}(k + \textit{maxPts} - 1)) / \textit{maxPts} & (3)
+\end{aligned}
+$$
+
+We assume there are $i$ numbers not exceeding $n$, then $k+i-1 \leq n$, and since $i\leq \textit{maxPts}$, we have $i \leq \min(n-k+1, \textit{maxPts})$, so equation $(3)$ can be written as:
+
+$$
+\begin{aligned}
+\textit{dfs}(k-1) &= \min(n-k+1, \textit{maxPts}) / \textit{maxPts}
+\end{aligned}
+$$
+
+In summary, we have the following state transition equation:
+
+$$
+\begin{aligned}
+\textit{dfs}(i) &= \begin{cases}
+1, & i \geq k, i \leq n \\
+0, & i \geq k, i \gt n \\
+\min(n-k+1, \textit{maxPts}) / \textit{maxPts}, & i = k - 1 \\
+\textit{dfs}(i + 1) + (\textit{dfs}(i + 1) - \textit{dfs}(i + \textit{maxPts} + 1)) / \textit{maxPts}, & i < k - 1
+\end{cases}
+\end{aligned}
+$$
+
+The time complexity is $O(k + \textit{maxPts})$, and the space complexity is $O(k + \textit{maxPts})$, where $k$ is the maximum score.
+
+#### Java
+
+```java
+class Solution {
+    private double[] f;
+    private int n, k, maxPts;
+
+    public double new21Game(int n, int k, int maxPts) {
+        f = new double[k];
+        this.n = n;
+        this.k = k;
+        this.maxPts = maxPts;
+        return dfs(0);
+    }
+
+    private double dfs(int i) {
+        if (i >= k) {
+            return i <= n ? 1 : 0;
+        }
+        if (i == k - 1) {
+            return Math.min(n - k + 1, maxPts) * 1.0 / maxPts;
+        }
+        if (f[i] != 0) {
+            return f[i];
+        }
+        return f[i] = dfs(i + 1) + (dfs(i + 1) - dfs(i + maxPts + 1)) / maxPts;
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> Solution 1 already fills the probabilities from the high scores downward. Each $f[i]$ comes from $f[i+1]$ and the window end $f[i+\textit{maxPts}+1]$.
+>
+> Terminals in $[k,\min(n,k+\textit{maxPts}))$ are $1$. The answer is $f[0]$. Time stays linear.
+
+Solution 1 already fills this table from the high scores downward. The transitions below are the same ones.
+
+Define $f[i]$ to represent the probability that when the current score is $i$, the final score does not exceed $n$ when we stop drawing numbers. The answer is $f[0]$.
+
+When $k \leq i \leq \min(n, k + \textit{maxPts} - 1)$, we have $f[i] = 1$.
+
+When $i = k - 1$, we have $f[i] = \min(n-k+1, \textit{maxPts}) / \textit{maxPts}$.
+
+When $i \lt k - 1$, we have $f[i] = f[i + 1] + (f[i + 1] - f[i + \textit{maxPts} + 1]) / \textit{maxPts}$.
+
+The time complexity is $O(k + \textit{maxPts})$, and the space complexity is $O(k + \textit{maxPts})$, where $k$ is the maximum score.
+
+#### Java
+
+```java
+class Solution {
+    public double new21Game(int n, int k, int maxPts) {
+        if (k == 0) {
+            return 1.0;
+        }
+        double[] f = new double[k + maxPts];
+        for (int i = k; i < Math.min(n + 1, k + maxPts); ++i) {
+            f[i] = 1;
+        }
+        f[k - 1] = Math.min(n - k + 1, maxPts) * 1.0 / maxPts;
+        for (int i = k - 2; i >= 0; --i) {
+            f[i] = f[i + 1] + (f[i + 1] - f[i + maxPts + 1]) / maxPts;
+        }
+        return f[0];
+    }
+}
+```
+
+### Solution 3: Dynamic Programming
+
+> **Thinking**
+>
+> We add a uniform integer in $[1,\textit{maxPts}]$ until the total reaches $k$, and want the probability it is still $\le n$. $k$ can be $10^4$, so expanding every draw is impossible.
+>
+> After the one-step difference, every state except the closed form at $k-1$ reads a larger score first. The chain from $0$ to $k$ has length $k$ and overflows the stack.
+>
+> Larger scores are known if we walk downward. Let $f[i]$ be the success probability from total $i$, write the terminal window as $1$, and fill from $k-2$ down to $0$.
+
+Let $f[i]$ be the probability that a current score of $i$ ends at most $n$. The answer is $f[0]$.
+
+The value of $f[i]$ is as follows:
+
+- If $i \ge k$, drawing stops. The value is $1$ when $i \le n$, and $0$ otherwise;
+- Otherwise the next draw $j$ lies in $[1,..\textit{maxPts}]$, so $f[i] = \frac{1}{\textit{maxPts}} \sum_{j=1}^{\textit{maxPts}} f[i+j]$.
+
+Every state depends only on a larger score, so fill from $k - 2$ down to $0$. When $k = 0$ no draw has started, and the answer is $1$.
+
+The time complexity of the above method is $O(k \textit{maxPts})$, which will exceed the time limit, so we need to optimize it.
+
+When $i \lt k$, the following equation holds:
+
+$$
+\begin{aligned}
+f[i] &= (f[i + 1] + f[i + 2] + \cdots + f[i + \textit{maxPts}]) / \textit{maxPts} & (1)
+\end{aligned}
+$$
+
+When $i \lt k - 1$, the following equation holds:
+
+$$
+\begin{aligned}
+f[i+1] &= (f[i + 2] + f[i + 3] + \cdots + f[i + \textit{maxPts} + 1]) / \textit{maxPts} & (2)
+\end{aligned}
+$$
+
+Therefore, when $i \lt k-1$, we subtract equation $(2)$ from equation $(1)$ to get:
+
+$$
+\begin{aligned}
+f[i] - f[i+1] &= (f[i + 1] - f[i + \textit{maxPts} + 1]) / \textit{maxPts}
+\end{aligned}
+$$
+
+That is:
+
+$$
+\begin{aligned}
+f[i] &= f[i + 1] + (f[i + 1] - f[i + \textit{maxPts} + 1]) / \textit{maxPts}
+\end{aligned}
+$$
+
+If $i=k-1$, we have:
+
+$$
+\begin{aligned}
+f[i] &= f[k - 1] = (f[k] + f[k + 1] + \cdots + f[k + \textit{maxPts} - 1]) / \textit{maxPts} & (3)
+\end{aligned}
+$$
+
+We assume there are $i$ numbers not exceeding $n$, then $k+i-1 \leq n$, and since $i\leq \textit{maxPts}$, we have $i \leq \min(n-k+1, \textit{maxPts})$, so equation $(3)$ can be written as:
+
+$$
+\begin{aligned}
+f[k-1] &= \min(n-k+1, \textit{maxPts}) / \textit{maxPts}
+\end{aligned}
+$$
+
+In summary, we have the following state transition equation:
+
+$$
+\begin{aligned}
+f[i] &= \begin{cases}
+1, & i \geq k, i \leq n \\
+0, & i \geq k, i \gt n \\
+\min(n-k+1, \textit{maxPts}) / \textit{maxPts}, & i = k - 1 \\
+f[i + 1] + (f[i + 1] - f[i + \textit{maxPts} + 1]) / \textit{maxPts}, & i < k - 1
+\end{cases}
+\end{aligned}
+$$
+
+The time complexity is $O(k + \textit{maxPts})$, and the space complexity is $O(k + \textit{maxPts})$, where $k$ is the maximum score.
+
+#### Java
+
+```java
+class Solution {
+    public double new21Game(int n, int k, int maxPts) {
+        if (k == 0) {
+            return 1.0;
+        }
+        double[] f = new double[k + maxPts];
+        for (int i = k; i < Math.min(n + 1, k + maxPts); ++i) {
+            f[i] = 1;
+        }
+        f[k - 1] = Math.min(n - k + 1, maxPts) * 1.0 / maxPts;
+        for (int i = k - 2; i >= 0; --i) {
+            f[i] = f[i + 1] + (f[i + 1] - f[i + maxPts + 1]) / maxPts;
+        }
+        return f[0];
+    }
+}
+```

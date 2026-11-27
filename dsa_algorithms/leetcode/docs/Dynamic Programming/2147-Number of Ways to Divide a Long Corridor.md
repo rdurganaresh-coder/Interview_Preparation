@@ -1,0 +1,208 @@
+# 2147. Number of Ways to Divide a Long Corridor
+
+**Difficulty:** Hard  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/number-of-ways-to-divide-a-long-corridor/
+
+---
+
+[中文文档](/solution/2100-2199/2147.Number%20of%20Ways%20to%20Divide%20a%20Long%20Corridor/README.md)
+
+## Description
+
+<p>Along a long library corridor, there is a line of seats and decorative plants. You are given a <strong>0-indexed</strong> string <code>corridor</code> of length <code>n</code> consisting of letters <code>&#39;S&#39;</code> and <code>&#39;P&#39;</code> where each <code>&#39;S&#39;</code> represents a seat and each <code>&#39;P&#39;</code> represents a plant.</p>
+
+<p>One room divider has <strong>already</strong> been installed to the left of index <code>0</code>, and <strong>another</strong> to the right of index <code>n - 1</code>. Additional room dividers can be installed. For each position between indices <code>i - 1</code> and <code>i</code> (<code>1 &lt;= i &lt;= n - 1</code>), at most one divider can be installed.</p>
+
+<p>Divide the corridor into non-overlapping sections, where each section has <strong>exactly two seats</strong> with any number of plants. There may be multiple ways to perform the division. Two ways are <strong>different</strong> if there is a position with a room divider installed in the first way but not in the second way.</p>
+
+<p>Return <em>the number of ways to divide the corridor</em>. Since the answer may be very large, return it <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>. If there is no way, return <code>0</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2100-2199/2147.Number%20of%20Ways%20to%20Divide%20a%20Long%20Corridor/images/1.png" style="width: 410px; height: 199px;" />
+<pre>
+<strong>Input:</strong> corridor = &quot;SSPPSPS&quot;
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are 3 different ways to divide the corridor.
+The black bars in the above image indicate the two room dividers already installed.
+Note that in each of the ways, <strong>each</strong> section has exactly <strong>two</strong> seats.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2100-2199/2147.Number%20of%20Ways%20to%20Divide%20a%20Long%20Corridor/images/2.png" style="width: 357px; height: 68px;" />
+<pre>
+<strong>Input:</strong> corridor = &quot;PPSPSP&quot;
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> There is only 1 way to divide the corridor, by not installing any additional dividers.
+Installing any would create some section that does not have exactly two seats.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2100-2199/2147.Number%20of%20Ways%20to%20Divide%20a%20Long%20Corridor/images/3.png" style="width: 115px; height: 68px;" />
+<pre>
+<strong>Input:</strong> corridor = &quot;S&quot;
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no way to divide the corridor because there will always be a section that does not have exactly two seats.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == corridor.length</code></li>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>corridor[i]</code> is either <code>&#39;S&#39;</code> or <code>&#39;P&#39;</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization Search
+
+> **Thinking**
+>
+> Each section must contain exactly two seats, and a divider may sit on plants between sections. The corridor is long; choosing whether to close a section after two seats yields overlapping subproblems.
+>
+> State $(i,k)$ is the number of ways at position $i$ with $k$ seats in the open section. A seat increments $k$; $k>2$ is invalid; when $k=2$ we may cut (reset $k$) or continue. Memoization makes the state space $O(n)$.
+>
+> Return $\textit{dfs}(0,0)$.
+
+We design a function $\textit{dfs}(i, k)$, which represents the number of ways to partition the corridor at the $i$-th position, having already placed $k$ screens. Then the answer is $\textit{dfs}(0, 0)$.
+
+The calculation process of the function $\textit{dfs}(i, k)$ is as follows:
+
+If $i \geq \textit{len}(\textit{corridor})$, it means the corridor has been fully traversed. At this point, if $k = 2$, it indicates that a valid partitioning scheme has been found, so return $1$. Otherwise, return $0$.
+
+Otherwise, we need to consider the situation at the current position $i$:
+
+- If $\textit{corridor}[i] = \text{'S'}$, it means the current position is a seat, and we increment $k$ by $1$.
+- If $k > 2$, it means the number of screens placed at the current position exceeds $2$, so return $0$.
+- Otherwise, we can choose not to place a screen, i.e., $\textit{dfs}(i + 1, k)$. If $k = 2$, we can also choose to place a screen, i.e., $\textit{dfs}(i + 1, 0)$. We add the results of these two cases and take the result modulo $10^9 + 7$, i.e., $\textit{ans} = (\textit{ans} + \textit{dfs}(i + 1, k)) \bmod \textit{mod}$.
+
+Finally, we return $\textit{dfs}(0, 0)$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the corridor.
+
+#### Java
+
+```java
+class Solution {
+    private int n;
+    private char[] s;
+    private Integer[][] f;
+    private final int mod = (int) 1e9 + 7;
+
+    public int numberOfWays(String corridor) {
+        s = corridor.toCharArray();
+        n = s.length;
+        f = new Integer[n][3];
+        return dfs(0, 0);
+    }
+
+    private int dfs(int i, int k) {
+        if (i >= n) {
+            return k == 2 ? 1 : 0;
+        }
+        if (f[i][k] != null) {
+            return f[i][k];
+        }
+        k += s[i] == 'S' ? 1 : 0;
+        if (k > 2) {
+            return 0;
+        }
+        int ans = dfs(i + 1, k);
+        if (k == 2) {
+            ans = (ans + dfs(i + 1, 0)) % mod;
+        }
+        return f[i][k] = ans;
+    }
+}
+```
+
+### Solution 2: Mathematics
+
+> **Thinking**
+>
+> Solution 1 uses linear memory. Seats must pair, and the plants between consecutive pairs multiply independently.
+>
+> A single pass tracks the seat count and the previous seat; each time a new pair starts, multiply by the gap after the previous pair. Zero or an odd number of seats yields $0$.
+>
+> The extra memory is constant.
+
+We can divide every two seats into a group. Between two adjacent groups of seats, if the distance between the last seat of the previous group and the first seat of the next group is $x$, then there are $x$ ways to place the screen.
+
+We traverse the corridor, using a variable $\textit{cnt}$ to record the current number of seats, and a variable $\textit{last}$ to record the position of the last seat.
+
+When we encounter a seat, we increment $\textit{cnt}$ by $1$. If $\textit{cnt}$ is greater than $2$ and $\textit{cnt}$ is odd, then we need to place a screen between $\textit{last}$ and the current seat. The number of ways to do this is $\textit{ans} \times (i - \textit{last})$, where $\textit{ans}$ is the previous number of ways. Then, we update $\textit{last}$ to the current seat's position $i$.
+
+Finally, if $\textit{cnt}$ is greater than $0$ and $\textit{cnt}$ is even, return $\textit{ans}$; otherwise, return $0$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the corridor.
+
+#### Java
+
+```java
+class Solution {
+    public int numberOfWays(String corridor) {
+        final int mod = (int) 1e9 + 7;
+        long ans = 1, cnt = 0, last = 0;
+        for (int i = 0; i < corridor.length(); ++i) {
+            if (corridor.charAt(i) == 'S') {
+                if (++cnt > 2 && cnt % 2 == 1) {
+                    ans = ans * (i - last) % mod;
+                }
+                last = i;
+            }
+        }
+        return cnt > 0 && cnt % 2 == 0 ? (int) ans : 0;
+    }
+}
+```
+
+### Solution 3: Dynamic Programming
+
+> **Thinking**
+>
+> Each section must contain exactly two seats, and a divider may sit on the plants between sections. Trying every pattern of cuts is exponential, and the corridor length is up to $10^5$.
+>
+> The number of ways from position $i$ with $k$ seats already in the open section depends only on position $i+1$. A search of that recurrence still calls $i+1$ before it returns, so the chain has depth $n$ and overflows the stack.
+>
+> The later position is known if we walk backward. Let $f[i][k]$ be that number of ways. A seat moves the count to $k+1$; a count above $2$ is $0$; when the count is $2$ we add the choice of starting a new section.
+>
+> Fill $i$ from $n-1$ down to $0$, with $f[n][2]=1$, and return $f[0][0]$.
+
+Let $f[i][k]$ be the number of ways to divide the suffix of the corridor starting at position $i$, when the open section already contains $k$ seats. The answer is $f[0][0]$.
+
+If $i = n$, the corridor is finished. The value is $1$ when $k = 2$ and $0$ otherwise, so $f[n][2] = 1$.
+
+Otherwise, let $nk$ be $k+1$ when $\textit{corridor}[i]$ is a seat and $k$ when it is a plant. If $nk > 2$, this section already has a third seat, so $f[i][k] = 0$. Otherwise we can continue the section, which contributes $f[i + 1][nk]$. When $nk = 2$ we may also place a divider and start the next section empty, which contributes $f[i + 1][0]$. The two contributions are added modulo $10^9 + 7$.
+
+We calculate $f$ from $i = n - 1$ down to $0$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the corridor.
+
+#### Java
+
+```java
+class Solution {
+    public int numberOfWays(String corridor) {
+        final int mod = (int) 1e9 + 7;
+        int n = corridor.length();
+        int[][] f = new int[n + 1][3];
+        f[n][2] = 1;
+        for (int i = n - 1; i >= 0; --i) {
+            for (int k = 0; k < 3; ++k) {
+                int nk = k + (corridor.charAt(i) == 'S' ? 1 : 0);
+                if (nk > 2) {
+                    continue;
+                }
+                f[i][k] = f[i + 1][nk];
+                if (nk == 2) {
+                    f[i][k] = (f[i][k] + f[i + 1][0]) % mod;
+                }
+            }
+        }
+        return f[0][0];
+    }
+}
+```

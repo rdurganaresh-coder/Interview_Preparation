@@ -1,0 +1,140 @@
+# 53. Maximum Subarray
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-subarray/
+
+---
+
+[中文文档](/solution/0000-0099/0053.Maximum%20Subarray/README.md)
+
+## Description
+
+<p>Given an integer array <code>nums</code>, find the <span data-keyword="subarray-nonempty">subarray</span> with the largest sum, and return <em>its sum</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [-2,1,-3,4,-1,2,1,-5,4]
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> The subarray [4,-1,2,1] has the largest sum 6.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The subarray [1] has the largest sum 1.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5,4,-1,7,8]
+<strong>Output:</strong> 23
+<strong>Explanation:</strong> The subarray [5,4,-1,7,8] has the largest sum 23.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Follow up:</strong> If you have figured out the <code>O(n)</code> solution, try coding another solution using the <strong>divide and conquer</strong> approach, which is more subtle.</p>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> The first idea is to enumerate every pair of endpoints and sum, in $O(n^2)$ or $O(n^3)$. $n \le 10^5$ will time out.
+>
+> The waste is recomputing overlapping subarrays. With the right endpoint fixed at $i$, the best left end either continues the previous segment (if its sum is positive) or starts over at $i$.
+>
+> So let $f[i]$ be the best sum ending at $i$. It depends only on $f[i-1]$, so one rolling variable suffices; the answer is the max along the way.
+
+We define $f[i]$ to represent the maximum sum of a contiguous subarray ending at element $\textit{nums}[i]$. Initially, $f[0] = \textit{nums}[0]$. The final answer we seek is $\max_{0 \leq i < n} f[i]$.
+
+Consider $f[i]$ for $i \geq 1$. Its state transition equation is:
+
+$$
+f[i] = \max(f[i - 1] + \textit{nums}[i], \textit{nums}[i])
+$$
+
+That is:
+
+$$
+f[i] = \max(f[i - 1], 0) + \textit{nums}[i]
+$$
+
+Since $f[i]$ is only related to $f[i - 1]$, we can use a single variable $f$ to maintain the current value of $f[i]$ and perform the state transition. The answer is $\max_{0 \leq i < n} f$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int ans = nums[0];
+        for (int i = 1, f = nums[0]; i < nums.length; ++i) {
+            f = Math.max(f, 0) + nums[i];
+            ans = Math.max(ans, f);
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Divide and Conquer
+
+> **Thinking**
+>
+> Solution 1 is already $O(n)$ time and $O(1)$ space. The follow-up asks for divide and conquer, but DP's recurrence is linear in the right endpoint and does not split into disjoint halves.
+>
+> What it lacks is another observation: the best subarray lies entirely on the left, entirely on the right, or crosses the midpoint. Crossing means a max suffix on the left plus a max prefix on the right. Time becomes $O(n \log n)$; we use it for the follow-up, not for speed.
+
+Split the array at the midpoint. The answer is the max of the left half, the right half, and the best subarray that crosses the midpoint (max suffix of the left plus max prefix of the right).
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int maxSubArray(int[] nums) {
+        return maxSub(nums, 0, nums.length - 1);
+    }
+
+    private int maxSub(int[] nums, int left, int right) {
+        if (left == right) {
+            return nums[left];
+        }
+        int mid = (left + right) >>> 1;
+        int lsum = maxSub(nums, left, mid);
+        int rsum = maxSub(nums, mid + 1, right);
+        return Math.max(Math.max(lsum, rsum), crossMaxSub(nums, left, mid, right));
+    }
+
+    private int crossMaxSub(int[] nums, int left, int mid, int right) {
+        int lsum = 0, rsum = 0;
+        int lmx = Integer.MIN_VALUE, rmx = Integer.MIN_VALUE;
+        for (int i = mid; i >= left; --i) {
+            lsum += nums[i];
+            lmx = Math.max(lmx, lsum);
+        }
+        for (int i = mid + 1; i <= right; ++i) {
+            rsum += nums[i];
+            rmx = Math.max(rmx, rsum);
+        }
+        return lmx + rmx;
+    }
+}
+```

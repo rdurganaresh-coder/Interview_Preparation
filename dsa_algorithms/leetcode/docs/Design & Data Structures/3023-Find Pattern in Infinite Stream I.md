@@ -1,0 +1,113 @@
+# 3023. Find Pattern in Infinite Stream I
+
+**Difficulty:** Medium  
+**Category:** Design & Data Structures  
+**LeetCode:** https://leetcode.com/problems/find-pattern-in-infinite-stream-i/
+
+---
+
+[中文文档](/solution/3000-3099/3023.Find%20Pattern%20in%20Infinite%20Stream%20I/README.md)
+
+## Description
+
+<p>You are given a binary array <code>pattern</code> and an object <code>stream</code> of class <code>InfiniteStream</code> representing a <strong>0-indexed</strong> infinite stream of bits.</p>
+
+<p>The class <code>InfiniteStream</code> contains the following function:</p>
+
+<ul>
+	<li><code>int next()</code>: Reads a <strong>single</strong> bit (which is either <code>0</code> or <code>1</code>) from the stream and returns it.</li>
+</ul>
+
+<p>Return <em>the <strong>first starting</strong> index where the pattern matches the bits read from the stream</em>. For example, if the pattern is <code>[1, 0]</code>, the first match is the highlighted part in the stream <code>[0, <strong><u>1, 0</u></strong>, 1, ...]</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> stream = [1,1,1,0,1,1,1,...], pattern = [0,1]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The first occurrence of the pattern [0,1] is highlighted in the stream [1,1,1,<strong><u>0,1</u></strong>,...], which starts at index 3.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> stream = [0,0,0,0,...], pattern = [0]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> The first occurrence of the pattern [0] is highlighted in the stream [<strong><u>0</u></strong>,...], which starts at index 0.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> stream = [1,0,1,1,0,1,1,0,1,...], pattern = [1,1,0,1]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The first occurrence of the pattern [1,1,0,1] is highlighted in the stream [1,0,<strong><u>1,1,0,1</u></strong>,...], which starts at index 2.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= pattern.length &lt;= 100</code></li>
+	<li><code>pattern</code> consists only of <code>0</code> and <code>1</code>.</li>
+	<li><code>stream</code> consists only of <code>0</code> and <code>1</code>.</li>
+	<li>The input is generated such that the pattern&#39;s start index exists in the first <code>10<sup>5</sup></code> bits of the stream.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Bit Manipulation + Sliding Window
+
+> **Thinking**
+>
+> The pattern has length at most $100$ and the stream is unbounded, so we cannot buffer everything. A naive compare at every start can do about $10^7$ comparisons.
+>
+> Length $100$ fits in two $64$-bit integers. The stream keeps a sliding window of the same width.
+>
+> Each new bit shifts the right half; the overflow bit enters the left half. Once the window is full we compare both integers.
+
+We notice that the length of the array $\textit{pattern}$ does not exceed $100$, therefore, we can use two $64$-bit integers $a$ and $b$ to represent the binary numbers of the left and right halves of $\textit{pattern}$.
+
+Next, we traverse the data stream, also maintaining two $64$-bit integers $x$ and $y$ to represent the binary numbers of the current window of the length of $\textit{pattern}$. If the current length reaches the window length, we compare whether $a$ and $x$ are equal, and whether $b$ and $y$ are equal. If they are, we return the index of the current data stream.
+
+The time complexity is $O(n + m)$, and the space complexity is $O(1)$, where $n$ and $m$ are the number of elements in the data stream and $\textit{pattern}$ respectively.
+
+#### Java
+
+```java
+/**
+ * Definition for an infinite stream.
+ * class InfiniteStream {
+ *     public InfiniteStream(int[] bits);
+ *     public int next();
+ * }
+ */
+class Solution {
+    public int findPattern(InfiniteStream infiniteStream, int[] pattern) {
+        long a = 0, b = 0;
+        int m = pattern.length;
+        int half = m >> 1;
+        long mask1 = (1L << half) - 1;
+        long mask2 = (1L << (m - half)) - 1;
+        for (int i = 0; i < half; ++i) {
+            a |= (long) pattern[i] << (half - 1 - i);
+        }
+        for (int i = half; i < m; ++i) {
+            b |= (long) pattern[i] << (m - 1 - i);
+        }
+        long x = 0, y = 0;
+        for (int i = 1;; ++i) {
+            int v = infiniteStream.next();
+            y = y << 1 | v;
+            v = (int) ((y >> (m - half)) & 1);
+            y &= mask2;
+            x = x << 1 | v;
+            x &= mask1;
+            if (i >= m && a == x && b == y) {
+                return i - m;
+            }
+        }
+    }
+}
+```

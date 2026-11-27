@@ -1,0 +1,99 @@
+# 9. Palindrome Number
+
+**Difficulty:** Easy  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/palindrome-number/
+
+---
+
+[中文文档](/solution/0000-0099/0009.Palindrome%20Number/README.md)
+
+## Description
+
+<p>Given an integer <code>x</code>, return <code>true</code> if <code>x</code> is a <span data-keyword="palindrome-integer"><strong>palindrome</strong></span>, and <code>false</code> otherwise.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> x = 121
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 121 reads as 121 from left to right and from right to left.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> x = -121
+<strong>Output:</strong> false
+<strong>Explanation:</strong> From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> x = 10
+<strong>Output:</strong> false
+<strong>Explanation:</strong> Reads 01 from right to left. Therefore it is not a palindrome.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>-2<sup>31</sup>&nbsp;&lt;= x &lt;= 2<sup>31</sup>&nbsp;- 1</code></li>
+</ul>
+
+<p>&nbsp;</p>
+<strong>Follow up:</strong> Could you solve it without converting the integer to a string?
+
+## Solutions
+
+### Solution 1: Reverse Half of the Number
+
+> **Thinking**
+>
+> Converting to a string and comparing with its reverse is the obvious idea; the follow-up asks us not to. Reversing the whole $x$ and comparing would also overflow 32-bit integers.
+>
+> We only need half: keep appending $x$’s last digit onto $y$ until $y$ is no longer smaller than the remaining prefix. A negative number cannot be a palindrome; a nonzero number ending in $0$ would drop that zero when reversed, so those are false as well.
+>
+> The loop stops when the two halves have the same length. Even length compares $x$ with $y$; odd length leaves the middle digit on $y$, so we compare $x$ with $y/10$.
+
+First, we determine special cases:
+
+- If $x < 0$, then $x$ is not a palindrome, directly return `false`;
+- If $x > 0$ and the last digit of $x$ is $0$, then $x$ is not a palindrome, directly return `false`;
+- If the last digit of $x$ is not $0$, then $x$ might be a palindrome, continue the following steps.
+
+We reverse the second half of $x$ and compare it with the first half. If they are equal, then $x$ is a palindrome, otherwise, $x$ is not a palindrome.
+
+For example, for $x = 1221$, we can reverse the second half from "21" to "12" and compare it with the first half "12". Since they are equal, we know that $x$ is a palindrome.
+
+Let's see how to reverse the second half.
+
+For the number $1221$, if we perform $1221 \bmod 10$, we will get the last digit $1$. To get the second last digit, we can first remove the last digit from $1221$ by dividing by $10$, $1221 / 10 = 122$, then get the remainder of the previous result divided by $10$, $122 \bmod 10 = 2$, to get the second last digit.
+
+If we continue this process, we will get more reversed digits.
+
+By continuously multiplying the last digit to the variable $y$, we can get the number in reverse order.
+
+In the code implementation, we can repeatedly "take out" the last digit of $x$ and "add" it to the end of $y$, loop until $y \ge x$. If at this time $x = y$, or $x = y / 10$, then $x$ is a palindrome.
+
+The time complexity is $O(\log_{10}(n))$, and the space complexity is $O(1)$, where $n$ is $x$. For each iteration, we will divide the input by $10$, so the time complexity is $O(\log_{10}(n))$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean isPalindrome(int x) {
+        if (x < 0 || (x > 0 && x % 10 == 0)) {
+            return false;
+        }
+        int y = 0;
+        for (; y < x; x /= 10) {
+            y = y * 10 + x % 10;
+        }
+        return x == y || x == y / 10;
+    }
+}
+```

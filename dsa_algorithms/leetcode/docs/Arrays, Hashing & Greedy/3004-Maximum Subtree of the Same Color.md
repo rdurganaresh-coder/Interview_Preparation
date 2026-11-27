@@ -1,0 +1,192 @@
+# 3004. Maximum Subtree of the Same Color
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-subtree-of-the-same-color/
+
+---
+
+[中文文档](/solution/3000-3099/3004.Maximum%20Subtree%20of%20the%20Same%20Color/README.md)
+
+## Description
+
+<p>You are given a 2D integer array <code>edges</code> representing a tree with <code>n</code> nodes, numbered from <code>0</code> to <code>n - 1</code>, rooted at node <code>0</code>, where <code>edges[i] = [u<sub>i</sub>, v<sub>i</sub>]</code> means there is an edge between the nodes <code>v<sub>i</sub></code> and <code>u<sub>i</sub></code>.</p>
+
+<p>You are also given a <strong>0-indexed</strong> integer array <code>colors</code> of size <code>n</code>, where <code>colors[i]</code> is the color assigned to node <code>i</code>.</p>
+
+<p>We want to find a node <code>v</code> such that every node in the <span data-keyword="subtree-of-node">subtree</span> of <code>v</code> has the <strong>same</strong> color.</p>
+
+<p>Return <em>the size of such subtree with the <strong>maximum</strong> number of nodes possible.</em></p>
+
+<p>&nbsp;</p>
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3000-3099/3004.Maximum%20Subtree%20of%20the%20Same%20Color/images/20231216-134026.png" style="padding: 10px; background: rgb(255, 255, 255); border-radius: 0.5rem; width: 221px; height: 132px;" /></strong></p>
+
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> edges = [[0,1],[0,2],[0,3]], colors = [1,1,2,3]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> Each color is represented as: 1 -&gt; Red, 2 -&gt; Green, 3 -&gt; Blue. We can see that the subtree rooted at node 0 has children with different colors. Any other subtree is of the same color and has a size of 1. Hence, we return 1.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> edges = [[0,1],[0,2],[0,3]], colors = [1,1,1,1]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The whole tree has the same color, and the subtree rooted at node 0 has the most number of nodes which is 4. Hence, we return 4.
+</pre>
+
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3000-3099/3004.Maximum%20Subtree%20of%20the%20Same%20Color/images/20231216-134017.png" style="padding: 10px; background: rgb(255, 255, 255); border-radius: 0.5rem; width: 221px; height: 221px;" /></strong></p>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> edges = [[0,1],[0,2],[2,3],[2,4]], colors = [1,2,3,3,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Each color is represented as: 1 -&gt; Red, 2 -&gt; Green, 3 -&gt; Blue. We can see that the subtree rooted at node 0 has children with different colors. Any other subtree is of the same color, but the subtree rooted at node 2 has a size of 3 which is the maximum. Hence, we return 3.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == edges.length + 1</code></li>
+	<li><code>1 &lt;= n &lt;= 5 * 10<sup>4</sup></code></li>
+	<li><code>edges[i] == [u<sub>i</sub>, v<sub>i</sub>]</code></li>
+	<li><code>0 &lt;= u<sub>i</sub>, v<sub>i</sub> &lt; n</code></li>
+	<li><code>colors.length == n</code></li>
+	<li><code>1 &lt;= colors[i] &lt;= 10<sup>5</sup></code></li>
+	<li>The input is generated such that the graph represented by <code>edges</code> is a tree.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS
+
+> **Thinking**
+>
+> The tree has $n \le 5 \times 10^4$ nodes, so rechecking every subtree for a single color would repeat work.
+>
+> A subtree is monochromatic iff the root matches every child and every child’s subtree is itself monochromatic. Sizes add up in post-order.
+>
+> One DFS therefore returns a boolean and maintains $\textit{size}$. Only a fully monochromatic subtree updates the answer with its size.
+
+First, according to the edge information given in the problem, we construct an adjacency list $g$, where $g[a]$ represents all adjacent nodes of node $a$. Then we create an array $\textit{size}$ of length $n$, where $\textit{size}[a]$ represents the number of nodes in the subtree with node $a$ as the root.
+
+Next, we design a function $\textit{dfs}(a, fa)$, which will return whether the subtree with node $a$ as the root meets the requirements of the problem. The execution process of the function $\textit{dfs}(a, fa)$ is as follows:
+
+- First, we use a variable $ok$ to record whether the subtree with node $a$ as the root meets the requirements of the problem, and initially $ok$ is $\textit{true}$.
+- Then, we traverse all adjacent nodes $b$ of node $a$. If $b$ is not the parent node $fa$ of $a$, then we recursively call $\textit{dfs}(b, a)$, save the return value into the variable $t$, and update $ok$ to the value of $ok$ and $\textit{colors}[a] = \textit{colors}[b] \land t$, where $\land$ represents logical AND operation. Then, we update $\textit{size}[a] = \textit{size}[a] + \textit{size}[b]$.
+- After that, we judge the value of $ok$. If $ok$ is $\textit{true}$, then we update the answer $\textit{ans} = \max(\textit{ans}, \textit{size}[a])$.
+- Finally, we return the value of $ok$.
+
+We call $\textit{dfs}(0, -1)$, where $0$ represents the root node number, and $-1$ represents that the root node has no parent node. The final answer is $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes.
+
+#### Java
+
+```java
+class Solution {
+    private List<Integer>[] g;
+    private int[] colors;
+    private int[] size;
+    private int ans;
+
+    public int maximumSubtreeSize(int[][] edges, int[] colors) {
+        int n = edges.length + 1;
+        g = new List[n];
+        size = new int[n];
+        this.colors = colors;
+        Arrays.fill(size, 1);
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        dfs(0, -1);
+        return ans;
+    }
+
+    private boolean dfs(int a, int fa) {
+        boolean ok = true;
+        for (int b : g[a]) {
+            if (b != fa) {
+                boolean t = dfs(b, a);
+                ok = ok && colors[a] == colors[b] && t;
+                size[a] += size[b];
+            }
+        }
+        if (ok) {
+            ans = Math.max(ans, size[a]);
+        }
+        return ok;
+    }
+}
+```
+
+### Solution 2: Explicit Stack
+
+> **Thinking**
+>
+> The tree has $n \le 5 \times 10^4$ nodes, so rechecking every subtree for a single color would repeat work. On a chain the first recursive call always follows the only child, so the depth is $n$ and exceeds the default recursion limit.
+>
+> A subtree is monochromatic only when the root matches every child and every child's subtree is itself monochromatic. That test waits until the children are finished.
+>
+> An explicit stack walks the tree in postorder. On entry, push the exit marker and then the children. On exit, combine the children's colors and sizes, and update the answer only when the whole subtree is one color.
+
+First, according to the edge information given in the problem, we construct an adjacency list $g$, where $g[a]$ represents all adjacent nodes of node $a$. Then we create an array $\textit{size}$ of length $n$, where $\textit{size}[a]$ represents the number of nodes in the subtree with node $a$ as the root.
+
+An explicit stack walks the tree from root $0$ in postorder. Entering a node pushes that node's exit marker and then its children, so the children finish first. Every node's $\textit{size}$ starts at $1$. On exit, $ok$ records whether the subtree is monochromatic and starts true. For each child $b$, $ok$ becomes the conjunction of its current value, $\textit{colors}[a] = \textit{colors}[b]$, and the child's own monochromatic flag, and $\textit{size}[b]$ is added to $\textit{size}[a]$. If $ok$ is still true, $\textit{size}[a]$ updates the answer.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumSubtreeSize(int[][] edges, int[] colors) {
+        int n = edges.length + 1;
+        List<Integer>[] g = new List[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        int[] size = new int[n];
+        Arrays.fill(size, 1);
+        boolean[] ok = new boolean[n];
+        int ans = 0;
+        Deque<int[]> stk = new ArrayDeque<>();
+        stk.push(new int[] {0, -1, 0});
+        while (!stk.isEmpty()) {
+            int[] cur = stk.pop();
+            int a = cur[0], fa = cur[1], state = cur[2];
+            if (state == 0) {
+                stk.push(new int[] {a, fa, 1});
+                for (int b : g[a]) {
+                    if (b != fa) {
+                        stk.push(new int[] {b, a, 0});
+                    }
+                }
+            } else {
+                boolean good = true;
+                for (int b : g[a]) {
+                    if (b != fa) {
+                        good = good && colors[a] == colors[b] && ok[b];
+                        size[a] += size[b];
+                    }
+                }
+                if (good) {
+                    ans = Math.max(ans, size[a]);
+                }
+                ok[a] = good;
+            }
+        }
+        return ans;
+    }
+}
+```

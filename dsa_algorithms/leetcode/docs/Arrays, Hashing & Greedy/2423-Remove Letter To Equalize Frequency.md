@@ -1,0 +1,100 @@
+# 2423. Remove Letter To Equalize Frequency
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/remove-letter-to-equalize-frequency/
+
+---
+
+[中文文档](/solution/2400-2499/2423.Remove%20Letter%20To%20Equalize%20Frequency/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> string <code>word</code>, consisting of lowercase English letters. You need to select <strong>one</strong> index and <strong>remove</strong> the letter at that index from <code>word</code> so that the <strong>frequency</strong> of every letter present in <code>word</code> is equal.</p>
+
+<p>Return<em> </em><code>true</code><em> if it is possible to remove one letter so that the frequency of all letters in </em><code>word</code><em> are equal, and </em><code>false</code><em> otherwise</em>.</p>
+
+<p><strong>Note:</strong></p>
+
+<ul>
+	<li>The <b>frequency</b> of a letter <code>x</code> is the number of times it occurs in the string.</li>
+	<li>You <strong>must</strong> remove exactly one letter and cannot choose to do nothing.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> word = &quot;abcc&quot;
+<strong>Output:</strong> true
+<strong>Explanation:</strong> Select index 3 and delete it: word becomes &quot;abc&quot; and each character has a frequency of 1.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> word = &quot;aazz&quot;
+<strong>Output:</strong> false
+<strong>Explanation:</strong> We must delete a character, so either the frequency of &quot;a&quot; is 1 and the frequency of &quot;z&quot; is 2, or vice versa. It is impossible to make all present letters have equal frequency.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= word.length &lt;= 100</code></li>
+	<li><code>word</code> consists of lowercase English letters only.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Counting + Enumeration
+
+> **Thinking**
+>
+> With $|\textit{word}|\le 100$, we can try deleting each distinct letter. Equality of remaining frequencies depends only on $26$ counts.
+>
+> Count letters, then for each key decrement once and test whether the positive frequencies form a singleton set. Restore and try the next letter.
+
+First, we use a hash table or an array of length $26$ named $\textit{cnt}$ to count the number of occurrences of each letter in the string.
+
+Next, we enumerate the $26$ letters. If letter $c$ appears in the string, we decrement its count by one, then check whether the counts of the remaining letters are the same. If they are, return `true`. Otherwise, increment the count of $c$ by one and continue to enumerate the next letter.
+
+If the enumeration ends, it means that it is impossible to make the counts of the remaining letters the same by deleting one letter, so return `false`.
+
+The time complexity is $O(n + C^2)$, and the space complexity is $O(C)$, where $n$ is the length of the string $\textit{word}$, and $C$ is the size of the character set. In this problem, $C = 26$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean equalFrequency(String word) {
+        int[] cnt = new int[26];
+        for (int i = 0; i < word.length(); ++i) {
+            ++cnt[word.charAt(i) - 'a'];
+        }
+        for (int i = 0; i < 26; ++i) {
+            if (cnt[i] > 0) {
+                --cnt[i];
+                int x = 0;
+                boolean ok = true;
+                for (int v : cnt) {
+                    if (v == 0) {
+                        continue;
+                    }
+                    if (x > 0 && v != x) {
+                        ok = false;
+                        break;
+                    }
+                    x = v;
+                }
+                if (ok) {
+                    return true;
+                }
+                ++cnt[i];
+            }
+        }
+        return false;
+    }
+}
+```

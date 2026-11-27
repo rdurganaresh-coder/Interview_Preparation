@@ -1,0 +1,114 @@
+# 1712. Ways to Split Array Into Three Subarrays
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/
+
+---
+
+[中文文档](/solution/1700-1799/1712.Ways%20to%20Split%20Array%20Into%20Three%20Subarrays/README.md)
+
+## Description
+
+<p>A split of an integer array is <strong>good</strong> if:</p>
+
+<ul>
+	<li>The array is split into three <strong>non-empty</strong> contiguous subarrays - named <code>left</code>, <code>mid</code>, <code>right</code> respectively from left to right.</li>
+	<li>The sum of the elements in <code>left</code> is less than or equal to the sum of the elements in <code>mid</code>, and the sum of the elements in <code>mid</code> is less than or equal to the sum of the elements in <code>right</code>.</li>
+</ul>
+
+<p>Given <code>nums</code>, an array of <strong>non-negative</strong> integers, return <em>the number of <strong>good</strong> ways to split</em> <code>nums</code>. As the number may be too large, return it <strong>modulo</strong> <code>10<sup>9 </sup>+ 7</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,1,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The only good way to split nums is [1] [1] [1].</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,2,2,5,0]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are three good ways of splitting nums:
+[1] [2] [2,2,5,0]
+[1] [2,2] [2,5,0]
+[1,2] [2,2] [5,0]
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [3,2,1]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no good way to split nums.</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>3 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Prefix Sum + Binary Search
+
+> **Thinking**
+>
+> We need three nonempty parts with $s_{\textit{left}}\le s_{\textit{mid}}\le s_{\textit{right}}$. Two nested cuts are $O(n^2)$ and fail for $n\le 10^5$.
+>
+> Values are nonnegative, so prefix sums are monotone. After fixing the left cut $i$, the mid cut lies in a contiguous range and can be found by binary search.
+>
+> The range is $s[j]\ge 2s[i]$ and $s[k]\le (s[-1]+s[i])/2$. Two binary searches per $i$ count the ways, taken modulo $10^9+7$.
+
+First, we preprocess the prefix sum array $s$ of the array $\textit{nums}$, where $s[i]$ represents the sum of the first $i+1$ elements of the array $\textit{nums}$.
+
+Since all elements of the array $\textit{nums}$ are non-negative integers, the prefix sum array $s$ is a monotonically increasing array.
+
+We enumerate the index $i$ that the $\textit{left}$ subarray can reach in the range $[0,..n-2)$, and then use the monotonically increasing characteristic of the prefix sum array to find the reasonable range of the $\textit{mid}$ subarray split by binary search, denoted as $[j, k)$, and accumulate the number of schemes $k-j$.
+
+In the binary search details, the subarray split must satisfy $s[j] \geq s[i]$ and $s[n - 1] - s[k] \geq s[k] - s[i]$. That is, $s[j] \geq s[i]$ and $s[k] \leq \frac{s[n - 1] + s[i]}{2}$.
+
+Finally, return the number of schemes modulo $10^9+7$.
+
+The time complexity is $O(n \log n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    private static final int MOD = (int) 1e9 + 7;
+
+    public int waysToSplit(int[] nums) {
+        int n = nums.length;
+        int[] s = new int[n];
+        s[0] = nums[0];
+        for (int i = 1; i < n; ++i) {
+            s[i] = s[i - 1] + nums[i];
+        }
+        int ans = 0;
+        for (int i = 0; i < n - 2; ++i) {
+            int j = search(s, s[i] << 1, i + 1, n - 1);
+            int k = search(s, ((s[n - 1] + s[i]) >> 1) + 1, j, n - 1);
+            ans = (ans + k - j) % MOD;
+        }
+        return ans;
+    }
+
+    private int search(int[] s, int x, int left, int right) {
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (s[mid] >= x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```

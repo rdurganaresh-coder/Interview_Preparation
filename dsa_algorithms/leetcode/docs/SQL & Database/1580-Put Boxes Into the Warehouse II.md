@@ -1,0 +1,114 @@
+# 1580. Put Boxes Into the Warehouse II
+
+**Difficulty:** Medium  
+**Category:** SQL & Database  
+**LeetCode:** https://leetcode.com/problems/put-boxes-into-the-warehouse-ii/
+
+---
+
+[中文文档](/solution/1500-1599/1580.Put%20Boxes%20Into%20the%20Warehouse%20II/README.md)
+
+## Description
+
+<p>You are given two arrays of positive integers, <code>boxes</code> and <code>warehouse</code>, representing the heights of some boxes of unit width and the heights of <code>n</code> rooms in a warehouse respectively. The warehouse&#39;s rooms are labeled from <code>0</code> to <code>n - 1</code> from left to right where <code>warehouse[i]</code> (0-indexed) is the height of the <code>i<sup>th</sup></code> room.</p>
+
+<p>Boxes are put into the warehouse by the following rules:</p>
+
+<ul>
+	<li>Boxes cannot be stacked.</li>
+	<li>You can rearrange the insertion order of the boxes.</li>
+	<li>Boxes can be pushed into the warehouse from <strong>either side</strong> (left or right)</li>
+	<li>If the height of some room in the warehouse is less than the height of a box, then that box and all other boxes behind it will be stopped before that room.</li>
+</ul>
+
+<p>Return <em>the maximum number of boxes you can put into the warehouse.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1500-1599/1580.Put%20Boxes%20Into%20the%20Warehouse%20II/images/22.png" style="width: 401px; height: 202px;" />
+<pre>
+<strong>Input:</strong> boxes = [1,2,2,3,4], warehouse = [3,4,1,2]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1500-1599/1580.Put%20Boxes%20Into%20the%20Warehouse%20II/images/22-1.png" style="width: 240px; height: 202px;" />
+We can store the boxes in the following order:
+1- Put the yellow box in room 2 from either the left or right side.
+2- Put the orange box in room 3 from the right side.
+3- Put the green box in room 1 from the left side.
+4- Put the red box in room 0 from the left side.
+Notice that there are other valid ways to put 4 boxes such as swapping the red and green boxes or the red and orange boxes.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1500-1599/1580.Put%20Boxes%20Into%20the%20Warehouse%20II/images/22-2.png" style="width: 401px; height: 242px;" />
+<pre>
+<strong>Input:</strong> boxes = [3,5,5,2], warehouse = [2,1,3,4,5]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1500-1599/1580.Put%20Boxes%20Into%20the%20Warehouse%20II/images/22-3.png" style="width: 280px; height: 242px;" />
+It is not possible to put the two boxes of height 5 in the warehouse since there&#39;s only 1 room of height &gt;= 5.
+Other valid solutions are to put the green box in room 2 or to put the orange box first in room 2 before putting the green and red boxes.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == warehouse.length</code></li>
+	<li><code>1 &lt;= boxes.length, warehouse.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= boxes[i], warehouse[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Preprocessing + Sorting + Greedy
+
+> **Thinking**
+>
+> Boxes may enter from either end and still cannot pass a shorter room. $n\le 10^5$ forbids assigning ends by brute force. Room $i$'s usable height is itself capped by the shortest room on the better of the two approach paths.
+>
+> Precompute the running minima $\textit{left}[i]$ and $\textit{right}[i]$, then set the capacity to $\min(\textit{warehouse}[i],\max(\textit{left}[i],\textit{right}[i]))$. Sort capacities with the boxes and match the smallest box to the shortest still-tall-enough room.
+
+First, we preprocess the warehouse to get the maximum height of each room. Then, we sort both the boxes and the warehouse. Starting with the smallest box and the smallest room, if the current room's height is greater than or equal to the current box's height, we can place the current box in the current room; otherwise, we continue to the next room.
+
+Finally, we return the number of boxes that can be placed.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the warehouse.
+
+#### Java
+
+```java
+class Solution {
+    public int maxBoxesInWarehouse(int[] boxes, int[] warehouse) {
+        int n = warehouse.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        final int inf = 1 << 30;
+        left[0] = inf;
+        right[n - 1] = inf;
+        for (int i = 1; i < n; ++i) {
+            left[i] = Math.min(left[i - 1], warehouse[i - 1]);
+        }
+        for (int i = n - 2; i >= 0; --i) {
+            right[i] = Math.min(right[i + 1], warehouse[i + 1]);
+        }
+        for (int i = 0; i < n; ++i) {
+            warehouse[i] = Math.min(warehouse[i], Math.max(left[i], right[i]));
+        }
+        Arrays.sort(boxes);
+        Arrays.sort(warehouse);
+        int ans = 0, i = 0;
+        for (int x : boxes) {
+            while (i < n && warehouse[i] < x) {
+                ++i;
+            }
+            if (i == n) {
+                break;
+            }
+            ++ans;
+            ++i;
+        }
+        return ans;
+    }
+}
+```

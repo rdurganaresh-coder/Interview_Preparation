@@ -1,0 +1,84 @@
+# 2412. Minimum Money Required Before Transactions
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-money-required-before-transactions/
+
+---
+
+[中文文档](/solution/2400-2499/2412.Minimum%20Money%20Required%20Before%20Transactions/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> 2D integer array <code><font face="monospace">transactions</font></code>, where <code>transactions[i] = [cost<sub>i</sub>, cashback<sub>i</sub>]</code>.</p>
+
+<p>The array describes transactions, where each transaction must be completed exactly once in <strong>some order</strong>. At any given moment, you have a certain amount of <code>money</code>. In order to complete transaction <code>i</code>, <code>money &gt;= cost<sub>i</sub></code> must hold true. After performing a transaction, <code>money</code> becomes <code>money - cost<sub>i</sub> + cashback<sub>i</sub></code>.</p>
+
+<p>Return<em> the minimum amount of </em><code>money</code><em> required before any transaction so that all of the transactions can be completed <strong>regardless of the order</strong> of the transactions.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> transactions = [[2,1],[5,0],[4,2]]
+<strong>Output:</strong> 10
+<strong>Explanation:
+</strong>Starting with money = 10, the transactions can be performed in any order.
+It can be shown that starting with money &lt; 10 will fail to complete all transactions in some order.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> transactions = [[3,0],[0,3]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+- If transactions are in the order [[3,0],[0,3]], the minimum money required to complete the transactions is 3.
+- If transactions are in the order [[0,3],[3,0]], the minimum money required to complete the transactions is 0.
+Thus, starting with money = 3, the transactions can be performed in any order.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= transactions.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>transactions[i].length == 2</code></li>
+	<li><code>0 &lt;= cost<sub>i</sub>, cashback<sub>i</sub> &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Greedy
+
+> **Thinking**
+>
+> Permuting transactions is impossible at $n\le 10^5$. Losing deals contribute a fixed total loss $s$; the cash minimum occurs after paying a cost and before its cashback.
+>
+> Try each transaction as the one that realizes the minimum: a losing deal $[a,b]$ needs $s+b$, because $a-b$ is already inside $s$; a profitable deal still needs the full $s$ plus its cost $a$. The answer is the maximum over these cases.
+
+First, we accumulate all negative profits, denoted as $s$. Then, we enumerate each transaction $\textit{transactions}[i] = [a, b]$ as the last transaction. If $a > b$, it means the current transaction is a loss, and this transaction has already been included when we accumulated the negative profits earlier. Therefore, we update the answer with $s + b$. Otherwise, we update the answer with $s + a$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the number of transactions.
+
+#### Java
+
+```java
+class Solution {
+    public long minimumMoney(int[][] transactions) {
+        long s = 0;
+        for (var e : transactions) {
+            s += Math.max(0, e[0] - e[1]);
+        }
+        long ans = 0;
+        for (var e : transactions) {
+            if (e[0] > e[1]) {
+                ans = Math.max(ans, s + e[1]);
+            } else {
+                ans = Math.max(ans, s + e[0]);
+            }
+        }
+        return ans;
+    }
+}
+```

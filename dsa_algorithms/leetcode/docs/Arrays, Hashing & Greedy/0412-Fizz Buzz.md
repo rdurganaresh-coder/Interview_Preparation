@@ -1,0 +1,76 @@
+# 412. Fizz Buzz
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/fizz-buzz/
+
+---
+
+[中文文档](/solution/0400-0499/0412.Fizz%20Buzz/README.md)
+
+## Description
+
+<p>Given an integer <code>n</code>, return <em>a string array </em><code>answer</code><em> (<strong>1-indexed</strong>) where</em>:</p>
+
+<ul>
+	<li><code>answer[i] == &quot;FizzBuzz&quot;</code> if <code>i</code> is divisible by <code>3</code> and <code>5</code>.</li>
+	<li><code>answer[i] == &quot;Fizz&quot;</code> if <code>i</code> is divisible by <code>3</code>.</li>
+	<li><code>answer[i] == &quot;Buzz&quot;</code> if <code>i</code> is divisible by <code>5</code>.</li>
+	<li><code>answer[i] == i</code> (as a string) if none of the above conditions are true.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<pre><strong>Input:</strong> n = 3
+<strong>Output:</strong> ["1","2","Fizz"]
+</pre><p><strong class="example">Example 2:</strong></p>
+<pre><strong>Input:</strong> n = 5
+<strong>Output:</strong> ["1","2","Fizz","4","Buzz"]
+</pre><p><strong class="example">Example 3:</strong></p>
+<pre><strong>Input:</strong> n = 15
+<strong>Output:</strong> ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]
+</pre>
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> The output is a direct transcription of $1..n$ under a few divisibility rules, so a single pass is enough.
+>
+> Test divisibility by $15$ before $3$ or $5$, then fall back to the decimal representation. Checking $15$ first prevents writing only one of the two words when both apply.
+
+We iterate through each integer from 1 to $n$. For each integer, we check whether it is a multiple of both 3 and 5, or just a multiple of 3, or just a multiple of 5. Based on the check result, we add the corresponding string to the answer array.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the integer given in the problem.
+
+#### Java
+
+```java
+class Solution {
+    public List<String> fizzBuzz(int n) {
+        List<String> ans = new ArrayList<>();
+        for (int i = 1; i <= n; ++i) {
+            String s = "";
+            if (i % 3 == 0) {
+                s += "Fizz";
+            }
+            if (i % 5 == 0) {
+                s += "Buzz";
+            }
+            if (s.length() == 0) {
+                s += i;
+            }
+            ans.add(s);
+        }
+        return ans;
+    }
+}
+```

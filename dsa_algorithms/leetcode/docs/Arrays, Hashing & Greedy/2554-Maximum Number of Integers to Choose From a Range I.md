@@ -1,0 +1,153 @@
+# 2554. Maximum Number of Integers to Choose From a Range I
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-number-of-integers-to-choose-from-a-range-i/
+
+---
+
+[中文文档](/solution/2500-2599/2554.Maximum%20Number%20of%20Integers%20to%20Choose%20From%20a%20Range%20I/README.md)
+
+## Description
+
+<p>You are given an integer array <code>banned</code> and two integers <code>n</code> and <code>maxSum</code>. You are choosing some number of integers following the below rules:</p>
+
+<ul>
+	<li>The chosen integers have to be in the range <code>[1, n]</code>.</li>
+	<li>Each integer can be chosen <strong>at most once</strong>.</li>
+	<li>The chosen integers should not be in the array <code>banned</code>.</li>
+	<li>The sum of the chosen integers should not exceed <code>maxSum</code>.</li>
+</ul>
+
+<p>Return <em>the <strong>maximum</strong> number of integers you can choose following the mentioned rules</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> banned = [1,6,5], n = 5, maxSum = 6
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> You can choose the integers 2 and 4.
+2 and 4 are from the range [1, 5], both did not appear in banned, and their sum is 6, which did not exceed maxSum.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> banned = [1,2,3,4,5,6,7], n = 8, maxSum = 1
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> You cannot choose any integer while following the mentioned conditions.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> banned = [11], n = 7, maxSum = 50
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> You can choose the integers 1, 2, 3, 4, 5, 6, and 7.
+They are from the range [1, 7], all did not appear in banned, and their sum is 28, which did not exceed maxSum.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= banned.length &lt;= 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= banned[i], n &lt;= 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= maxSum &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Greedy + Enumeration
+
+> **Thinking**
+>
+> Pick as many distinct integers from $[1,n]$ as possible, skipping $\textit{banned}$, with sum at most $\textit{maxSum}$. Smaller values leave more room, so take them first.
+>
+> For $n\le 10^4$, walk $i=1,2,\ldots$, skip banned values via a set, and stop when the next $i$ would exceed the remaining sum.
+
+We use the variable $s$ to represent the sum of the currently selected integers, and the variable $\textit{ans}$ to represent the number of currently selected integers. We convert the array $\textit{banned}$ into a hash table for easy determination of whether a certain integer is not selectable.
+
+Next, we start enumerating the integer $i$ from $1$. If $s + i \leq \textit{maxSum}$ and $i$ is not in $\textit{banned}$, then we can select the integer $i$, and add $i$ and $1$ to $s$ and $\textit{ans}$ respectively.
+
+Finally, we return $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the given integer.
+
+#### Java
+
+```java
+class Solution {
+    public int maxCount(int[] banned, int n, int maxSum) {
+        Set<Integer> ban = new HashSet<>(banned.length);
+        for (int x : banned) {
+            ban.add(x);
+        }
+        int ans = 0, s = 0;
+        for (int i = 1; i <= n && s + i <= maxSum; ++i) {
+            if (!ban.contains(i)) {
+                ++ans;
+                s += i;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Greedy + Binary Search
+
+> **Thinking**
+>
+> Solution 1 is linear in $n$ and fails when $n$ is huge. Banned values split $[1,n]$ into contiguous gaps whose prefix sums are arithmetic; binary search finds how many we can still afford. Fill gaps from the left until the budget is gone.
+
+If $n$ is very large, the enumeration in Method One will time out.
+
+We can add $0$ and $n + 1$ to the array `banned`, deduplicate the array `banned`, remove elements greater than $n+1$, and then sort it.
+
+Next, we enumerate every two adjacent elements $i$ and $j$ in the array `banned`. The range of selectable integers is $[i + 1, j - 1]$. We use binary search to enumerate the number of elements we can select in this range, find the maximum number of selectable elements, and then add it to $\textit{ans}$. At the same time, we subtract the sum of these elements from `maxSum`. If `maxSum` is less than $0$, we break the loop. Return the answer.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{banned}$.
+
+Similar problems:
+
+- [2557. Maximum Number of Integers to Choose From a Range II](https://github.com/doocs/leetcode/blob/main/solution/2500-2599/2557.Maximum%20Number%20of%20Integers%20to%20Choose%20From%20a%20Range%20II/README.md)
+
+#### Java
+
+```java
+class Solution {
+    public int maxCount(int[] banned, int n, int maxSum) {
+        Set<Integer> black = new HashSet<>();
+        black.add(0);
+        black.add(n + 1);
+        for (int x : banned) {
+            if (x < n + 2) {
+                black.add(x);
+            }
+        }
+        List<Integer> ban = new ArrayList<>(black);
+        Collections.sort(ban);
+        int ans = 0;
+        for (int k = 1; k < ban.size(); ++k) {
+            int i = ban.get(k - 1), j = ban.get(k);
+            int left = 0, right = j - i - 1;
+            while (left < right) {
+                int mid = (left + right + 1) >>> 1;
+                if ((i + 1 + i + mid) * 1L * mid / 2 <= maxSum) {
+                    left = mid;
+                } else {
+                    right = mid - 1;
+                }
+            }
+            ans += left;
+            maxSum -= (i + 1 + i + left) * 1L * left / 2;
+            if (maxSum <= 0) {
+                break;
+            }
+        }
+        return ans;
+    }
+}
+```

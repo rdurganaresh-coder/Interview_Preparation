@@ -1,0 +1,99 @@
+# 2303. Calculate Amount Paid in Taxes
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/calculate-amount-paid-in-taxes/
+
+---
+
+[中文文档](/solution/2300-2399/2303.Calculate%20Amount%20Paid%20in%20Taxes/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> 2D integer array <code>brackets</code> where <code>brackets[i] = [upper<sub>i</sub>, percent<sub>i</sub>]</code> means that the <code>i<sup>th</sup></code> tax bracket has an upper bound of <code>upper<sub>i</sub></code> and is taxed at a rate of <code>percent<sub>i</sub></code>. The brackets are <strong>sorted</strong> by upper bound (i.e. <code>upper<sub>i-1</sub> &lt; upper<sub>i</sub></code> for <code>0 &lt; i &lt; brackets.length</code>).</p>
+
+<p>Tax is calculated as follows:</p>
+
+<ul>
+	<li>The first <code>upper<sub>0</sub></code> dollars earned are taxed at a rate of <code>percent<sub>0</sub></code>.</li>
+	<li>The next <code>upper<sub>1</sub> - upper<sub>0</sub></code> dollars earned are taxed at a rate of <code>percent<sub>1</sub></code>.</li>
+	<li>The next <code>upper<sub>2</sub> - upper<sub>1</sub></code> dollars earned are taxed at a rate of <code>percent<sub>2</sub></code>.</li>
+	<li>And so on.</li>
+</ul>
+
+<p>You are given an integer <code>income</code> representing the amount of money you earned. Return <em>the amount of money that you have to pay in taxes.</em> Answers within <code>10<sup>-5</sup></code> of the actual answer will be accepted.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> brackets = [[3,50],[7,10],[12,25]], income = 10
+<strong>Output:</strong> 2.65000
+<strong>Explanation:</strong>
+Based on your income, you have 3 dollars in the 1<sup>st</sup> tax bracket, 4 dollars in the 2<sup>nd</sup> tax bracket, and 3 dollars in the 3<sup>rd</sup> tax bracket.
+The tax rate for the three tax brackets is 50%, 10%, and 25%, respectively.
+In total, you pay $3 * 50% + $4 * 10% + $3 * 25% = $2.65 in taxes.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> brackets = [[1,0],[4,25],[5,50]], income = 2
+<strong>Output:</strong> 0.25000
+<strong>Explanation:</strong>
+Based on your income, you have 1 dollar in the 1<sup>st</sup> tax bracket and 1 dollar in the 2<sup>nd</sup> tax bracket.
+The tax rate for the two tax brackets is 0% and 25%, respectively.
+In total, you pay $1 * 0% + $1 * 25% = $0.25 in taxes.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> brackets = [[2,50]], income = 0
+<strong>Output:</strong> 0.00000
+<strong>Explanation:</strong>
+You have no income to tax, so you have to pay a total of $0 in taxes.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= brackets.length &lt;= 100</code></li>
+	<li><code>1 &lt;= upper<sub>i</sub> &lt;= 1000</code></li>
+	<li><code>0 &lt;= percent<sub>i</sub> &lt;= 100</code></li>
+	<li><code>0 &lt;= income &lt;= 1000</code></li>
+	<li><code>upper<sub>i</sub></code> is sorted in ascending order.</li>
+	<li>All the values of <code>upper<sub>i</sub></code> are <strong>unique</strong>.</li>
+	<li>The upper bound of the last tax bracket is greater than or equal to <code>income</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> Brackets increase by upper bound and the last one covers all income, so the tax is determined by how much of $\textit{income}$ falls in each band. There are at most $100$ brackets, so a single scan suffices.
+>
+> The taxable base of bracket $i$ is $\min(\textit{income}, \textit{upper}_i)$ minus the previous upper bound (or zero if the band is not reached). Multiply by the rate, accumulate, and divide by $100$. No backtracking or precomputation is required.
+
+We traverse `brackets`, and for each tax bracket, we calculate the tax amount for that bracket, then accumulate it.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of $\textit{brackets}$.
+
+#### Java
+
+```java
+class Solution {
+    public double calculateTax(int[][] brackets, int income) {
+        int ans = 0, prev = 0;
+        for (var e : brackets) {
+            int upper = e[0], percent = e[1];
+            ans += Math.max(0, Math.min(income, upper) - prev) * percent;
+            prev = upper;
+        }
+        return ans / 100.0;
+    }
+}
+```

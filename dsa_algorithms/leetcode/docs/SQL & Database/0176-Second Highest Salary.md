@@ -1,0 +1,89 @@
+# 176. Second Highest Salary
+
+**Difficulty:** Medium  
+**Category:** SQL & Database  
+**LeetCode:** https://leetcode.com/problems/second-highest-salary/
+
+---
+
+[中文文档](/solution/0100-0199/0176.Second%20Highest%20Salary/README.md)
+
+## Description
+
+<p>Table: <code>Employee</code></p>
+
+<pre>
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+id is the primary key (column with unique values) for this table.
+Each row of this table contains information about the salary of an employee.
+</pre>
+
+<p>&nbsp;</p>
+
+<p>Write a solution to find&nbsp;the second highest <strong>distinct</strong> salary from the <code>Employee</code> table. If there is no second highest salary,&nbsp;return&nbsp;<code>null (return&nbsp;None in Pandas)</code>.</p>
+
+<p>The result format is in the following example.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+<strong>Output:</strong> 
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+<strong>Output:</strong> 
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| null                |
++---------------------+
+</pre>
+
+## Solutions
+
+### Solution 1: Use Sub Query and LIMIT
+
+> **Thinking**
+>
+> The second highest salary is the second value of the distinct salaries in descending order, or $\textit{NULL}$ if fewer than two exist. $\textit{ORDER BY}$ plus $\textit{LIMIT}\,1\,\textit{OFFSET}\,1$ picks that slot; an outer query keeps a single $\textit{NULL}$ row when the offset is empty.
+
+### Solution 2: Use `MAX()` function
+
+> **Thinking**
+>
+> Solution 1 needs a sort and an offset. The maximum among salaries strictly below the global maximum is the second highest; $\textit{MAX}$ on an empty set is already $\textit{NULL}$, so no $\textit{LIMIT}$ is required.
+
+### Solution 3: Use `IFNULL()` and window function
+
+> **Thinking**
+>
+> After deduplicating, $\textit{DENSE}_\textit{RANK}$ numbers salaries descending and we keep rank $2$. Ties at the top do not consume the second place, which matches “ $k$-th highest” and extends cleanly.

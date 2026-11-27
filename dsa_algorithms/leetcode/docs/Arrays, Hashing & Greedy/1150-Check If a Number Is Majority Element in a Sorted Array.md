@@ -1,0 +1,116 @@
+# 1150. Check If a Number Is Majority Element in a Sorted Array
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/check-if-a-number-is-majority-element-in-a-sorted-array/
+
+---
+
+[中文文档](/solution/1100-1199/1150.Check%20If%20a%20Number%20Is%20Majority%20Element%20in%20a%20Sorted%20Array/README.md)
+
+## Description
+
+<p>Given an integer array <code>nums</code> sorted in non-decreasing order and an integer <code>target</code>, return <code>true</code> <em>if</em> <code>target</code> <em>is a <strong>majority</strong> element, or </em><code>false</code><em> otherwise</em>.</p>
+
+<p>A <strong>majority</strong> element in an array <code>nums</code> is an element that appears more than <code>nums.length / 2</code> times in the array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,4,5,5,5,5,5,6,6], target = 5
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The value 5 appears 5 times and the length of the array is 9.
+Thus, 5 is a majority element because 5 &gt; 9/2 is true.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [10,100,101,101], target = 101
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The value 101 appears 2 times and the length of the array is 4.
+Thus, 101 is not a majority element because 2 &gt; 4/2 is false.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+	<li><code>1 &lt;= nums[i], target &lt;= 10<sup>9</sup></code></li>
+	<li><code>nums</code> is sorted in non-decreasing order.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> In a sorted array the count of $\textit{target}$ is the gap between its left and right bounds. Two binary searches find the first $\ge \textit{target}$ and the first $>\textit{target}$; the gap exceeds $n/2$ iff $\textit{target}$ is a majority. A linear count is unnecessary for large $n$.
+
+We notice that the elements in the array $\textit{nums}$ are non-decreasing, that is, the elements in the array $\textit{nums}$ are monotonically increasing. Therefore, we can use the method of binary search to find the index $\textit{left}$ of the first element in the array $\textit{nums}$ that is greater than or equal to $\textit{target}$, and the index $\textit{right}$ of the first element in the array $\textit{nums}$ that is greater than $\textit{target}$. If $\textit{right} - \textit{left} > \frac{n}{2}$, it means that the number of occurrences of the element $\textit{target}$ in the array $\textit{nums}$ exceeds half of the length of the array, so return $\textit{true}$, otherwise return $\textit{false}$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean isMajorityElement(int[] nums, int target) {
+        int left = search(nums, target);
+        int right = search(nums, target + 1);
+        return right - left > nums.length / 2;
+    }
+
+    private int search(int[] nums, int x) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (nums[mid] >= x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```
+
+### Solution 2: Binary Search (Optimized)
+
+> **Thinking**
+>
+> Method 1 runs two binary searches. If $\textit{target}$ occurs more than half the time, the index $\textit{left}+\lfloor n/2\rfloor$ still holds $\textit{target}$. One `bisect_left` plus that probe drops the second search.
+
+In Solution 1, we used binary search twice to find the index $\textit{left}$ of the first element in the array $\textit{nums}$ that is greater than or equal to $\textit{target}$, and the index $\textit{right}$ of the first element in the array $\textit{nums}$ that is greater than $\textit{target}$. However, we can use binary search once to find the index $\textit{left}$ of the first element in the array $\textit{nums}$ that is greater than or equal to $\textit{target}$, and then judge whether $\textit{nums}[\textit{left} + \frac{n}{2}]$ is equal to $\textit{target}$. If they are equal, it means that the number of occurrences of the element $\textit{target}$ in the array $\textit{nums}$ exceeds half of the length of the array, so return $\textit{true}$, otherwise return $\textit{false}$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean isMajorityElement(int[] nums, int target) {
+        int n = nums.length;
+        int left = search(nums, target);
+        int right = left + n / 2;
+        return right < n && nums[right] == target;
+    }
+
+    private int search(int[] nums, int x) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (nums[mid] >= x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```

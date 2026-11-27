@@ -1,0 +1,129 @@
+# 1563. Stone Game V
+
+**Difficulty:** Hard  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/stone-game-v/
+
+---
+
+[中文文档](/solution/1500-1599/1563.Stone%20Game%20V/README.md)
+
+## Description
+
+<p>There are several stones <strong>arranged in a row</strong>, and each stone has an associated value which is an integer given in the array <code>stoneValue</code>.</p>
+
+<p>In each round of the game, Alice divides the row into <strong>two non-empty rows</strong> (i.e. left row and right row), then Bob calculates the value of each row which is the sum of the values of all the stones in this row. Bob throws away the row which has the maximum value, and Alice&#39;s score increases by the value of the remaining row. If the value of the two rows are equal, Bob lets Alice decide which row will be thrown away. The next round starts with the remaining row.</p>
+
+<p>The game ends when there is only <strong>one stone remaining</strong>. Alice&#39;s score is initially <strong>zero</strong>.</p>
+
+<p>Return <i>the maximum score that Alice can obtain</i>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> stoneValue = [6,2,3,4,5,5]
+<strong>Output:</strong> 18
+<strong>Explanation:</strong> In the first round, Alice divides the row to [6,2,3], [4,5,5]. The left row has the value 11 and the right row has value 14. Bob throws away the right row and Alice&#39;s score is now 11.
+In the second round Alice divides the row to [6], [2,3]. This time Bob throws away the left row and Alice&#39;s score becomes 16 (11 + 5).
+The last round Alice has only one choice to divide the row which is [2], [3]. Bob throws away the right row and Alice&#39;s score is now 18 (16 + 2). The game ends because only one stone is remaining in the row.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> stoneValue = [7,7,7,7,7,7,7]
+<strong>Output:</strong> 28
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> stoneValue = [4]
+<strong>Output:</strong> 0
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= stoneValue.length &lt;= 500</code></li>
+	<li><code>1 &lt;= stoneValue[i] &lt;= 10<sup>6</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization + Pruning
+
+> **Thinking**
+>
+> Each split scores the smaller half and continues only on that half (or either half on a tie). There are $O(n^2)$ intervals and $O(n)$ cuts, which is acceptable for typical $n\le 500$, but naive recursion repeats intervals.
+>
+> Let $\textit{dfs}(i,j)$ be Alice's best score on $[i,j]$, with prefix sums giving the two halves in $O(1)$. Recurse only on the smaller side. If $\textit{ans}\ge 2l$ a left-smaller cut cannot improve; if $\textit{ans}\ge 2r$ later right-smaller cuts can be abandoned. Memoization stores each interval once.
+
+First, we preprocess the prefix sum array $s$, where $s[i]$ represents the sum of the first $i$ elements of the array $\textit{stoneValue}$.
+
+Next, we design a function $\textit{dfs}(i, j)$, which represents the maximum score Alice can get from the stones in the subarray $\textit{stoneValue}$ within the index range $[i, j]$. The answer is $\textit{dfs}(0, n - 1)$.
+
+The calculation process of the function $\textit{dfs}(i, j)$ is as follows:
+
+- If $i \geq j$, it means there is only one stone left, and Alice cannot split it, so return $0$.
+- Otherwise, we enumerate the split point $k$, i.e., $i \leq k < j$, splitting the stones in the subarray $\textit{stoneValue}$ within the index range $[i, j]$ into two parts: $[i, k]$ and $[k + 1, j]$. We calculate $a$ and $b$, which represent the total sum of the stones in the two parts, respectively. Then we calculate $\textit{dfs}(i, k)$ and $\textit{dfs}(k + 1, j)$, and update the answer.
+
+Note that if $a < b$ and $\textit{ans} \geq a \times 2$, this enumeration can be skipped; if $a > b$ and $\textit{ans} \geq b \times 2$, all subsequent enumerations can be skipped, and the loop can be exited directly.
+
+Finally, we return the answer.
+
+To avoid repeated calculations, we can use memoization and pruning to optimize the enumeration efficiency.
+
+The time complexity is $O(n^3)$, and the space complexity is $O(n^2)$, where $n$ is the length of the array $\textit{stoneValue}$.
+
+#### Java
+
+```java
+class Solution {
+    private int n;
+    private int[] s;
+    private int[] nums;
+    private Integer[][] f;
+
+    public int stoneGameV(int[] stoneValue) {
+        n = stoneValue.length;
+        s = new int[n + 1];
+        nums = stoneValue;
+        f = new Integer[n][n];
+        for (int i = 1; i <= n; ++i) {
+            s[i] = s[i - 1] + nums[i - 1];
+        }
+        return dfs(0, n - 1);
+    }
+
+    private int dfs(int i, int j) {
+        if (i >= j) {
+            return 0;
+        }
+        if (f[i][j] != null) {
+            return f[i][j];
+        }
+        int ans = 0, l = 0, r = s[j + 1] - s[i];
+        for (int k = i; k < j; ++k) {
+            l += nums[k];
+            r -= nums[k];
+            if (l < r) {
+                if (ans > l * 2) {
+                    continue;
+                }
+                ans = Math.max(ans, l + dfs(i, k));
+            } else if (l > r) {
+                if (ans > r * 2) {
+                    break;
+                }
+                ans = Math.max(ans, r + dfs(k + 1, j));
+            } else {
+                ans = Math.max(ans, Math.max(l + dfs(i, k), r + dfs(k + 1, j)));
+            }
+        }
+        return f[i][j] = ans;
+    }
+}
+```

@@ -1,0 +1,82 @@
+# 2855. Minimum Right Shifts to Sort the Array
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-right-shifts-to-sort-the-array/
+
+---
+
+[中文文档](/solution/2800-2899/2855.Minimum%20Right%20Shifts%20to%20Sort%20the%20Array/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> array <code>nums</code> of length <code>n</code> containing <strong>distinct</strong> positive integers. Return <em>the <strong>minimum</strong> number of <strong>right shifts</strong> required to sort </em><code>nums</code><em> and </em><code>-1</code><em> if this is not possible.</em></p>
+
+<p>A <strong>right shift</strong> is defined as shifting the element at index <code>i</code> to index <code>(i + 1) % n</code>, for all indices.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [3,4,5,1,2]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> 
+After the first right shift, nums = [2,3,4,5,1].
+After the second right shift, nums = [1,2,3,4,5].
+Now nums is sorted; therefore the answer is 2.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,3,5]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> nums is already sorted therefore, the answer is 0.</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,1,4]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> It&#39;s impossible to sort the array using right shifts.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+	<li><code>nums</code> contains distinct integers.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Direct Traversal
+
+> **Thinking**
+>
+> A sortable array has at most one descent, and the second run must stay below $\textit{nums}[0]$. After the first drop, scan the remainder; if it reaches the end, $n-i$ right shifts restore order.
+
+First, we use a pointer $i$ to traverse the array $\textit{nums}$ from left to right, finding a continuous increasing sequence until $i$ reaches the end of the array or $\textit{nums}[i - 1] > \textit{nums}[i]$. Next, we use another pointer $k$ to traverse the array $\textit{nums}$ from $i + 1$, finding a continuous increasing sequence until $k$ reaches the end of the array or $\textit{nums}[k - 1] > \textit{nums}[k]$ and $\textit{nums}[k] > \textit{nums}[0]$. If $k$ reaches the end of the array, it means the array is already increasing, so we return $n - i$; otherwise, we return $-1$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int minimumRightShifts(List<Integer> nums) {
+        int n = nums.size();
+        int i = 1;
+        while (i < n && nums.get(i - 1) < nums.get(i)) {
+            ++i;
+        }
+        int k = i + 1;
+        while (k < n && nums.get(k - 1) < nums.get(k) && nums.get(k) < nums.get(0)) {
+            ++k;
+        }
+        return k < n ? -1 : n - i;
+    }
+}
+```

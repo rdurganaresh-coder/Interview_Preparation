@@ -1,0 +1,87 @@
+# 11. Container With Most Water
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/container-with-most-water/
+
+---
+
+[中文文档](/solution/0000-0099/0011.Container%20With%20Most%20Water/README.md)
+
+## Description
+
+<p>You are given an integer array <code>height</code> of length <code>n</code>. There are <code>n</code> vertical lines drawn such that the two endpoints of the <code>i<sup>th</sup></code> line are <code>(i, 0)</code> and <code>(i, height[i])</code>.</p>
+
+<p>Find two lines that together with the x-axis form a container, such that the container contains the most water.</p>
+
+<p>Return <em>the maximum amount of water a container can store</em>.</p>
+
+<p><strong>Notice</strong> that you may not slant the container.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0000-0099/0011.Container%20With%20Most%20Water/images/question_11.jpg" style="width: 600px; height: 287px;" />
+<pre>
+<strong>Input:</strong> height = [1,8,6,2,5,4,8,3,7]
+<strong>Output:</strong> 49
+<strong>Explanation:</strong> The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> height = [1,1]
+<strong>Output:</strong> 1
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == height.length</code></li>
+	<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= height[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> The first idea is to try every pair $(i,j)$ and take $\min(\textit{height}[i],\textit{height}[j])\times(j-i)$. Correct, but $O(n^2)$. $n \le 10^5$ will time out.
+>
+> The bottleneck is treating every pair independently and ignoring that height is fixed by the shorter line. Start from the widest interval $[0,n-1]$: moving the taller end inward shrinks the width while the height is still capped by the shorter line, so the area cannot improve. We must drop the shorter line and look for a taller one.
+>
+> So we shrink from both ends, always moving the shorter side. Each index is visited at most once.
+
+We use two pointers $l$ and $r$ to point to the left and right ends of the array, respectively, i.e., $l = 0$ and $r = n - 1$, where $n$ is the length of the array.
+
+Next, we use a variable $\textit{ans}$ to record the maximum capacity of the container, initially set to $0$.
+
+Then, we start a loop. In each iteration, we calculate the current capacity of the container, i.e., $\textit{min}(\textit{height}[l], \textit{height}[r]) \times (r - l)$, and compare it with $\textit{ans}$, assigning the larger value to $\textit{ans}$. Then, we compare the values of $\textit{height}[l]$ and $\textit{height}[r]$. If $\textit{height}[l] < \textit{height}[r]$, moving the $r$ pointer will not improve the result because the height of the container is determined by the shorter vertical line, so we move the $l$ pointer. Otherwise, we move the $r$ pointer.
+
+After the iteration, we return $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{height}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        int l = 0, r = height.length - 1;
+        int ans = 0;
+        while (l < r) {
+            int t = Math.min(height[l], height[r]) * (r - l);
+            ans = Math.max(ans, t);
+            if (height[l] < height[r]) {
+                ++l;
+            } else {
+                --r;
+            }
+        }
+        return ans;
+    }
+}
+```

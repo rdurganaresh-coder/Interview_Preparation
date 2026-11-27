@@ -1,0 +1,80 @@
+# 3345. Smallest Divisible Digit Product I
+
+**Difficulty:** Easy  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/smallest-divisible-digit-product-i/
+
+---
+
+[中文文档](/solution/3300-3399/3345.Smallest%20Divisible%20Digit%20Product%20I/README.md)
+
+## Description
+
+<p>You are given two integers <code>n</code> and <code>t</code>. Return the <strong>smallest</strong> number greater than or equal to <code>n</code> such that the <strong>product of its digits</strong> is divisible by <code>t</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">n = 10, t = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">10</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The digit product of 10 is 0, which is divisible by 2, making it the smallest number greater than or equal to 10 that satisfies the condition.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">n = 15, t = 3</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">16</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The digit product of 16 is 6, which is divisible by 3, making it the smallest number greater than or equal to 15 that satisfies the condition.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 100</code></li>
+	<li><code>1 &lt;= t &lt;= 10</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration
+
+> **Thinking**
+>
+> We want the smallest integer at least $n$ whose digit product is divisible by $t$. With $n \le 100$ and $t \le 10$, a number containing $0$ appears within ten candidates, and its product $0$ is always divisible by $t$.
+>
+> So a linear scan from $n$ is bounded by a constant; we need not construct a special number.
+>
+> For each candidate we multiply digits and return the first $p$ with $p \bmod t = 0$.
+
+We note that within every $10$ numbers, there will definitely be an integer whose digit product is $0$. Therefore, we can directly enumerate integers greater than or equal to $n$ until we find an integer whose digit product is divisible by $t$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public int smallestNumber(int n, int t) {
+        for (int i = n;; ++i) {
+            int p = 1;
+            for (int x = i; x > 0; x /= 10) {
+                p *= (x % 10);
+            }
+            if (p % t == 0) {
+                return i;
+            }
+        }
+    }
+}
+```

@@ -1,0 +1,102 @@
+# 47. Permutations II
+
+**Difficulty:** Medium  
+**Category:** Backtracking  
+**LeetCode:** https://leetcode.com/problems/permutations-ii/
+
+---
+
+[中文文档](/solution/0000-0099/0047.Permutations%20II/README.md)
+
+## Description
+
+<p>Given a collection of numbers, <code>nums</code>,&nbsp;that might contain duplicates, return <em>all possible unique permutations <strong>in any order</strong>.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,1,2]
+<strong>Output:</strong>
+[[1,1,2],
+ [1,2,1],
+ [2,1,1]]
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3]
+<strong>Output:</strong> [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 8</code></li>
+	<li><code>-10 &lt;= nums[i] &lt;= 10</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Backtracking
+
+> **Thinking**
+>
+> The first idea is the same backtracking as unique permutations, then drop duplicates with a set. Correct, but $n \le 8$ and repeated numbers clone whole subtrees; filtering afterwards wastes time and space.
+>
+> The bottleneck is those duplicate branches. Swapping two equal values at the same depth yields the same permutation — each value may be chosen only once per layer.
+>
+> Sort so equals sit together, then skip a candidate when the previous equal is still unused. Each distinct value expands once at a position; every generated permutation is unique.
+
+We can first sort the array so that duplicate numbers are placed together, making it easier to remove duplicates.
+
+Then, we design a function $\textit{dfs}(i)$, which represents the current number to be placed at the $i$-th position. The specific implementation of the function is as follows:
+
+- If $i = n$, it means we have filled all positions, add the current permutation to the answer array, and then return.
+- Otherwise, we enumerate the number $\textit{nums}[j]$ for the $i$-th position, where the range of $j$ is $[0, n - 1]$. We need to ensure that $\textit{nums}[j]$ has not been used and is different from the previously enumerated number to ensure that the current permutation is not duplicated. If the conditions are met, we can place $\textit{nums}[j]$ and continue to recursively fill the next position by calling $\textit{dfs}(i + 1)$. After the recursive call ends, we need to mark $\textit{nums}[j]$ as unused to facilitate subsequent enumeration.
+
+In the main function, we first sort the array, then call $\textit{dfs}(0)$ to start filling from the 0th position, and finally return the answer array.
+
+The time complexity is $O(nn!)$, and the space complexity is $O(n)$, where $n$ is the length of the array. We need to perform $n!$ enumerations, and each enumeration requires $O(n)$ time to check for duplicates. Additionally, we need a marker array to mark whether each position has been used, so the space complexity is $O(n)$.
+
+Similar problems:
+
+- [46. Permutations](https://github.com/doocs/leetcode/blob/main/solution/0000-0099/0046.Permutations/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    private List<List<Integer>> ans = new ArrayList<>();
+    private List<Integer> t = new ArrayList<>();
+    private int[] nums;
+    private boolean[] vis;
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        this.nums = nums;
+        vis = new boolean[nums.length];
+        dfs(0);
+        return ans;
+    }
+
+    private void dfs(int i) {
+        if (i == nums.length) {
+            ans.add(new ArrayList<>(t));
+            return;
+        }
+        for (int j = 0; j < nums.length; ++j) {
+            if (vis[j] || (j > 0 && nums[j] == nums[j - 1] && !vis[j - 1])) {
+                continue;
+            }
+            t.add(nums[j]);
+            vis[j] = true;
+            dfs(i + 1);
+            vis[j] = false;
+            t.remove(t.size() - 1);
+        }
+    }
+}
+```

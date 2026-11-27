@@ -1,0 +1,73 @@
+# 561. Array Partition
+
+**Difficulty:** Easy  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/array-partition/
+
+---
+
+[中文文档](/solution/0500-0599/0561.Array%20Partition/README.md)
+
+## Description
+
+<p>Given an integer array <code>nums</code> of <code>2n</code> integers, group these integers into <code>n</code> pairs <code>(a<sub>1</sub>, b<sub>1</sub>), (a<sub>2</sub>, b<sub>2</sub>), ..., (a<sub>n</sub>, b<sub>n</sub>)</code> such that the sum of <code>min(a<sub>i</sub>, b<sub>i</sub>)</code> for all <code>i</code> is <strong>maximized</strong>. Return<em> the maximized sum</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,4,3,2]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> All possible pairings (ignoring the ordering of elements) are:
+1. (1, 4), (2, 3) -&gt; min(1, 4) + min(2, 3) = 1 + 2 = 3
+2. (1, 3), (2, 4) -&gt; min(1, 3) + min(2, 4) = 1 + 2 = 3
+3. (1, 2), (3, 4) -&gt; min(1, 2) + min(3, 4) = 1 + 3 = 4
+So the maximum possible sum is 4.</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [6,2,6,5,1,2]
+<strong>Output:</strong> 9
+<strong>Explanation:</strong> The optimal pairing is (2, 1), (2, 5), (6, 6). min(2, 1) + min(2, 5) + min(6, 6) = 1 + 2 + 6 = 9.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>4</sup></code></li>
+	<li><code>nums.length == 2 * n</code></li>
+	<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting
+
+> **Thinking**
+>
+> Pair numbers and sum the smaller of each pair; maximize that sum. The larger value in a pair is discarded, so it should be as small as possible — pair close values.
+>
+> Sort and pair adjacent elements; the sum of every other number is optimal. Any crossing pair can be uncrossed without decreasing the sum.
+
+For a pair of numbers $(a, b)$, we can assume $a \leq b$, then $\min(a, b) = a$. In order to make the sum as large as possible, the $b$ we choose should be as close to $a$ as possible, so as to retain a larger number.
+
+Therefore, we can sort the array $\textit{nums}$, then divide every two adjacent numbers into a group, and add the first number of each group.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int arrayPairSum(int[] nums) {
+        Arrays.sort(nums);
+        int ans = 0;
+        for (int i = 0; i < nums.length; i += 2) {
+            ans += nums[i];
+        }
+        return ans;
+    }
+}
+```

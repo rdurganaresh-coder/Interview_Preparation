@@ -1,0 +1,102 @@
+# 1171. Remove Zero Sum Consecutive Nodes from Linked List
+
+**Difficulty:** Medium  
+**Category:** Linked Lists  
+**LeetCode:** https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/
+
+---
+
+[中文文档](/solution/1100-1199/1171.Remove%20Zero%20Sum%20Consecutive%20Nodes%20from%20Linked%20List/README.md)
+
+## Description
+
+<p>Given the <code>head</code> of a linked list, we repeatedly delete consecutive sequences of nodes that sum to <code>0</code> until there are no such sequences.</p>
+
+<p>After doing so, return the head of the final linked list.&nbsp; You may return any such answer.</p>
+
+<p>&nbsp;</p>
+<p>(Note that in the examples below, all sequences are serializations of <code>ListNode</code> objects.)</p>
+
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> head = [1,2,-3,3,1]
+<strong>Output:</strong> [3,1]
+<strong>Note:</strong> The answer [1,2,1] would also be accepted.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> head = [1,2,3,-3,4]
+<strong>Output:</strong> [1,2,4]
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> head = [1,2,3,-3,-2]
+<strong>Output:</strong> [1]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li>The given linked list will contain between <code>1</code> and <code>1000</code> nodes.</li>
+	<li>Each node in the linked list has <code>-1000 &lt;= node.val &lt;= 1000</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Prefix Sum + Hash Table
+
+> **Thinking**
+>
+> A zero-sum stretch is two equal prefix sums. Deleting one stretch and rescanning can walk the list many times. A first pass stores the last node of each prefix sum; a second pass sets $\textit{cur}.\textit{next}$ to that last node's successor, dropping the middle in one go. A dummy covers a zero-sum prefix at the head.
+
+If two prefix sums of the linked list are equal, it means that the sum of the continuous node sequence between the two prefix sums is $0$, so we can remove this part of the continuous nodes.
+
+We first traverse the linked list and use a hash table $\textit{last}$ to record the prefix sum and the corresponding linked list node. For the same prefix sum $s$, the later node overwrites the previous node.
+
+Next, we traverse the linked list again. If the current node $\textit{cur}$ has a prefix sum $s$ that appears in $\textit{last}$, it means that the sum of all nodes between $\textit{cur}$ and $\textit{last}[s]$ is $0$, so we directly modify the pointer of $\textit{cur}$ to $\textit{last}[s].\textit{next}$, which removes this part of the continuous nodes with a sum of $0$. We continue to traverse and delete all continuous nodes with a sum of $0$.
+
+Finally, we return the head node of the linked list $\textit{dummy}.\textit{next}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the linked list.
+
+#### Java
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeZeroSumSublists(ListNode head) {
+        ListNode dummy = new ListNode(0, head);
+        Map<Integer, ListNode> last = new HashMap<>();
+        int s = 0;
+        ListNode cur = dummy;
+        while (cur != null) {
+            s += cur.val;
+            last.put(s, cur);
+            cur = cur.next;
+        }
+        s = 0;
+        cur = dummy;
+        while (cur != null) {
+            s += cur.val;
+            cur.next = last.get(s).next;
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+}
+```

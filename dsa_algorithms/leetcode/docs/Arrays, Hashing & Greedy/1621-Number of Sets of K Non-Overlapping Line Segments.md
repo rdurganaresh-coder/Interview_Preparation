@@ -1,0 +1,103 @@
+# 1621. Number of Sets of K Non-Overlapping Line Segments
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/number-of-sets-of-k-non-overlapping-line-segments/
+
+---
+
+[中文文档](/solution/1600-1699/1621.Number%20of%20Sets%20of%20K%20Non-Overlapping%20Line%20Segments/README.md)
+
+## Description
+
+<p>Given <code>n</code> points on a 1-D plane, where the <code>i<sup>th</sup></code> point (from <code>0</code> to <code>n-1</code>) is at <code>x = i</code>, find the number of ways we can draw <strong>exactly</strong> <code>k</code> <strong>non-overlapping</strong> line segments such that each segment covers two or more points. The endpoints of each segment must have <strong>integral coordinates</strong>. The <code>k</code> line segments <strong>do not</strong> have to cover all <code>n</code> points, and they are <strong>allowed</strong> to share endpoints.</p>
+
+<p>Return <em>the number of ways we can draw </em><code>k</code><em> non-overlapping line segments</em><em>.</em> Since this number can be huge, return it <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1600-1699/1621.Number%20of%20Sets%20of%20K%20Non-Overlapping%20Line%20Segments/images/ex1.png" style="width: 179px; height: 222px;" />
+<pre>
+<strong>Input:</strong> n = 4, k = 2
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> The two line segments are shown in red and blue.
+The image above shows the 5 different ways {(0,2),(2,3)}, {(0,1),(1,3)}, {(0,1),(2,3)}, {(1,2),(2,3)}, {(0,1),(1,2)}.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 3, k = 1
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The 3 ways are {(0,1)}, {(0,2)}, {(1,2)}.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 30, k = 7
+<strong>Output:</strong> 796297179
+<strong>Explanation:</strong> The total number of possible ways to draw 7 line segments is 3796297200. Taking this number modulo 10<sup>9</sup> + 7 gives us 796297179.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= n &lt;= 1000</code></li>
+	<li><code>1 &lt;= k &lt;= n-1</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> We need exactly $k$ non-overlapping segments on $n$ points, and adjacent segments may share an endpoint. Enumerating both endpoints of every segment blows up even for $n,k\le 1000$, and we would still have to keep the segments ordered and disjoint.
+>
+> Segments lie on a line, so we can process points from left to right and split the state by whether the current point is the right endpoint of some segment. Let $f[i][j]$ be the ways to place $j$ segments on the first $i$ points without ending at $i$, and $g[i][j]$ the ways that do end at $i$.
+>
+> Transitions then use only the two kinds of state at $i-1$: if we do not end at $i$, we inherit every placement of $j$ segments; if we do, we either extend a segment that already ended at $i-1$, or start a new length-$1$ segment covering $i-1$ and $i$.
+
+Let $f[i][j]$ be the number of ways to build $j$ segments using the first $i$ points such that the last segment does not end at $i$, and let $g[i][j]$ be the number of ways where the last segment does end at $i$. Initially $f[1][0]=1$.
+
+For $f[i][j]$, the $j$-th segment does not end at $i$, so the first $i-1$ points already contain $j$ segments:
+
+$$
+f[i][j] = f[i-1][j] + g[i - 1][j]
+$$
+
+For $g[i][j]$, the $j$-th segment ends at $i$. There are two sources, which we add together: extend a $j$-th segment that already ended at $i-1$ (length greater than $1$), or start a new segment covering $i-1$ and $i$ after placing $j-1$ segments on the first $i-1$ points (length $1$). When $j=0$ there is no right endpoint, so the second source is omitted. Thus for $j \ge 1$:
+
+$$
+g[i][j] = g[i - 1][j] + f[i - 1][j - 1] + g[i - 1][j - 1]
+$$
+
+The answer is $f[n][k]+g[n][k]$.
+
+The time complexity is $O(nk)$, and the space complexity is $O(nk)$.
+
+#### Java
+
+```java
+class Solution {
+    public int numberOfSets(int n, int k) {
+        final int mod = (int) 1e9 + 7;
+        int[][] f = new int[n + 1][k + 1];
+        int[][] g = new int[n + 1][k + 1];
+        f[1][0] = 1;
+        for (int i = 2; i <= n; ++i) {
+            for (int j = 0; j <= k; ++j) {
+                f[i][j] = (f[i - 1][j] + g[i - 1][j]) % mod;
+                g[i][j] = g[i - 1][j];
+                if (j > 0) {
+                    g[i][j] = (g[i][j] + f[i - 1][j - 1]) % mod;
+                    g[i][j] = (g[i][j] + g[i - 1][j - 1]) % mod;
+                }
+            }
+        }
+        return (f[n][k] + g[n][k]) % mod;
+    }
+}
+```

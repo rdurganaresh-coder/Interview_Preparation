@@ -1,0 +1,96 @@
+# 3330. Find the Original Typed String I
+
+**Difficulty:** Easy  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/find-the-original-typed-string-i/
+
+---
+
+[中文文档](/solution/3300-3399/3330.Find%20the%20Original%20Typed%20String%20I/README.md)
+
+## Description
+
+<p>Alice is attempting to type a specific string on her computer. However, she tends to be clumsy and <strong>may</strong> press a key for too long, resulting in a character being typed <strong>multiple</strong> times.</p>
+
+<p>Although Alice tried to focus on her typing, she is aware that she may still have done this <strong>at most</strong> <em>once</em>.</p>
+
+<p>You are given a string <code>word</code>, which represents the <strong>final</strong> output displayed on Alice&#39;s screen.</p>
+
+<p>Return the total number of <em>possible</em> original strings that Alice <em>might</em> have intended to type.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">word = &quot;abbcccc&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">5</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The possible strings are: <code>&quot;abbcccc&quot;</code>, <code>&quot;abbccc&quot;</code>, <code>&quot;abbcc&quot;</code>, <code>&quot;abbc&quot;</code>, and <code>&quot;abcccc&quot;</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">word = &quot;abcd&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">1</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The only possible string is <code>&quot;abcd&quot;</code>.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">word = &quot;aaaa&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">4</span></p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= word.length &lt;= 100</code></li>
+	<li><code>word</code> consists only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Direct Traversal
+
+> **Thinking**
+>
+> Alice held at most one key, so the original string is either $\textit{word}$ itself or $\textit{word}$ with one run shortened by one.
+>
+> With $n \le 100$ we only need adjacent equal pairs. Each such pair is a place where a long press could have been shorter.
+>
+> The answer is one plus the number of adjacent equal pairs.
+
+According to the problem description, if all adjacent characters are different, there is only 1 possible original input string. If there is 1 pair of adjacent identical characters, such as "abbc", then there are 2 possible original strings: "abc" and "abbc".
+
+By analogy, if there are $k$ pairs of adjacent identical characters, then there are $k + 1$ possible original input strings.
+
+Therefore, we just need to traverse the string, count the number of pairs of adjacent identical characters, and add 1.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the string.
+
+#### Java
+
+```java
+class Solution {
+    public int possibleStringCount(String word) {
+        int f = 1;
+        for (int i = 1; i < word.length(); ++i) {
+            if (word.charAt(i) == word.charAt(i - 1)) {
+                ++f;
+            }
+        }
+        return f;
+    }
+}
+```

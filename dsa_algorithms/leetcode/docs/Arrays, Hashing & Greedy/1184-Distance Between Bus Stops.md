@@ -1,0 +1,89 @@
+# 1184. Distance Between Bus Stops
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/distance-between-bus-stops/
+
+---
+
+[中文文档](/solution/1100-1199/1184.Distance%20Between%20Bus%20Stops/README.md)
+
+## Description
+
+<p>A bus&nbsp;has <code>n</code> stops numbered from <code>0</code> to <code>n - 1</code> that form&nbsp;a circle. We know the distance between all pairs of neighboring stops where <code>distance[i]</code> is the distance between the stops number&nbsp;<code>i</code> and <code>(i + 1) % n</code>.</p>
+
+<p>The bus goes along both directions&nbsp;i.e. clockwise and counterclockwise.</p>
+
+<p>Return the shortest distance between the given&nbsp;<code>start</code>&nbsp;and <code>destination</code>&nbsp;stops.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<p><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1100-1199/1184.Distance%20Between%20Bus%20Stops/images/untitled-diagram-1.jpg" style="width: 388px; height: 240px;" /></p>
+
+<pre>
+<strong>Input:</strong> distance = [1,2,3,4], start = 0, destination = 1
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> Distance between 0 and 1 is 1 or 9, minimum is 1.</pre>
+
+<p>&nbsp;</p>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<p><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1100-1199/1184.Distance%20Between%20Bus%20Stops/images/untitled-diagram-1-1.jpg" style="width: 388px; height: 240px;" /></p>
+
+<pre>
+<strong>Input:</strong> distance = [1,2,3,4], start = 0, destination = 2
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Distance between 0 and 2 is 3 or 7, minimum is 3.
+</pre>
+
+<p>&nbsp;</p>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<p><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1100-1199/1184.Distance%20Between%20Bus%20Stops/images/untitled-diagram-1-2.jpg" style="width: 388px; height: 240px;" /></p>
+
+<pre>
+<strong>Input:</strong> distance = [1,2,3,4], start = 0, destination = 3
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> Distance between 0 and 3 is 6 or 4, minimum is 4.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n&nbsp;&lt;= 10^4</code></li>
+	<li><code>distance.length == n</code></li>
+	<li><code>0 &lt;= start, destination &lt; n</code></li>
+	<li><code>0 &lt;= distance[i] &lt;= 10^4</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> Stops form a cycle, so only the clockwise and counterclockwise arcs matter. Sum the circle to $s$, walk one way from $\textit{start}$ to $\textit{destination}$ for $t$, and take $\min(t,s-t)$. No graph is required.
+
+We can first calculate the total distance $s$ that the bus travels, then simulate the bus's journey. Starting from the departure point, we move one stop to the right each time until we reach the destination, recording the travel distance $t$ during this process. Finally, we return the minimum value between $t$ and $s - t$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{distance}$.
+
+#### Java
+
+```java
+class Solution {
+    public int distanceBetweenBusStops(int[] distance, int start, int destination) {
+        int s = Arrays.stream(distance).sum();
+        int n = distance.length, t = 0;
+        while (start != destination) {
+            t += distance[start];
+            start = (start + 1) % n;
+        }
+        return Math.min(t, s - t);
+    }
+}
+```

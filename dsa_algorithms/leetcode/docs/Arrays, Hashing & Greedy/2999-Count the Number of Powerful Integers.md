@@ -1,0 +1,138 @@
+# 2999. Count the Number of Powerful Integers
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/count-the-number-of-powerful-integers/
+
+---
+
+[中文文档](/solution/2900-2999/2999.Count%20the%20Number%20of%20Powerful%20Integers/README.md)
+
+## Description
+
+<p>You are given three integers <code>start</code>, <code>finish</code>, and <code>limit</code>. You are also given a <strong>0-indexed</strong> string <code>s</code> representing a <strong>positive</strong> integer.</p>
+
+<p>A <strong>positive</strong> integer <code>x</code> is called <strong>powerful</strong> if it ends with <code>s</code> (in other words, <code>s</code> is a <strong>suffix</strong> of <code>x</code>) and each digit in <code>x</code> is at most <code>limit</code>.</p>
+
+<p>Return <em>the <strong>total</strong> number of powerful integers in the range</em> <code>[start..finish]</code>.</p>
+
+<p>A string <code>x</code> is a suffix of a string <code>y</code> if and only if <code>x</code> is a substring of <code>y</code> that starts from some index (<strong>including </strong><code>0</code>) in <code>y</code> and extends to the index <code>y.length - 1</code>. For example, <code>25</code> is a suffix of <code>5125</code> whereas <code>512</code> is not.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> start = 1, finish = 6000, limit = 4, s = &quot;124&quot;
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> The powerful integers in the range [1..6000] are 124, 1124, 2124, 3124, and, 4124. All these integers have each digit &lt;= 4, and &quot;124&quot; as a suffix. Note that 5124 is not a powerful integer because the first digit is 5 which is greater than 4.
+It can be shown that there are only 5 powerful integers in this range.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> start = 15, finish = 215, limit = 6, s = &quot;10&quot;
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The powerful integers in the range [15..215] are 110 and 210. All these integers have each digit &lt;= 6, and &quot;10&quot; as a suffix.
+It can be shown that there are only 2 powerful integers in this range.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> start = 1000, finish = 2000, limit = 4, s = &quot;3000&quot;
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> All integers in the range [1000..2000] are smaller than 3000, hence &quot;3000&quot; cannot be a suffix of any integer in this range.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= start &lt;= finish &lt;= 10<sup>15</sup></code></li>
+	<li><code>1 &lt;= limit &lt;= 9</code></li>
+	<li><code>1 &lt;= s.length &lt;= floor(log<sub>10</sub>(finish)) + 1</code></li>
+	<li><code>s</code> only consists of numeric digits which are at most <code>limit</code>.</li>
+	<li><code>s</code> does not have leading zeros.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Digit DP
+
+> **Thinking**
+>
+> Count integers in $[\textit{start},\textit{finish}]$ whose digits are at most $\textit{limit}$ and that end with $s$. The range is $f(\textit{finish})-f(\textit{start}-1)$. Digit DP fills from the left: high digits respect $\textit{limit}$ and a tight upper bound; the last $|s|$ digits must equal $s$ (and $s$ may not exceed the remaining bound when tight).
+>
+> If $t$ is shorter than $s$ the count is $0$. Memoize $(\textit{pos},\textit{lim})$; the bound has at most $16$ digits.
+
+This problem is essentially about finding the count of numbers in the given range $[l, .., r]$ that satisfy the conditions. The count depends on the number of digits and the value of each digit. We can solve this problem using the Digit DP approach, where the size of the number has minimal impact on the complexity.
+
+For the range $[l, .., r]$, we typically transform it into two subproblems: $[1, .., r]$ and $[1, .., l - 1]$, i.e.,
+
+$$
+\textit{ans} = \sum_{i=1}^{r} \textit{ans}_i - \sum_{i=1}^{l-1} \textit{ans}_i
+$$
+
+For this problem, we calculate the count of numbers in $[1, \textit{finish}]$ that satisfy the conditions, and subtract the count of numbers in $[1, \textit{start} - 1]$ that satisfy the conditions to get the final answer.
+
+We use memoization to implement Digit DP. Starting from the topmost digit, we recursively calculate the number of valid numbers, accumulate the results layer by layer, and finally return the answer from the starting point.
+
+The basic steps are as follows:
+
+1. Convert $\textit{start}$ and $\textit{finish}$ to strings for easier manipulation in Digit DP.
+2. Design a function $\textit{dfs}(\textit{pos}, \textit{lim})$, which represents the count of valid numbers starting from the $\textit{pos}$-th digit, with the current restriction condition $\textit{lim}$.
+3. If the maximum number of digits is less than the length of $s$, return 0.
+4. If the remaining number of digits equals the length of $s$, check if the current number satisfies the condition and return 1 or 0.
+5. Otherwise, calculate the upper limit of the current digit as $up = \min(\textit{lim} ? t[\textit{pos}] : 9, \textit{limit})$. Then iterate through the digits $i$ from 0 to $up$, recursively call $\textit{dfs}(\textit{pos} + 1, \textit{lim} \&\& i = t[\textit{pos}])$, and accumulate the results.
+6. If $\textit{lim}$ is false, store the current result in the cache to avoid redundant calculations.
+7. Finally, return the result.
+
+The answer is the count of valid numbers in $[1, \textit{finish}]$ minus the count of valid numbers in $[1, \textit{start} - 1]$.
+
+The time complexity is $O(D \log M)$, and the space complexity is $O(\log M)$, where $M$ is the upper limit of the number, and $D = 10$.
+
+#### Java
+
+```java
+class Solution {
+    private String s;
+    private String t;
+    private Long[] f;
+    private int limit;
+
+    public long numberOfPowerfulInt(long start, long finish, int limit, String s) {
+        this.s = s;
+        this.limit = limit;
+        t = String.valueOf(start - 1);
+        f = new Long[20];
+        long a = dfs(0, true);
+        t = String.valueOf(finish);
+        f = new Long[20];
+        long b = dfs(0, true);
+        return b - a;
+    }
+
+    private long dfs(int pos, boolean lim) {
+        if (t.length() < s.length()) {
+            return 0;
+        }
+        if (!lim && f[pos] != null) {
+            return f[pos];
+        }
+        if (t.length() - pos == s.length()) {
+            return lim ? (s.compareTo(t.substring(pos)) <= 0 ? 1 : 0) : 1;
+        }
+        int up = lim ? t.charAt(pos) - '0' : 9;
+        up = Math.min(up, limit);
+        long ans = 0;
+        for (int i = 0; i <= up; ++i) {
+            ans += dfs(pos + 1, lim && i == (t.charAt(pos) - '0'));
+        }
+        if (!lim) {
+            f[pos] = ans;
+        }
+        return ans;
+    }
+}
+```

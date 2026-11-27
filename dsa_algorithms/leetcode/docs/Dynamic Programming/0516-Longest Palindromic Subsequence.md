@@ -1,0 +1,84 @@
+# 516. Longest Palindromic Subsequence
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/longest-palindromic-subsequence/
+
+---
+
+[中文文档](/solution/0500-0599/0516.Longest%20Palindromic%20Subsequence/README.md)
+
+## Description
+
+<p>Given a string <code>s</code>, find <em>the longest palindromic <strong>subsequence</strong>&#39;s length in</em> <code>s</code>.</p>
+
+<p>A <strong>subsequence</strong> is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;bbbab&quot;
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> One possible longest palindromic subsequence is &quot;bbbb&quot;.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;cbbd&quot;
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> One possible longest palindromic subsequence is &quot;bb&quot;.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s.length &lt;= 1000</code></li>
+	<li><code>s</code> consists only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> A palindromic subsequence need not be contiguous, so center expansion is not enough, and listing all subsequences is too many.
+>
+> Let $f[i][j]$ be the LPS length of $s[i..j]$. Equal ends add $2$ to the inner interval; otherwise drop one end. Fill by increasing interval length ($i$ right to left, $j$ to the right) so dependencies are ready. $f[0][n-1]$ is the answer.
+
+We define $f[i][j]$ as the length of the longest palindromic subsequence from the $i$-th character to the $j$-th character in string $s$. Initially, $f[i][i] = 1$, and the values of other positions are all $0$.
+
+If $s[i] = s[j]$, then $f[i][j] = f[i + 1][j - 1] + 2$; otherwise, $f[i][j] = \max(f[i + 1][j], f[i][j - 1])$.
+
+Since the value of $f[i][j]$ is related to $f[i + 1][j - 1]$, $f[i + 1][j]$, and $f[i][j - 1]$, we should enumerate $i$ from large to small, and enumerate $j$ from small to large.
+
+The answer is $f[0][n - 1]$.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the length of the string $s$.
+
+#### Java
+
+```java
+class Solution {
+    public int longestPalindromeSubseq(String s) {
+        int n = s.length();
+        int[][] f = new int[n][n];
+        for (int i = 0; i < n; ++i) {
+            f[i][i] = 1;
+        }
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = i + 1; j < n; ++j) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    f[i][j] = f[i + 1][j - 1] + 2;
+                } else {
+                    f[i][j] = Math.max(f[i + 1][j], f[i][j - 1]);
+                }
+            }
+        }
+        return f[0][n - 1];
+    }
+}
+```

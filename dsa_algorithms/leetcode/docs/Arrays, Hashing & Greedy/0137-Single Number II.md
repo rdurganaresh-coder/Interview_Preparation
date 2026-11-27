@@ -1,0 +1,135 @@
+# 137. Single Number II
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/single-number-ii/
+
+---
+
+[中文文档](/solution/0100-0199/0137.Single%20Number%20II/README.md)
+
+## Description
+
+<p>Given an integer array <code>nums</code> where&nbsp;every element appears <strong>three times</strong> except for one, which appears <strong>exactly once</strong>. <em>Find the single element and return it</em>.</p>
+
+<p>You must&nbsp;implement a solution with a linear runtime complexity and use&nbsp;only constant&nbsp;extra space.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<pre><strong>Input:</strong> nums = [2,2,3,2]
+<strong>Output:</strong> 3
+</pre><p><strong class="example">Example 2:</strong></p>
+<pre><strong>Input:</strong> nums = [0,1,0,1,0,1,99]
+<strong>Output:</strong> 99
+</pre>
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 3 * 10<sup>4</sup></code></li>
+	<li><code>-2<sup>31</sup> &lt;= nums[i] &lt;= 2<sup>31</sup> - 1</code></li>
+	<li>Each element in <code>nums</code> appears exactly <strong>three times</strong> except for one element which appears <strong>once</strong>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Bitwise Operation
+
+> **Thinking**
+>
+> Numbers appear three times except one; XOR is no longer enough because $x\oplus x\oplus x=x$. The follow-up still wants constant space. Count $1$s per bit modulo $3$: bits from the triples vanish, and the remainder is the answer. The sign bit is handled separately to avoid overflow.
+
+We can enumerate each binary bit $i$, and for each binary bit, we calculate the sum of all numbers on that bit. If the sum of the numbers on that bit can be divided by 3, then the number that only appears once on that bit is 0, otherwise it is 1.
+
+The time complexity is $O(n \log M)$, and the space complexity is $O(1)$, where $n$ and $M$ are the length of the array and the range of elements in the array, respectively.
+
+The C++ implementation adds INT_MIN for the sign bit instead of left-shifting a signed integer into overflow.
+
+#### Java
+
+```java
+class Solution {
+    public int singleNumber(int[] nums) {
+        int ans = 0;
+        for (int i = 0; i < 32; i++) {
+            int cnt = 0;
+            for (int num : nums) {
+                cnt += num >> i & 1;
+            }
+            cnt %= 3;
+            ans |= cnt << i;
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Digital Circuit
+
+> **Thinking**
+>
+> Solution 1 rescans the array for every bit. Two integers $a,b$ store each bit's count modulo $3$; a truth table updates them as each number arrives, so one pass does the same counting.
+
+We can use a more efficient method that uses digital circuits to simulate the above bitwise operation.
+
+Each binary bit of an integer can only represent 2 states, 0 or 1. However, we need to represent the sum of the $i$-th bit of all integers traversed so far modulo 3. Therefore, we can use two integers $a$ and $b$ to represent it. There are three possible cases:
+
+1. The $i$-th bit of integer $a$ is 0 and the $i$-th bit of integer $b$ is 0, which means the modulo 3 result is 0;
+2. The $i$-th bit of integer $a$ is 0 and the $i$-th bit of integer $b$ is 1, which means the modulo 3 result is 1;
+3. The $i$-th bit of integer $a$ is 1 and the $i$-th bit of integer $b$ is 0, which means the modulo 3 result is 2.
+
+We use integer $c$ to represent the number to be read in, and the truth table is as follows:
+
+| $a_i$ | $b_i$ | $c_i$ | New $a_i$ | New $b_i$ |
+| ----- | ----- | ----- | --------- | --------- |
+| 0     | 0     | 0     | 0         | 0         |
+| 0     | 0     | 1     | 0         | 1         |
+| 0     | 1     | 0     | 0         | 1         |
+| 0     | 1     | 1     | 1         | 0         |
+| 1     | 0     | 0     | 1         | 0         |
+| 1     | 0     | 1     | 0         | 0         |
+
+Based on the truth table, we can write the logical expression:
+
+$$
+a_i = a_i' b_i c_i + a_i b_i' c_i'
+$$
+
+and:
+
+$$
+b_i = a_i' b_i' c_i + a_i' b_i c_i' = a_i' (b_i \oplus c_i)
+$$
+
+The final result is $b$, because when the binary bit of $b$ is 1, it means that the number appears only once.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int singleNumber(int[] nums) {
+        int a = 0, b = 0;
+        for (int c : nums) {
+            int aa = (~a & b & c) | (a & ~b & ~c);
+            int bb = ~a & (b ^ c);
+            a = aa;
+            b = bb;
+        }
+        return b;
+    }
+}
+```
+
+### Solution 3: Set + Math
+
+> **Thinking**
+>
+> If extra space is allowed, the unique value is $(3\sum_{\textit{unique}}-\sum_{\textit{all}})/2$. Deduplicate, sum twice, and divide. Direct, but $O(n)$ space.
+
+### Solution 4: Bit Manipulation
+
+> **Thinking**
+>
+> The Solution 2 state machine collapses to two masks: $\textit{ans}$ and $\textit{acc}$ hold bits seen once and twice. They stay disjoint as $x$ arrives; $\textit{ans}$ is the number that appeared once. Shorter code.

@@ -1,0 +1,116 @@
+# 3138. Minimum Length of Anagram Concatenation
+
+**Difficulty:** Medium  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/minimum-length-of-anagram-concatenation/
+
+---
+
+[中文文档](/solution/3100-3199/3138.Minimum%20Length%20of%20Anagram%20Concatenation/README.md)
+
+## Description
+
+<p>You are given a string <code>s</code>, which is known to be a concatenation of <strong>anagrams</strong> of some string <code>t</code>.</p>
+
+<p>Return the <strong>minimum</strong> possible length of the string <code>t</code>.</p>
+
+<p>An <strong>anagram</strong> is formed by rearranging the letters of a string. For example, &quot;aab&quot;, &quot;aba&quot;, and, &quot;baa&quot; are anagrams of &quot;aab&quot;.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;abba&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>One possible string <code>t</code> could be <code>&quot;ba&quot;</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;cdef&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">4</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>One possible string <code>t</code> could be <code>&quot;cdef&quot;</code>, notice that <code>t</code> can be equal to <code>s</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;abcbcacabbaccba&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">3</span></p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>s</code> consist only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration
+
+> **Thinking**
+>
+> $s$ is a concatenation of equal anagram blocks; we want the shortest block. Its length must divide $n$, so only a handful of candidates exist.
+>
+> A length-$k$ block is valid when each segment's counts times $n/k$ recover the global counts. One $O(n)$ pass verifies a candidate.
+>
+> Count the whole string, then try every divisor $k$ and inspect each segment. The first success is the minimum $t$.
+
+Based on the problem description, the length of string $t$ must be a factor of the length of string $s$. We can enumerate the length $k$ of string $t$ from small to large, and then check if it meets the requirements of the problem. If it does, we return. Thus, the problem is transformed into how to check whether the length $k$ of string $t$ meets the requirements.
+
+First, we count the occurrence of each character in string $s$ and record it in an array or hash table $\textit{cnt}$.
+
+Next, we define a function $\textit{check}(k)$ to check whether the length $k$ of string $t$ meets the requirements. We can traverse string $s$, taking a substring of length $k$ each time, and then count the occurrence of each character. If the occurrence of each character multiplied by $\frac{n}{k}$ does not equal the value in $\textit{cnt}$, then return $\textit{false}$. If all checks pass by the end of the traversal, return $\textit{true}$.
+
+The time complexity is $O(n \times A)$, and the space complexity is $O(|\Sigma|)$, where $n$ is the length of string $s$, and $A$ is the number of factors of $n$, and $\Sigma$ is the character set, which in this case is the set of lowercase letters.
+
+#### Java
+
+```java
+class Solution {
+    private int n;
+    private char[] s;
+    private int[] cnt = new int[26];
+
+    public int minAnagramLength(String s) {
+        n = s.length();
+        this.s = s.toCharArray();
+        for (int i = 0; i < n; ++i) {
+            ++cnt[this.s[i] - 'a'];
+        }
+        for (int i = 1;; ++i) {
+            if (n % i == 0 && check(i)) {
+                return i;
+            }
+        }
+    }
+
+    private boolean check(int k) {
+        for (int i = 0; i < n; i += k) {
+            int[] cnt1 = new int[26];
+            for (int j = i; j < i + k; ++j) {
+                ++cnt1[s[j] - 'a'];
+            }
+            for (int j = 0; j < 26; ++j) {
+                if (cnt1[j] * (n / k) != cnt[j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+```

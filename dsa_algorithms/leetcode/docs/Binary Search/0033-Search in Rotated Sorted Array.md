@@ -1,0 +1,98 @@
+# 33. Search in Rotated Sorted Array
+
+**Difficulty:** Medium  
+**Category:** Binary Search  
+**LeetCode:** https://leetcode.com/problems/search-in-rotated-sorted-array/
+
+---
+
+[中文文档](/solution/0000-0099/0033.Search%20in%20Rotated%20Sorted%20Array/README.md)
+
+## Description
+
+<p>There is an integer array <code>nums</code> sorted in ascending order (with <strong>distinct</strong> values).</p>
+
+<p>Prior to being passed to your function, <code>nums</code> is <strong>possibly left rotated</strong> at an unknown index <code>k</code> (<code>1 &lt;= k &lt; nums.length</code>) such that the resulting array is <code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code> (<strong>0-indexed</strong>). For example, <code>[0,1,2,4,5,6,7]</code> might be left rotated by&nbsp;<code>3</code>&nbsp;indices and become <code>[4,5,6,7,0,1,2]</code>.</p>
+
+<p>Given the array <code>nums</code> <strong>after</strong> the possible rotation and an integer <code>target</code>, return <em>the index of </em><code>target</code><em> if it is in </em><code>nums</code><em>, or </em><code>-1</code><em> if it is not in </em><code>nums</code>.</p>
+
+<p>You must write an algorithm with <code>O(log n)</code> runtime complexity.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
+<strong>Output:</strong> 4
+</pre><p><strong class="example">Example 2:</strong></p>
+<pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 3
+<strong>Output:</strong> -1
+</pre><p><strong class="example">Example 3:</strong></p>
+<pre><strong>Input:</strong> nums = [1], target = 0
+<strong>Output:</strong> -1
+</pre>
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 5000</code></li>
+	<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+	<li>All values of <code>nums</code> are <strong>unique</strong>.</li>
+	<li><code>nums</code> is an ascending array that is possibly rotated.</li>
+	<li><code>-10<sup>4</sup> &lt;= target &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> The first idea is a left-to-right scan. Correct, but $n \le 5000$ and the problem requires $O(\log n)$.
+>
+> After the rotation the array is no longer fully sorted, so ordinary binary search cannot tell which half holds $\textit{target}$.
+>
+> The key is that any cut leaves at least one half monotonic. Comparing $\textit{nums}[0]$ with $\textit{nums}[\textit{mid}]$ tells us whether the left half is sorted; then we check whether $\textit{target}$ lies in that sorted range and discard the other half.
+>
+> So we can still binary-search: the sorted half decides keep-or-drop, and the unsorted half is cut again in the next round.
+
+We use binary search to divide the array into two parts, $[left,.. mid]$ and $[mid + 1,.. right]$. At this point, we can find that one part must be sorted.
+
+Therefore, we can determine whether $\textit{target}$ is in this part based on the sorted part:
+
+- If the elements in the range $[0,.. mid]$ form a sorted array:
+    - If $\textit{nums}[0] \leq \textit{target} \leq \textit{nums}[\textit{mid}]$, then our search range can be narrowed down to $[left,.. mid]$;
+    - Otherwise, search in $[mid + 1,.. right]$;
+- If the elements in the range $[\textit{mid} + 1, n - 1]$ form a sorted array:
+    - If $\textit{nums}[\textit{mid}] \lt \textit{target} \leq \textit{nums}[n - 1]$, then our search range can be narrowed down to $[mid + 1,.. right]$;
+    - Otherwise, search in $[left,.. mid]$.
+
+The termination condition for binary search is $\textit{left} \geq \textit{right}$. If at the end we find that $\textit{nums}[\textit{left}]$ is not equal to $\textit{target}$, it means that there is no element with a value of $\textit{target}$ in the array, and we return $-1$. Otherwise, we return the index $\textit{left}$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int search(int[] nums, int target) {
+        int n = nums.length;
+        int left = 0, right = n - 1;
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (nums[0] <= nums[mid]) {
+                if (nums[0] <= target && target <= nums[mid]) {
+                    right = mid;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target <= nums[n - 1]) {
+                    left = mid + 1;
+                } else {
+                    right = mid;
+                }
+            }
+        }
+        return nums[left] == target ? left : -1;
+    }
+}
+```

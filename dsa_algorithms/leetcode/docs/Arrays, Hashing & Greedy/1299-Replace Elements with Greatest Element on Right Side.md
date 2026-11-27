@@ -1,0 +1,77 @@
+# 1299. Replace Elements with Greatest Element on Right Side
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/replace-elements-with-greatest-element-on-right-side/
+
+---
+
+[中文文档](/solution/1200-1299/1299.Replace%20Elements%20with%20Greatest%20Element%20on%20Right%20Side/README.md)
+
+## Description
+
+<p>Given an array <code>arr</code>,&nbsp;replace every element in that array with the greatest element among the elements to its&nbsp;right, and replace the last element with <code>-1</code>.</p>
+
+<p>After doing so, return the array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [17,18,5,4,6,1]
+<strong>Output:</strong> [18,6,6,6,1,-1]
+<strong>Explanation:</strong> 
+- index 0 --&gt; the greatest element to the right of index 0 is index 1 (18).
+- index 1 --&gt; the greatest element to the right of index 1 is index 4 (6).
+- index 2 --&gt; the greatest element to the right of index 2 is index 4 (6).
+- index 3 --&gt; the greatest element to the right of index 3 is index 4 (6).
+- index 4 --&gt; the greatest element to the right of index 4 is index 5 (1).
+- index 5 --&gt; there are no elements to the right of index 5, so we put -1.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [400]
+<strong>Output:</strong> [-1]
+<strong>Explanation:</strong> There are no elements to the right of index 0.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= arr.length &lt;= 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= arr[i] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Reverse Traversal
+
+> **Thinking**
+>
+> Each index becomes the maximum to its right; the last is $-1$. Scanning the suffix from the left repeats work. Walking right to left, we keep a suffix max $mx$, write the old $mx$ into the cell, then update $mx$ with the original value. One reverse pass, $O(1)$ extra space.
+
+We use a variable $mx$ to record the maximum value to the right of the current position, initially $mx = -1$.
+
+Then we traverse the array from right to left. For each position $i$, we denote the current value as $x$, update the current position's value to $mx$, and then update $mx = \max(mx, x)$.
+
+Finally, return the original array.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int[] replaceElements(int[] arr) {
+        for (int i = arr.length - 1, mx = -1; i >= 0; --i) {
+            int x = arr[i];
+            arr[i] = mx;
+            mx = Math.max(mx, x);
+        }
+        return arr;
+    }
+}
+```

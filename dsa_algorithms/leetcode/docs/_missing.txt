@@ -1,0 +1,12 @@
+785	Is Graph Bipartite?	Graphs & Shortest Path
+1576	Replace All ?'s to Avoid Consecutive Repeating Characters	Sliding Window & Two Pointers
+627	Swap Salary	SQL & Database
+615	Average Salary: Departments VS Company	SQL & Database
+1393	Capital Gain/Loss	Strings
+597	Friend Requests I: Overall Acceptance Rate	Arrays, Hashing & Greedy
+1560	Most Visited Sector in a Circular Track	Arrays, Hashing & Greedy
+2888	Reshape Data: Concatenate	Arrays, Hashing & Greedy
+2889	Reshape Data: Pivot	Arrays, Hashing & Greedy
+2890	Reshape Data: Melt	Arrays, Hashing & Greedy
+602	Friend Requests II: Who Has the Most Friends	Arrays, Hashing & Greedy
+1744	Can You Eat Your Favorite Candy on Your Favorite Day?	Arrays, Hashing & Greedy

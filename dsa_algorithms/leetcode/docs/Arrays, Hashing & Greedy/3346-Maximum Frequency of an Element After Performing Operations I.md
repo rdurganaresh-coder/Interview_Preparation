@@ -1,0 +1,125 @@
+# 3346. Maximum Frequency of an Element After Performing Operations I
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-frequency-of-an-element-after-performing-operations-i/
+
+---
+
+[中文文档](/solution/3300-3399/3346.Maximum%20Frequency%20of%20an%20Element%20After%20Performing%20Operations%20I/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> and two integers <code>k</code> and <code>numOperations</code>.</p>
+
+<p>You must perform an <strong>operation</strong> <code>numOperations</code> times on <code>nums</code>, where in each operation you:</p>
+
+<ul>
+	<li>Select an index <code>i</code> that was <strong>not</strong> selected in any previous operations.</li>
+	<li>Add an integer in the range <code>[-k, k]</code> to <code>nums[i]</code>.</li>
+</ul>
+
+<p>Return the <strong>maximum</strong> possible <span data-keyword="frequency-array">frequency</span> of any element in <code>nums</code> after performing the <strong>operations</strong>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,4,5], k = 1, numOperations = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>We can achieve a maximum frequency of two by:</p>
+
+<ul>
+	<li>Adding 0 to <code>nums[1]</code>. <code>nums</code> becomes <code>[1, 4, 5]</code>.</li>
+	<li>Adding -1 to <code>nums[2]</code>. <code>nums</code> becomes <code>[1, 4, 4]</code>.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [5,11,20,20], k = 5, numOperations = 1</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>We can achieve a maximum frequency of two by:</p>
+
+<ul>
+	<li>Adding 0 to <code>nums[1]</code>.</li>
+</ul>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= k &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= numOperations &lt;= nums.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Difference Array
+
+> **Thinking**
+>
+> Each $x$ may become any integer in $[x-k,x+k]$, and we may change at most $\textit{numOperations}$ entries. With $n \le 10^5$ we cannot test every target by a full scan.
+>
+> A target $y$ can attract every value whose interval covers $y$; entries already equal to $y$ need no operation. A difference map adds $1$ at $x-k$, subtracts $1$ at $x+k+1$, and inserts $0$ at $x$ so original values appear.
+>
+> A sorted prefix sum yields the coverage $s$; the frequency is $\min(s,\textit{cnt}[y]+\textit{numOperations})$, and we keep the maximum.
+
+According to the problem description, for each element $x$ in the array $\textit{nums}$, we can change it to any integer within the range $[x-k, x+k]$. We want to perform operations on some elements in $\textit{nums}$ to maximize the frequency of a certain integer in the array.
+
+The problem can be transformed into merging all elements in the interval $[x-k, x+k]$ corresponding to each element $x$, and finding the integer that contains the most original elements in the merged intervals. This can be implemented using a difference array.
+
+We use a dictionary $d$ to record the difference array. For each element $x$, we perform the following operations on the difference array:
+
+- Add $1$ at position $x-k$, indicating that a new interval starts from this position.
+- Subtract $1$ at position $x+k+1$, indicating that an interval ends from this position.
+- Add $0$ at position $x$, ensuring that position $x$ exists in the difference array for subsequent calculations.
+
+At the same time, we need to record the number of occurrences of each element in the original array, using a dictionary $\textit{cnt}$ to implement this.
+
+Next, we perform prefix sum calculation on the difference array to get how many intervals cover each position. For each position $x$, we calculate the number of intervals covering it as $s$. Then we discuss by cases:
+
+- If $x$ appears in the original array, operations on $x$ itself are meaningless. Therefore, there are $s - \textit{cnt}[x]$ other elements that can be changed to $x$ through operations, but at most $\textit{numOperations}$ operations can be performed. So the maximum frequency at this position is $\textit{cnt}[x] + \min(s - \textit{cnt}[x], \textit{numOperations})$.
+- If $x$ does not appear in the original array, then at most $\textit{numOperations}$ operations can be performed to change other elements to $x$. Therefore, the maximum frequency at this position is $\min(s, \textit{numOperations})$.
+
+Combining the above two cases, we can uniformly express it as $\min(s, \textit{cnt}[x] + \textit{numOperations})$.
+
+Finally, we traverse all positions, calculate the maximum frequency at each position, and take the maximum value among them as the answer.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxFrequency(int[] nums, int k, int numOperations) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        TreeMap<Integer, Integer> d = new TreeMap<>();
+        for (int x : nums) {
+            cnt.merge(x, 1, Integer::sum);
+            d.putIfAbsent(x, 0);
+            d.merge(x - k, 1, Integer::sum);
+            d.merge(x + k + 1, -1, Integer::sum);
+        }
+        int ans = 0, s = 0;
+        for (var e : d.entrySet()) {
+            int x = e.getKey(), t = e.getValue();
+            s += t;
+            ans = Math.max(ans, Math.min(s, cnt.getOrDefault(x, 0) + numOperations));
+        }
+        return ans;
+    }
+}
+```

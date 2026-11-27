@@ -1,0 +1,91 @@
+# 3155. Maximum Number of Upgradable Servers
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-number-of-upgradable-servers/
+
+---
+
+[中文文档](/solution/3100-3199/3155.Maximum%20Number%20of%20Upgradable%20Servers/README.md)
+
+## Description
+
+<p>You have <code>n</code> data centers and need to upgrade their servers.</p>
+
+<p>You are given four arrays <code>count</code>, <code>upgrade</code>, <code>sell</code>, and <code>money</code> of length <code>n</code>, which show:</p>
+
+<ul>
+	<li>The number of servers</li>
+	<li>The cost of upgrading a single server</li>
+	<li>The money you get by selling a server</li>
+	<li>The money you initially have</li>
+</ul>
+
+<p>for each data center respectively.</p>
+
+<p>Return an array <code>answer</code>, where for each data center, the corresponding element in <code>answer</code> represents the <strong>maximum</strong> number of servers that can be upgraded.</p>
+
+<p>Note that the money from one data center <strong>cannot</strong> be used for another data center.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">count = [4,3], upgrade = [3,5], sell = [4,2], money = [8,9]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[3,2]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>For the first data center, if we sell one server, we&#39;ll have <code>8 + 4 = 12</code> units of money and we can upgrade the remaining 3 servers.</p>
+
+<p>For the second data center, if we sell one server, we&#39;ll have <code>9 + 2 = 11</code> units of money and we can upgrade the remaining 2 servers.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">count = [1], upgrade = [2], sell = [1], money = [1]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[0]</span></p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= count.length == upgrade.length == sell.length == money.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= count[i], upgrade[i], sell[i], money[i] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Mathematics
+
+> **Thinking**
+>
+> A data center may sell some servers to fund upgrades of the rest. Trying every $x\le \textit{count}[i]$ works but is unnecessary.
+>
+> Selling $\textit{count}-x$ servers plus cash must cover $x\cdot \textit{upgrade}$, which rearranges to $x\le(\textit{count}\cdot \textit{sell}+\textit{money})/(\textit{upgrade}+\textit{sell})$ and $x\le \textit{count}$.
+>
+> Take the minimum of that bound and the server count for each center. Integer division floors automatically.
+
+For each data center, we assume that we can upgrade $x$ servers, then $x \times \textit{upgrade}[i] \leq \textit{count}[i] \times \textit{sell}[i] + \textit{money}[i]$. That is, $x \leq \frac{\textit{count}[i] \times \textit{sell}[i] + \textit{money}[i]}{\textit{upgrade}[i] + \textit{sell}[i]}$. Also, $x \leq \textit{count}[i]$, so we can take the minimum of the two.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int[] maxUpgrades(int[] count, int[] upgrade, int[] sell, int[] money) {
+        int n = count.length;
+        int[] ans = new int[n];
+        for (int i = 0; i < n; ++i) {
+            ans[i] = Math.min(
+                count[i], (int) ((1L * count[i] * sell[i] + money[i]) / (upgrade[i] + sell[i])));
+        }
+        return ans;
+    }
+}
+```

@@ -1,0 +1,51 @@
+package com.leetcode.graphs_shortest_path;
+
+class Solution1109 {
+    public int[] corpFlightBookings(int[][] bookings, int n) {
+        int[] ans = new int[n];
+        for (var e : bookings) {
+            int first = e[0], last = e[1], seats = e[2];
+            ans[first - 1] += seats;
+            if (last < n) {
+                ans[last] -= seats;
+            }
+        }
+        for (int i = 1; i < n; ++i) {
+            ans[i] += ans[i - 1];
+        }
+        return ans;
+    }
+
+    // ===== Generated test cases (from the problem examples) =====
+    private static String _tcShow(Object o) {
+        String s = java.util.Arrays.deepToString(new Object[] {o});
+        return s.substring(1, s.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Solution1109 _tcSol = new Solution1109();
+        System.out.println("Test 1");
+        System.out.println("  Input   : " + "bookings = [[1,2,10],[2,3,20],[2,5,25]], n = 5");
+        try {
+            int[][] bookings = new int[][]{new int[]{1, 2, 10}, new int[]{2, 3, 20}, new int[]{2, 5, 25}};
+            int n = 5;
+            System.out.println("  Output  : " + _tcShow(_tcSol.corpFlightBookings(bookings, n)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "[10,55,45,25,25]");
+        System.out.println();
+
+        System.out.println("Test 2");
+        System.out.println("  Input   : " + "bookings = [[1,2,10],[2,2,15]], n = 2");
+        try {
+            int[][] bookings = new int[][]{new int[]{1, 2, 10}, new int[]{2, 2, 15}};
+            int n = 2;
+            System.out.println("  Output  : " + _tcShow(_tcSol.corpFlightBookings(bookings, n)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "[10,25]");
+        System.out.println();
+    }
+}

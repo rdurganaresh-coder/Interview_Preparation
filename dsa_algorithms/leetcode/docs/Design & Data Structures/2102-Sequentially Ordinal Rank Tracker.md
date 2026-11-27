@@ -1,0 +1,153 @@
+# 2102. Sequentially Ordinal Rank Tracker
+
+**Difficulty:** Hard  
+**Category:** Design & Data Structures  
+**LeetCode:** https://leetcode.com/problems/sequentially-ordinal-rank-tracker/
+
+---
+
+[中文文档](/solution/2100-2199/2102.Sequentially%20Ordinal%20Rank%20Tracker/README.md)
+
+## Description
+
+<p>A scenic location is represented by its <code>name</code> and attractiveness <code>score</code>, where <code>name</code> is a <strong>unique</strong> string among all locations and <code>score</code> is an integer. Locations can be ranked from the best to the worst. The <strong>higher</strong> the score, the better the location. If the scores of two locations are equal, then the location with the <strong>lexicographically smaller</strong> name is better.</p>
+
+<p>You are building a system that tracks the ranking of locations with the system initially starting with no locations. It supports:</p>
+
+<ul>
+	<li><strong>Adding</strong> scenic locations, <strong>one at a time</strong>.</li>
+	<li><strong>Querying</strong> the <code>i<sup>th</sup></code> <strong>best</strong> location of <strong>all locations already added</strong>, where <code>i</code> is the number of times the system has been queried (including the current query).
+	<ul>
+		<li>For example, when the system is queried for the <code>4<sup>th</sup></code> time, it returns the <code>4<sup>th</sup></code> best location of all locations already added.</li>
+	</ul>
+	</li>
+</ul>
+
+<p>Note that the test data are generated so that <strong>at any time</strong>, the number of queries <strong>does not exceed</strong> the number of locations added to the system.</p>
+
+<p>Implement the <code>SORTracker</code> class:</p>
+
+<ul>
+	<li><code>SORTracker()</code> Initializes the tracker system.</li>
+	<li><code>void add(string name, int score)</code> Adds a scenic location with <code>name</code> and <code>score</code> to the system.</li>
+	<li><code>string get()</code> Queries and returns the <code>i<sup>th</sup></code> best location, where <code>i</code> is the number of times this method has been invoked (including this invocation).</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input</strong>
+[&quot;SORTracker&quot;, &quot;add&quot;, &quot;add&quot;, &quot;get&quot;, &quot;add&quot;, &quot;get&quot;, &quot;add&quot;, &quot;get&quot;, &quot;add&quot;, &quot;get&quot;, &quot;add&quot;, &quot;get&quot;, &quot;get&quot;]
+[[], [&quot;bradford&quot;, 2], [&quot;branford&quot;, 3], [], [&quot;alps&quot;, 2], [], [&quot;orland&quot;, 2], [], [&quot;orlando&quot;, 3], [], [&quot;alpine&quot;, 2], [], []]
+<strong>Output</strong>
+[null, null, null, &quot;branford&quot;, null, &quot;alps&quot;, null, &quot;bradford&quot;, null, &quot;bradford&quot;, null, &quot;bradford&quot;, &quot;orland&quot;]
+
+<strong>Explanation</strong>
+SORTracker tracker = new SORTracker(); // Initialize the tracker system.
+tracker.add(&quot;bradford&quot;, 2); // Add location with name=&quot;bradford&quot; and score=2 to the system.
+tracker.add(&quot;branford&quot;, 3); // Add location with name=&quot;branford&quot; and score=3 to the system.
+tracker.get();              // The sorted locations, from best to worst, are: branford, bradford.
+                            // Note that branford precedes bradford due to its <strong>higher score</strong> (3 &gt; 2).
+                            // This is the 1<sup>st</sup> time get() is called, so return the best location: &quot;branford&quot;.
+tracker.add(&quot;alps&quot;, 2);     // Add location with name=&quot;alps&quot; and score=2 to the system.
+tracker.get();              // Sorted locations: branford, alps, bradford.
+                            // Note that alps precedes bradford even though they have the same score (2).
+                            // This is because &quot;alps&quot; is <strong>lexicographically smaller</strong> than &quot;bradford&quot;.
+                            // Return the 2<sup>nd</sup> best location &quot;alps&quot;, as it is the 2<sup>nd</sup> time get() is called.
+tracker.add(&quot;orland&quot;, 2);   // Add location with name=&quot;orland&quot; and score=2 to the system.
+tracker.get();              // Sorted locations: branford, alps, bradford, orland.
+                            // Return &quot;bradford&quot;, as it is the 3<sup>rd</sup> time get() is called.
+tracker.add(&quot;orlando&quot;, 3);  // Add location with name=&quot;orlando&quot; and score=3 to the system.
+tracker.get();              // Sorted locations: branford, orlando, alps, bradford, orland.
+                            // Return &quot;bradford&quot;.
+tracker.add(&quot;alpine&quot;, 2);   // Add location with name=&quot;alpine&quot; and score=2 to the system.
+tracker.get();              // Sorted locations: branford, orlando, alpine, alps, bradford, orland.
+                            // Return &quot;bradford&quot;.
+tracker.get();              // Sorted locations: branford, orlando, alpine, alps, bradford, orland.
+                            // Return &quot;orland&quot;.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>name</code> consists of lowercase English letters, and is unique among all locations.</li>
+	<li><code>1 &lt;= name.length &lt;= 10</code></li>
+	<li><code>1 &lt;= score &lt;= 10<sup>5</sup></code></li>
+	<li>At any time, the number of calls to <code>get</code> does not exceed the number of calls to <code>add</code>.</li>
+	<li>At most <code>4 * 10<sup>4</sup></code> calls <strong>in total</strong> will be made to <code>add</code> and <code>get</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Ordered Set
+
+> **Thinking**
+>
+> The tracker must insert attractions while answering queries in strictly increasing rank order. Sorting the whole list on every query costs about $O(n \log n)$ each time and is too heavy under a long operation sequence.
+>
+> Query indices only increase, and the comparison key is $(-\textit{score},\textit{name})$, so a single ordered sequence with direct index access suffices.
+>
+> We therefore keep all attractions in a sorted list under that key and a counter $i$ for how many times $\texttt{get}$ has been called, returning the name at index $i$ after incrementing it.
+
+We can use an ordered set to store the attractions, and a variable $i$ to record the current number of queries, initially $i = -1$.
+
+When calling the `add` method, we take the negative of the attraction's rating, so that we can use the ordered set to sort by rating in descending order. If the ratings are the same, sort by the dictionary order of the attraction names in ascending order.
+
+When calling the `get` method, we increment $i$ by one, and then return the name of the $i$-th attraction in the ordered set.
+
+The time complexity of each operation is $O(\log n)$, where $n$ is the number of added attractions. The space complexity is $O(n)$.
+
+### Solution 2: Double Priority Queue (Min-Max Heap)
+
+> **Thinking**
+>
+> Solution 1 relies on random access into an ordered set. Languages without a balanced-tree container need another structure that exploits the strictly increasing queries.
+>
+> As with the running-median pattern, two heaps can split already published best attractions from the rest: a min-heap $\textit{good}$ holds queried better items, and a max-heap $\textit{bad}$ holds the remainder.
+>
+> $\texttt{add}$ pushes the new item through $\textit{good}$ and moves the worst of $\textit{good}$ into $\textit{bad}$; $\texttt{get}$ promotes the best of $\textit{bad}$ into $\textit{good}$, whose top is the current rank. Names are stored in reverse order so higher score and smaller lexicographic order win.
+
+We notice that the query operations in this problem are performed in strictly increasing order. Therefore, we can use a method similar to the median in the data stream. We define two priority queues $\textit{good}$ and $\textit{bad}$. $\textit{good}$ is a min-heap, storing the current best attractions, and $\textit{bad}$ is a max-heap, storing the current $i$-th best attraction.
+
+Each time the `add` method is called, we add the attraction's rating and name to $\textit{good}$, and then add the worst attraction in $\textit{good}$ to $\textit{bad}$.
+
+Each time the `get` method is called, we add the best attraction in $\textit{bad}$ to $\textit{good}$, and then return the worst attraction in $\textit{good}$.
+
+The time complexity of each operation is $O(\log n)$, where $n$ is the number of added attractions. The space complexity is $O(n)$.
+
+#### Java
+
+```java
+class SORTracker {
+    private PriorityQueue<Map.Entry<Integer, String>> good = new PriorityQueue<>(
+        (a, b)
+            -> a.getKey().equals(b.getKey()) ? b.getValue().compareTo(a.getValue())
+                                             : a.getKey() - b.getKey());
+    private PriorityQueue<Map.Entry<Integer, String>> bad = new PriorityQueue<>(
+        (a, b)
+            -> a.getKey().equals(b.getKey()) ? a.getValue().compareTo(b.getValue())
+                                             : b.getKey() - a.getKey());
+
+    public SORTracker() {
+    }
+
+    public void add(String name, int score) {
+        good.offer(Map.entry(score, name));
+        bad.offer(good.poll());
+    }
+
+    public String get() {
+        good.offer(bad.poll());
+        return good.peek().getValue();
+    }
+}
+
+/**
+ * Your SORTracker object will be instantiated and called as such:
+ * SORTracker obj = new SORTracker();
+ * obj.add(name,score);
+ * String param_2 = obj.get();
+ */
+```

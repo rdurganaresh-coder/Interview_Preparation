@@ -1,0 +1,68 @@
+# 2864. Maximum Odd Binary Number
+
+**Difficulty:** Easy  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/maximum-odd-binary-number/
+
+---
+
+[中文文档](/solution/2800-2899/2864.Maximum%20Odd%20Binary%20Number/README.md)
+
+## Description
+
+<p>You are given a <strong>binary</strong> string <code>s</code> that contains at least one <code>&#39;1&#39;</code>.</p>
+
+<p>You have to <strong>rearrange</strong> the bits in such a way that the resulting binary number is the <strong>maximum odd binary number</strong> that can be created from this combination.</p>
+
+<p>Return <em>a string representing the maximum odd binary number that can be created from the given combination.</em></p>
+
+<p><strong>Note </strong>that the resulting string <strong>can</strong> have leading zeros.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;010&quot;
+<strong>Output:</strong> &quot;001&quot;
+<strong>Explanation:</strong> Because there is just one &#39;1&#39;, it must be in the last position. So the answer is &quot;001&quot;.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;0101&quot;
+<strong>Output:</strong> &quot;1001&quot;
+<strong>Explanation: </strong>One of the &#39;1&#39;s must be in the last position. The maximum number that can be made with the remaining digits is &quot;100&quot;. So the answer is &quot;1001&quot;.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s.length &lt;= 100</code></li>
+	<li><code>s</code> consists only of <code>&#39;0&#39;</code> and <code>&#39;1&#39;</code>.</li>
+	<li><code>s</code> contains at least one <code>&#39;1&#39;</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Greedy
+
+> **Thinking**
+>
+> An odd binary number must end with $1$, and the remaining ones should sit in the highest bits. After counting ones, emit $\textit{cnt}-1$ leading ones, then the zeros, then a final $1$.
+
+First, we count the number of '1's in the string $s$, denoted as $\textit{cnt}$. Then, we place $\textit{cnt} - 1$ '1's at the highest position, followed by the remaining $|s| - \textit{cnt}$ '0's, and finally add one '1'.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the string $s$.
+
+#### Java
+
+```java
+class Solution {
+    public String maximumOddBinaryNumber(String s) {
+        int cnt = s.length() - s.replace("1", "").length();
+        return "1".repeat(cnt - 1) + "0".repeat(s.length() - cnt) + "1";
+    }
+}
+```

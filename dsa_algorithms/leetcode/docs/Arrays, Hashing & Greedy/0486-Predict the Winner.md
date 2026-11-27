@@ -1,0 +1,160 @@
+# 486. Predict the Winner
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/predict-the-winner/
+
+---
+
+[中文文档](/solution/0400-0499/0486.Predict%20the%20Winner/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code>.</p>
+
+<p>Two players are playing a game with this array: Player 1 and Player 2.</p>
+
+<p>Player 1 and Player 2 take turns, with Player 1 starting first. Both players start the game with a score of 0.</p>
+
+<p>At each turn, the current player takes the number at <strong>either end</strong> of the array (i.e., <code>nums[0]</code> or <code>nums[nums.length - 1]</code>), <strong>removing</strong> it from the array and adding it to their own score. The game ends when there are no more elements in the array.</p>
+
+<p>Return <code>true</code> if Player 1&#39;s final score is <strong>greater than or equal</strong> to Player 2&#39;s final score, and <code>false</code> otherwise.</p>
+
+<p><strong>Note</strong> that a tie counts as a win for Player 1. You may assume that both players play optimally.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,5,2]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">false</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>Player 1 must open by taking either 1 or 2, and both choices lead to the same result.</li>
+	<li>If Player 1 takes 1, the array becomes <code>[5,2]</code>. Player 2 takes 5, leaving 2 for Player 1.</li>
+	<li>If Player 1 takes 2, the array becomes <code>[1,5]</code>. Player 2 takes 5, leaving 1 for Player 1.</li>
+	<li>Either way, Player 1 finishes with <code>1 + 2 = 3</code> and Player 2 finishes with <code>5</code>. Player 1 can never win, so return <code>false</code>.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,5,233,7]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">true</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>Player 1 first takes 1, leaving <code>[5,233,7]</code>. Player 2 must then choose between 5 and 7, and no matter which number Player 2 chooses, Player 1 can take 233 on the next turn.</li>
+	<li>Player 1 finishes with a higher score (234) than Player 2 (12), so return <code>true</code>.</li>
+</ul>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 20</code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>7</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization Search
+
+> **Thinking**
+>
+> Players take from the two ends; the first player wins if her score is at least the second's. The game tree repeats the same interval.
+>
+> $\textit{dfs}(i,j)$ is the best score gap on $[i,j]$: take the left end for $\textit{nums}[i]-\textit{dfs}(i+1,j)$, or the right end symmetrically. The first player wins iff $\textit{dfs}(0,n-1)\ge 0$.
+>
+> There are $O(n^2)$ intervals; memoization makes every leftover interval optimal for the player to move.
+
+We design a function $\textit{dfs}(i, j)$, which represents the maximum difference in scores between the current player and the other player from the $i$-th number to the $j$-th number. The answer is $\textit{dfs}(0, n - 1) \geq 0$.
+
+The function $\textit{dfs}(i, j)$ is calculated as follows:
+
+- If $i > j$, it means there are no numbers left, so the current player cannot take any points, and the difference is $0$, i.e., $\textit{dfs}(i, j) = 0$.
+- Otherwise, the current player has two choices. If they choose the $i$-th number, the difference in scores between the current player and the other player is $\textit{nums}[i] - \textit{dfs}(i + 1, j)$. If they choose the $j$-th number, the difference in scores between the current player and the other player is $\textit{nums}[j] - \textit{dfs}(i, j - 1)$. The current player will choose the option with the larger difference, so $\textit{dfs}(i, j) = \max(\textit{nums}[i] - \textit{dfs}(i + 1, j), \textit{nums}[j] - \textit{dfs}(i, j - 1))$.
+
+Finally, we only need to check if $\textit{dfs}(0, n - 1) \geq 0$.
+
+To avoid repeated calculations, we can use memoization. We use an array $f$ to record all the values of $\textit{dfs}(i, j)$. When the function is called again, we can directly retrieve the answer from $f$ without recalculating it.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    private int[] nums;
+    private int[][] f;
+
+    public boolean predictTheWinner(int[] nums) {
+        this.nums = nums;
+        int n = nums.length;
+        f = new int[n][n];
+        return dfs(0, n - 1) >= 0;
+    }
+
+    private int dfs(int i, int j) {
+        if (i > j) {
+            return 0;
+        }
+        if (f[i][j] != 0) {
+            return f[i][j];
+        }
+        return f[i][j] = Math.max(nums[i] - dfs(i + 1, j), nums[j] - dfs(i, j - 1));
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> The same recurrence fills a table: $f[i][j]$ starts from the length-$1$ diagonal, then grows by decreasing $i$ and increasing $j$. No call stack, same asymptotics.
+
+We can also use dynamic programming. Define $f[i][j]$ to represent the maximum score difference the current player can achieve in the range $\textit{nums}[i..j]$. The final answer is $f[0][n - 1] \geq 0$.
+
+Initially, $f[i][i] = \textit{nums}[i]$, because with only one number, the current player can only take that number, and the score difference is $\textit{nums}[i]$.
+
+Consider $f[i][j]$ where $i < j$, there are two cases:
+
+- If the current player takes $\textit{nums}[i]$, the remaining numbers are $\textit{nums}[i + 1..j]$, and it is the other player's turn. So, $f[i][j] = \textit{nums}[i] - f[i + 1][j]$.
+- If the current player takes $\textit{nums}[j]$, the remaining numbers are $\textit{nums}[i..j - 1]$, and it is the other player's turn. So, $f[i][j] = \textit{nums}[j] - f[i][j - 1]$.
+
+Therefore, the state transition equation is $f[i][j] = \max(\textit{nums}[i] - f[i + 1][j], \textit{nums}[j] - f[i][j - 1])$.
+
+Finally, we only need to check if $f[0][n - 1] \geq 0$.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(n^2)$, where $n$ is the length of the array $\textit{nums}$.
+
+Similar problem:
+
+- [877. Stone Game](https://github.com/doocs/leetcode/blob/main/solution/0800-0899/0877.Stone%20Game/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    public boolean predictTheWinner(int[] nums) {
+        int n = nums.length;
+        int[][] f = new int[n][n];
+        for (int i = 0; i < n; ++i) {
+            f[i][i] = nums[i];
+        }
+        for (int i = n - 2; i >= 0; --i) {
+            for (int j = i + 1; j < n; ++j) {
+                f[i][j] = Math.max(nums[i] - f[i + 1][j], nums[j] - f[i][j - 1]);
+            }
+        }
+        return f[0][n - 1] >= 0;
+    }
+}
+```

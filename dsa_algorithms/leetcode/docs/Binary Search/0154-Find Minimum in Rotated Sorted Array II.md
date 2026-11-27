@@ -1,0 +1,86 @@
+# 154. Find Minimum in Rotated Sorted Array II
+
+**Difficulty:** Hard  
+**Category:** Binary Search  
+**LeetCode:** https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/
+
+---
+
+[中文文档](/solution/0100-0199/0154.Find%20Minimum%20in%20Rotated%20Sorted%20Array%20II/README.md)
+
+## Description
+
+<p>Suppose an array of length <code>n</code> sorted in ascending order is <strong>rotated</strong> between <code>1</code> and <code>n</code> times. For example, the array <code>nums = [0, 1, 4, 4, 5, 6, 7]</code> might become:</p>
+
+<ul>
+	<li><code>[4, 5, 6, 7, 0, 1, 4]</code> if it was rotated <code>4</code> times.</li>
+	<li><code>[0, 1, 4, 4, 5, 6, 7]</code> if it was rotated <code>7</code> times.</li>
+</ul>
+
+<p>Notice that <strong>rotating</strong> an array <code>[a[0], a[1], a[2], ..., a[n-1]]</code> 1 time results in the array <code>[a[n-1], a[0], a[1], a[2], ..., a[n-2]]</code>.</p>
+
+<p>Given the sorted rotated array <code>nums</code> that may contain <strong>duplicates</strong>, return <em>the minimum element of this array</em>.</p>
+
+<p>You must decrease the overall operation steps as much as possible.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<pre><strong>Input:</strong> nums = [1,3,5]
+<strong>Output:</strong> 1
+</pre><p><strong class="example">Example 2:</strong></p>
+<pre><strong>Input:</strong> nums = [2,2,2,0,1]
+<strong>Output:</strong> 0
+</pre>
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == nums.length</code></li>
+	<li><code>1 &lt;= n &lt;= 5000</code></li>
+	<li><code>-5000 &lt;= nums[i] &lt;= 5000</code></li>
+	<li><code>nums</code> is sorted and rotated between <code>1</code> and <code>n</code> times.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Follow up:</strong> This problem is similar to&nbsp;<a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/" target="_blank">Find Minimum in Rotated Sorted Array</a>, but&nbsp;<code>nums</code> may contain <strong>duplicates</strong>. Would this affect the runtime complexity? How and why?</p>
+
+<p>&nbsp;</p>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> Duplicates are allowed, unlike the previous problem. When $\textit{nums}[\textit{mid}]=\textit{nums}[r]$ we cannot tell which side holds the min, so we decrement $r$. All-equal input degenerates to $O(n)$; that is the cost of ties. Other branches still shrink as in rotated-array binary search.
+
+We define the left boundary $l = 0$ and right boundary $r = n - 1$ for binary search. Each iteration, we calculate the middle position $\textit{mid} = (l + r) \gg 1$ and compare the relationship between $\textit{nums}[\textit{mid}]$ and $\textit{nums}[r]$:
+
+- If $\textit{nums}[\textit{mid}] > \textit{nums}[r]$, the minimum value is to the right of $\textit{mid}$, so we update $l$ to $\textit{mid} + 1$.
+- If $\textit{nums}[\textit{mid}] = \textit{nums}[r]$, we cannot determine the position of the minimum value, but we can move $r$ to the left by one position, i.e., $r = r - 1$, to narrow down the search range.
+- If $\textit{nums}[\textit{mid}] < \textit{nums}[r]$, the minimum value is to the left of $\textit{mid}$ or at $\textit{mid}$ itself, so we update $r$ to $\textit{mid}$.
+
+When $l$ and $r$ meet, the pointer $l$ points to the position of the minimum value, and we return $\textit{nums}[l]$.
+
+The time complexity is $O(n)$, as in the worst case where all elements in the array are the same, we need to traverse the entire array. The space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public int findMin(int[] nums) {
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            if (nums[mid] > nums[r]) {
+                l = mid + 1;
+            } else if (nums[mid] == nums[r]) {
+                r--;
+            } else {
+                r = mid;
+            }
+        }
+        return nums[l];
+    }
+}
+```

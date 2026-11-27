@@ -1,0 +1,103 @@
+# 2772. Apply Operations to Make All Array Elements Equal to Zero
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/apply-operations-to-make-all-array-elements-equal-to-zero/
+
+---
+
+[中文文档](/solution/2700-2799/2772.Apply%20Operations%20to%20Make%20All%20Array%20Elements%20Equal%20to%20Zero/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> integer array <code>nums</code> and a positive integer <code>k</code>.</p>
+
+<p>You can apply the following operation on the array <strong>any</strong> number of times:</p>
+
+<ul>
+	<li>Choose <strong>any</strong> subarray of size <code>k</code> from the array and <strong>decrease</strong> all its elements by <code>1</code>.</li>
+</ul>
+
+<p>Return <code>true</code><em> if you can make all the array elements equal to </em><code>0</code><em>, or </em><code>false</code><em> otherwise</em>.</p>
+
+<p>A <strong>subarray</strong> is a contiguous non-empty part of an array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,2,3,1,1,0], k = 3
+<strong>Output:</strong> true
+<strong>Explanation:</strong> We can do the following operations:
+- Choose the subarray [2,2,3]. The resulting array will be nums = [<strong><u>1</u></strong>,<strong><u>1</u></strong>,<strong><u>2</u></strong>,1,1,0].
+- Choose the subarray [2,1,1]. The resulting array will be nums = [1,1,<strong><u>1</u></strong>,<strong><u>0</u></strong>,<strong><u>0</u></strong>,0].
+- Choose the subarray [1,1,1]. The resulting array will be nums = [<u><strong>0</strong></u>,<u><strong>0</strong></u>,<u><strong>0</strong></u>,0,0,0].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,3,1,1], k = 2
+<strong>Output:</strong> false
+<strong>Explanation:</strong> It is not possible to make all the array elements equal to 0.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= k &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>6</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Difference Array + Prefix Sum
+
+> **Thinking**
+>
+> Each operation subtracts one from a window of length $k$; we ask whether the array can become all zeros. Subtracting one at a time is too slow, and the number of hits at each index is forced from the left.
+>
+> The leftmost nonzero index $i$ can be cleared only by windows that cover $i$, exactly equal to its current value. A difference array records that range decrement; a prefix sum restores the live value. A negative value or a window past the end fails.
+
+First, let's consider the first element of $\textit{nums}$, $\textit{nums}[0]$:
+
+- If $\textit{nums}[0] = 0$, we don't need to do anything.
+- If $\textit{nums}[0] > 0$, we need to operate on $\textit{nums}[0..k-1]$ for $\textit{nums}[0]$ times, subtracting $\textit{nums}[0]$ from all elements in $\textit{nums}[0..k-1]$, so $\textit{nums}[0]$ becomes $0$.
+
+To perform the add and subtract operations on a contiguous segment of elements simultaneously, we can use a difference array to manage these operations. We represent the difference array with $d[i]$, and calculating the prefix sum of the difference array gives us the change of the value at each position.
+
+Therefore, we iterate over $\textit{nums}$. For each element $\textit{nums}[i]$, the current position's change quantity is $s = \sum_{j=0}^{i} d[j]$. We add $s$ to $\textit{nums}[i]$ to get the actual value of $\textit{nums}[i]$.
+
+- If $\textit{nums}[i] = 0$, there's no need for any operation, and we can skip directly.
+- If $\textit{nums}[i]=0$ or $i + k > n$, it indicates that after the previous operations, $\textit{nums}[i]$ has become negative, or $\textit{nums}[i..i+k-1]$ is out of bounds. Therefore, it's impossible to make all elements in $\textit{nums}$ equal to $0$. We return `false`. Otherwise, we need to subtract $\textit{nums}[i]$ from all elements in the interval $[i..i+k-1]$. Therefore, we subtract $\textit{nums}[i]$ from $s$ and add $\textit{nums}[i]$ to $d[i+k]$.
+- We continue to iterate over the next element.
+
+If the iteration ends, it means that all elements in $\textit{nums}$ can be made equal to $0$, so we return `true`.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean checkArray(int[] nums, int k) {
+        int n = nums.length;
+        int[] d = new int[n + 1];
+        int s = 0;
+        for (int i = 0; i < n; ++i) {
+            s += d[i];
+            nums[i] += s;
+            if (nums[i] == 0) {
+                continue;
+            }
+            if (nums[i] < 0 || i + k > n) {
+                return false;
+            }
+            s -= nums[i];
+            d[i + k] += nums[i];
+        }
+        return true;
+    }
+}
+```

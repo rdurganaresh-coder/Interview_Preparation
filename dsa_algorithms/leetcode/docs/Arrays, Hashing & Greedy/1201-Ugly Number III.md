@@ -1,0 +1,106 @@
+# 1201. Ugly Number III
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/ugly-number-iii/
+
+---
+
+[中文文档](/solution/1200-1299/1201.Ugly%20Number%20III/README.md)
+
+## Description
+
+<p>An <strong>ugly number</strong> is a positive integer that is divisible by <code>a</code>, <code>b</code>, or <code>c</code>.</p>
+
+<p>Given four integers <code>n</code>, <code>a</code>, <code>b</code>, and <code>c</code>, return the <code>n<sup>th</sup></code> <strong>ugly number</strong>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 3, a = 2, b = 3, c = 5
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The ugly numbers are 2, 3, 4, 5, 6, 8, 9, 10... The 3<sup>rd</sup> is 4.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 4, a = 2, b = 3, c = 4
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> The ugly numbers are 2, 3, 4, 6, 8, 9, 10, 12... The 4<sup>th</sup> is 6.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 5, a = 2, b = 11, c = 13
+<strong>Output:</strong> 10
+<strong>Explanation:</strong> The ugly numbers are 2, 4, 6, 8, 10, 11, 12, 13... The 5<sup>th</sup> is 10.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n, a, b, c &lt;= 10<sup>9</sup></code></li>
+	<li><code>1 &lt;= a * b * c &lt;= 10<sup>18</sup></code></li>
+	<li>It is guaranteed that the result will be in range <code>[1, 2 * 10<sup>9</sup>]</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search + Inclusion-Exclusion Principle
+
+> **Thinking**
+>
+> Generating ugly numbers one by one needs about $n$ candidates, and $n$ can be $10^9$.
+>
+> The count of ugly numbers $\le x$ is monotone in $x$, so the $n$-th ugly number is the smallest $x$ whose count is at least $n$. Inclusion-exclusion evaluates that count in $O(1)$: add multiples of $a,b,c$, subtract pairwise LCMs, then add the LCM of all three.
+>
+> We binary-search $x$ on $[1, 2\times 10^9]$ and test the midpoint with inclusion-exclusion. The problem bounds the answer, so we never enumerate individual ugly numbers.
+
+We can transform the problem into: find the smallest positive integer $x$ such that the number of ugly numbers less than or equal to $x$ is exactly $n$.
+
+For a positive integer $x$, there are $\left\lfloor \frac{x}{a} \right\rfloor$ numbers divisible by $a$, $\left\lfloor \frac{x}{b} \right\rfloor$ numbers divisible by $b$, $\left\lfloor \frac{x}{c} \right\rfloor$ numbers divisible by $c$, $\left\lfloor \frac{x}{\textit{lcm}(a, b)} \right\rfloor$ numbers divisible by both $a$ and $b$, $\left\lfloor \frac{x}{\textit{lcm}(a, c)} \right\rfloor$ numbers divisible by both $a$ and $c$, $\left\lfloor \frac{x}{\textit{lcm}(b, c)} \right\rfloor$ numbers divisible by both $b$ and $c$, and $\left\lfloor \frac{x}{\textit{lcm}(a, b, c)} \right\rfloor$ numbers divisible by $a$, $b$, and $c$ at the same time. According to the inclusion-exclusion principle, the number of ugly numbers less than or equal to $x$ is:
+
+$$
+\left\lfloor \frac{x}{a} \right\rfloor + \left\lfloor \frac{x}{b} \right\rfloor + \left\lfloor \frac{x}{c} \right\rfloor - \left\lfloor \frac{x}{\textit{lcm}(a, b)} \right\rfloor - \left\lfloor \frac{x}{\textit{lcm}(a, c)} \right\rfloor - \left\lfloor \frac{x}{\textit{lcm}(b, c)} \right\rfloor + \left\lfloor \frac{x}{\textit{lcm}(a, b, c)} \right\rfloor
+$$
+
+We can use binary search to find the smallest positive integer $x$ such that the number of ugly numbers less than or equal to $x$ is exactly $n$.
+
+Define the left boundary of binary search as $l=1$ and the right boundary as $r=2 \times 10^9$, where $2 \times 10^9$ is the maximum value given by the problem. In each step of binary search, we find the middle number $\textit{mid}$. If the number of ugly numbers less than or equal to $\textit{mid}$ is greater than or equal to $n$, it means that the smallest positive integer $x$ falls in the interval $[l,\textit{mid}]$, otherwise it falls in the interval $[\textit{mid}+1,r]$. During the binary search process, we need to continuously update the number of ugly numbers less than or equal to $\textit{mid}$ until we find the smallest positive integer $x$.
+
+The time complexity is $O(\log m)$, and the space complexity is $O(1)$, where $m = 2 \times 10^9$.
+
+#### Java
+
+```java
+class Solution {
+    public int nthUglyNumber(int n, int a, int b, int c) {
+        long ab = lcm(a, b);
+        long bc = lcm(b, c);
+        long ac = lcm(a, c);
+        long abc = lcm(ab, c);
+        long l = 1, r = 2000000000;
+        while (l < r) {
+            long mid = (l + r) >> 1;
+            if (mid / a + mid / b + mid / c - mid / ab - mid / bc - mid / ac + mid / abc >= n) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return (int) l;
+    }
+
+    private long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    private long lcm(long a, long b) {
+        return a * b / gcd(a, b);
+    }
+}
+```

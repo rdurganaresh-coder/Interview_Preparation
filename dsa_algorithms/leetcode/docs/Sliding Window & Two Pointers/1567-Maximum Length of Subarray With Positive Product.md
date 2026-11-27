@@ -1,0 +1,139 @@
+# 1567. Maximum Length of Subarray With Positive Product
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-length-of-subarray-with-positive-product/
+
+---
+
+[中文文档](/solution/1500-1599/1567.Maximum%20Length%20of%20Subarray%20With%20Positive%20Product/README.md)
+
+## Description
+
+<p>Given an array of integers <code>nums</code>, find the maximum length of a subarray where the product of all its elements is positive.</p>
+
+<p>A subarray of an array is a consecutive sequence of zero or more values taken out of that array.</p>
+
+<p>Return <em>the maximum length of a subarray with positive product</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,-2,-3,4]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The array nums already has a positive product of 24.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [0,1,-2,-3,-4]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The longest subarray with positive product is [1,-2,-3] which has a product of 6.
+Notice that we cannot include 0 in the subarray since that&#39;ll make the product 0 which is not positive.</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [-1,-2,-3,0,1]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The longest subarray with positive product is [-1,-2] or [-2,-3].
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> Find the longest subarray whose product is positive. $n\le 10^5$, so checking every pair overflows and times out. Zeros split the array and a minus only flips the sign, so we may store, at each end, the longest positive and negative products.
+>
+> Let $f[i]$ and $g[i]$ be those two lengths ending at $i$. A positive value keeps the previous signs; a negative value swaps them; a zero breaks both. The answer is the maximum $f[i]$.
+
+We define two arrays $f$ and $g$ of length $n$, where $f[i]$ represents the length of the longest subarray ending at $\textit{nums}[i]$ with a positive product, and $g[i]$ represents the length of the longest subarray ending at $\textit{nums}[i]$ with a negative product.
+
+Initially, if $\textit{nums}[0] > 0$, then $f[0] = 1$, otherwise $f[0] = 0$; if $\textit{nums}[0] < 0$, then $g[0] = 1$, otherwise $g[0] = 0$. We initialize the answer $\textit{ans} = f[0]$.
+
+Next, we iterate through the array $\textit{nums}$ starting from $i = 1$. For each $i$, we have the following cases:
+
+- If $\textit{nums}[i] > 0$, then $f[i]$ can be transferred from $f[i - 1]$, i.e., $f[i] = f[i - 1] + 1$, and the value of $g[i]$ depends on whether $g[i - 1]$ is $0$. If $g[i - 1] = 0$, then $g[i] = 0$, otherwise $g[i] = g[i - 1] + 1$;
+- If $\textit{nums}[i] < 0$, then the value of $f[i]$ depends on whether $g[i - 1]$ is $0$. If $g[i - 1] = 0$, then $f[i] = 0$, otherwise $f[i] = g[i - 1] + 1$, and $g[i]$ can be transferred from $f[i - 1]$, i.e., $g[i] = f[i - 1] + 1$.
+- Then, we update the answer $\textit{ans} = \max(\textit{ans}, f[i])$.
+
+After the iteration, we return the answer $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int getMaxLen(int[] nums) {
+        int n = nums.length;
+        int[] f = new int[n];
+        int[] g = new int[n];
+        f[0] = nums[0] > 0 ? 1 : 0;
+        g[0] = nums[0] < 0 ? 1 : 0;
+        int ans = f[0];
+        for (int i = 1; i < n; ++i) {
+            if (nums[i] > 0) {
+                f[i] = f[i - 1] + 1;
+                g[i] = g[i - 1] > 0 ? g[i - 1] + 1 : 0;
+            } else if (nums[i] < 0) {
+                f[i] = g[i - 1] > 0 ? g[i - 1] + 1 : 0;
+                g[i] = f[i - 1] + 1;
+            }
+            ans = Math.max(ans, f[i]);
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Dynamic Programming (Space Optimization)
+
+> **Thinking**
+>
+> Each state uses only the previous $f$ and $g$, so two scalars replace the arrays. Time stays linear and extra memory becomes constant.
+
+We observe that for each $i$, the values of $f[i]$ and $g[i]$ only depend on $f[i - 1]$ and $g[i - 1]$. Therefore, we can use two variables $f$ and $g$ to record the values of $f[i - 1]$ and $g[i - 1]$, respectively, thus optimizing the space complexity to $O(1)$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int getMaxLen(int[] nums) {
+        int n = nums.length;
+        int f = nums[0] > 0 ? 1 : 0;
+        int g = nums[0] < 0 ? 1 : 0;
+        int ans = f;
+
+        for (int i = 1; i < n; i++) {
+            int ff = 0, gg = 0;
+            if (nums[i] > 0) {
+                ff = f + 1;
+                gg = g == 0 ? 0 : g + 1;
+            } else if (nums[i] < 0) {
+                ff = g == 0 ? 0 : g + 1;
+                gg = f + 1;
+            }
+            f = ff;
+            g = gg;
+            ans = Math.max(ans, f);
+        }
+
+        return ans;
+    }
+}
+```

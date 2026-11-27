@@ -1,0 +1,62 @@
+package com.leetcode.sliding_window_two_pointers;
+
+class Solution0167_2 {
+    public int[] twoSum(int[] numbers, int target) {
+        for (int i = 0, j = numbers.length - 1;;) {
+            int x = numbers[i] + numbers[j];
+            if (x == target) {
+                return new int[] {i + 1, j + 1};
+            }
+            if (x < target) {
+                ++i;
+            } else {
+                --j;
+            }
+        }
+    }
+
+    // ===== Generated test cases (from the problem examples) =====
+    private static String _tcShow(Object o) {
+        String s = java.util.Arrays.deepToString(new Object[] {o});
+        return s.substring(1, s.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Solution0167_2 _tcSol = new Solution0167_2();
+        System.out.println("Test 1");
+        System.out.println("  Input   : " + "numbers = [2,7,11,15], target = 9");
+        try {
+            int[] numbers = new int[]{2, 7, 11, 15};
+            int target = 9;
+            System.out.println("  Output  : " + _tcShow(_tcSol.twoSum(numbers, target)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "[1,2]");
+        System.out.println();
+
+        System.out.println("Test 2");
+        System.out.println("  Input   : " + "numbers = [2,3,4], target = 6");
+        try {
+            int[] numbers = new int[]{2, 3, 4};
+            int target = 6;
+            System.out.println("  Output  : " + _tcShow(_tcSol.twoSum(numbers, target)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "[1,3]");
+        System.out.println();
+
+        System.out.println("Test 3");
+        System.out.println("  Input   : " + "numbers = [-1,0], target = -1");
+        try {
+            int[] numbers = new int[]{-1, 0};
+            int target = -1;
+            System.out.println("  Output  : " + _tcShow(_tcSol.twoSum(numbers, target)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "[1,2]");
+        System.out.println();
+    }
+}

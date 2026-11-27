@@ -1,0 +1,135 @@
+# 2454. Next Greater Element IV
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/next-greater-element-iv/
+
+---
+
+[中文文档](/solution/2400-2499/2454.Next%20Greater%20Element%20IV/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> array of non-negative integers <code>nums</code>. For each integer in <code>nums</code>, you must find its respective <strong>second greater</strong> integer.</p>
+
+<p>The <strong>second greater</strong> integer of <code>nums[i]</code> is <code>nums[j]</code> such that:</p>
+
+<ul>
+	<li><code>j &gt; i</code></li>
+	<li><code>nums[j] &gt; nums[i]</code></li>
+	<li>There exists <strong>exactly one</strong> index <code>k</code> such that <code>nums[k] &gt; nums[i]</code> and <code>i &lt; k &lt; j</code>.</li>
+</ul>
+
+<p>If there is no such <code>nums[j]</code>, the second greater integer is considered to be <code>-1</code>.</p>
+
+<ul>
+	<li>For example, in the array <code>[1, 2, 4, 3]</code>, the second greater integer of <code>1</code> is <code>4</code>, <code>2</code> is <code>3</code>,&nbsp;and that of <code>3</code> and <code>4</code> is <code>-1</code>.</li>
+</ul>
+
+<p>Return<em> an integer array </em><code>answer</code><em>, where </em><code>answer[i]</code><em> is the second greater integer of </em><code>nums[i]</code><em>.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,4,0,9,6]
+<strong>Output:</strong> [9,6,6,-1,-1]
+<strong>Explanation:</strong>
+0th index: 4 is the first integer greater than 2, and 9 is the second integer greater than 2, to the right of 2.
+1st index: 9 is the first, and 6 is the second integer greater than 4, to the right of 4.
+2nd index: 9 is the first, and 6 is the second integer greater than 0, to the right of 0.
+3rd index: There is no integer greater than 9 to its right, so the second greater integer is considered to be -1.
+4th index: There is no integer greater than 6 to its right, so the second greater integer is considered to be -1.
+Thus, we return [9,6,6,-1,-1].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [3,3]
+<strong>Output:</strong> [-1,-1]
+<strong>Explanation:</strong>
+We return [-1,-1] since neither integer has any integer greater than it.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Ordered Set
+
+> **Thinking**
+>
+> The second greater is the second strictly larger value to the right. At $n\le 10^5$, processing from large to small means every index already stored is a larger value. The second index to the right of $i$ in a sorted set is the answer.
+>
+> Sort $(\textit{value},\textit{index})$ descending. For each index, bisect the ordered index set and read the element two positions later.
+
+We can convert the elements in the array into pairs $(x, i)$, where $x$ is the value of the element and $i$ is the index of the element. Then sort by the value of the elements in descending order.
+
+Next, we traverse the sorted array, maintaining an ordered set that stores the indices of the elements. When we traverse to the element $(x, i)$, the indices of all elements greater than $x$ are already in the ordered set. We only need to find the index $j$ of the next element after $i$ in the ordered set, then the element corresponding to $j$ is the second largest element of $x$. Then, we add $i$ to the ordered set. Continue to traverse the next element.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int[] secondGreaterElement(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+        Arrays.fill(ans, -1);
+        int[][] arr = new int[n][0];
+        for (int i = 0; i < n; ++i) {
+            arr[i] = new int[] {nums[i], i};
+        }
+        Arrays.sort(arr, (a, b) -> a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]);
+        TreeSet<Integer> ts = new TreeSet<>();
+        for (int[] pair : arr) {
+            int i = pair[1];
+            Integer j = ts.higher(i);
+            if (j != null && ts.higher(j) != null) {
+                ans[i] = nums[ts.higher(j)];
+            }
+            ts.add(i);
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Double Stacks
+
+> **Thinking**
+>
+> Method 1 pays an extra log for the ordered set. Two decreasing stacks suffice: stack one waits for the first greater, stack two for the second. The current value pops stack two into the answer and moves stack-one pops into stack two, each index a constant number of times.
+
+We maintain two decreasing monotonic stacks:
+
+`stackOne`: stores elements that have not yet encountered any greater element to their right.
+
+`stackTwo`: stores elements that have encountered exactly one greater element to their right.
+
+Algorithm:
+
+As we iterate through the array $\textit{nums}$, for current element $\textit{nums}[k]$, have these steps:
+
+1. While `stackTwo` is not empty and its top element is less than $\textit{nums}[k]$,
+   these top elements have found their second next greater element.
+   Pop them and record $\textit{nums}[k]$ as the answer for their respective indices.
+
+2. While `stackOne` is not empty and its top element is less than $\textit{nums}[k]$,
+   these top elements have found their first next greater element.
+   Pop them to move them to a temporary list/vector called `transporter`.
+
+3. Pop all elements from the back of `transporter` and push them onto `stackTwo`.
+   These elements will naturally maintain the decreasing order in `stackTwo`.
+
+4. Push current element $\textit{nums}[k]$ into `stackOne` for future comparisons.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$. Each element is pushed and popped across the two stacks at most $4$ times in total.

@@ -1,0 +1,230 @@
+# 3168. Minimum Number of Chairs in a Waiting Room
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-number-of-chairs-in-a-waiting-room/
+
+---
+
+[中文文档](/solution/3100-3199/3168.Minimum%20Number%20of%20Chairs%20in%20a%20Waiting%20Room/README.md)
+
+## Description
+
+<p>You are given a string <code>s</code>. Simulate events at each second <code>i</code>:</p>
+
+<ul>
+	<li>If <code>s[i] == &#39;E&#39;</code>, a person enters the waiting room and takes one of the chairs in it.</li>
+	<li>If <code>s[i] == &#39;L&#39;</code>, a person leaves the waiting room, freeing up a chair.</li>
+</ul>
+
+<p>Return the <strong>minimum </strong>number of chairs needed so that a chair is available for every person who enters the waiting room given that it is initially <strong>empty</strong>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;EEEEEEE&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">7</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>After each second, a person enters the waiting room and no person leaves it. Therefore, a minimum of 7 chairs is needed.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;ELELEEL&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Let&#39;s consider that there are 2 chairs in the waiting room. The table below shows the state of the waiting room at each second.</p>
+</div>
+
+<table>
+	<tbody>
+		<tr>
+			<th>Second</th>
+			<th>Event</th>
+			<th>People in the Waiting Room</th>
+			<th>Available Chairs</th>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>Enter</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>Leave</td>
+			<td>0</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>Enter</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>Leave</td>
+			<td>0</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>Enter</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>Enter</td>
+			<td>2</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>Leave</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;ELEELEELLL&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">3</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Let&#39;s consider that there are 3 chairs in the waiting room. The table below shows the state of the waiting room at each second.</p>
+</div>
+
+<table>
+	<tbody>
+		<tr>
+			<th>Second</th>
+			<th>Event</th>
+			<th>People in the Waiting Room</th>
+			<th>Available Chairs</th>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>Enter</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>Leave</td>
+			<td>0</td>
+			<td>3</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>Enter</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>Enter</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>Leave</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>Enter</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>Enter</td>
+			<td>3</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td>Leave</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>8</td>
+			<td>Leave</td>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>9</td>
+			<td>Leave</td>
+			<td>0</td>
+			<td>3</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s.length &lt;= 50</code></li>
+	<li><code>s</code> consists only of the letters <code>&#39;E&#39;</code> and <code>&#39;L&#39;</code>.</li>
+	<li><code>s</code> represents a valid sequence of entries and exits.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> `E` arrives and `L` leaves; chairs are bought only when none are free and never discarded. The peak occupancy is the answer.
+>
+> A free chair is reused immediately: an arrival takes one if available, otherwise $\textit{cnt}$ grows; a leaving increments free chairs.
+>
+> Track $\textit{cnt}$ and $\textit{left}$ across $s$. The final $\textit{cnt}$ is the minimum number of chairs.
+
+We use a variable $\textit{cnt}$ to record the current number of chairs needed, and a variable $\textit{left}$ to record the current number of remaining empty chairs. We traverse the string `s`. If the current character is 'E', then if there are remaining empty chairs, we directly use one empty chair, otherwise we need to add a chair; if the current character is 'L', then the number of remaining empty chairs increases by one.
+
+After the traversal, we return $\textit{cnt}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the string $s$.
+
+#### Java
+
+```java
+class Solution {
+    public int minimumChairs(String s) {
+        int cnt = 0, left = 0;
+        for (int i = 0; i < s.length(); ++i) {
+            if (s.charAt(i) == 'E') {
+                if (left > 0) {
+                    --left;
+                } else {
+                    ++cnt;
+                }
+            } else {
+                ++left;
+            }
+        }
+        return cnt;
+    }
+}
+```

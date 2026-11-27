@@ -1,0 +1,83 @@
+# 1303. Find the Team Size
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/find-the-team-size/
+
+---
+
+[中文文档](/solution/1300-1399/1303.Find%20the%20Team%20Size/README.md)
+
+## Description
+
+<p>Table: <code>Employee</code></p>
+
+<pre>
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| employee_id   | int     |
+| team_id       | int     |
++---------------+---------+
+employee_id is the primary key (column with unique values) for this table.
+Each row of this table contains the ID of each employee and their respective team.
+</pre>
+
+<p>&nbsp;</p>
+
+<p>Write a solution to find the team size of each of the employees.</p>
+
+<p>Return the result table in <strong>any order</strong>.</p>
+
+<p>The&nbsp;result format is in the following example.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> 
+Employee Table:
++-------------+------------+
+| employee_id | team_id    |
++-------------+------------+
+|     1       |     8      |
+|     2       |     8      |
+|     3       |     8      |
+|     4       |     7      |
+|     5       |     9      |
+|     6       |     9      |
++-------------+------------+
+<strong>Output:</strong> 
++-------------+------------+
+| employee_id | team_size  |
++-------------+------------+
+|     1       |     3      |
+|     2       |     3      |
+|     3       |     3      |
+|     4       |     1      |
+|     5       |     2      |
+|     6       |     2      |
++-------------+------------+
+<strong>Explanation:</strong> 
+Employees with Id 1,2,3 are part of a team with team_id = 8.
+Employee with Id 4 is part of a team with team_id = 7.
+Employees with Id 5,6 are part of a team with team_id = 9.
+</pre>
+
+## Solutions
+
+### Solution 1: Group By + Equi-Join
+
+> **Thinking**
+>
+> Each employee needs the size of their team. Counting from the employee row would re-aggregate the same $\textit{team\_id}$ many times. Grouping by $\textit{team\_id}$ first yields team sizes; an equi-join on that key writes the size back onto every employee row.
+
+We can first count the number of people in each team and record it in the `T` table. Then, we can use an equi-join to join the `Employee` table and the `T` table based on $\textit{team\_id}$, and obtain the total number of people in each team.
+
+### Solution 2: Left Join
+
+> **Thinking**
+>
+> The previous query needs an intermediate table. A self-join of $\textit{Employee}$ on $\textit{team\_id}$, grouped by $\textit{employee\_id}$, aligns teammates in the join and produces the size in one statement without materializing a grouped CTE.
+
+We can also use a left join to join the $\textit{Employee}$ table with itself based on $\textit{team\_id}$, and then group by $\textit{employee\_id}$ to count the total number of people in each team that the employee belongs to.

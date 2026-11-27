@@ -1,0 +1,116 @@
+# 3132. Find the Integer Added to Array II
+
+**Difficulty:** Medium  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/find-the-integer-added-to-array-ii/
+
+---
+
+[中文文档](/solution/3100-3199/3132.Find%20the%20Integer%20Added%20to%20Array%20II/README.md)
+
+## Description
+
+<p>You are given two integer arrays <code>nums1</code> and <code>nums2</code>.</p>
+
+<p>We say that <code>nums2</code> is reachable from <code>nums1</code> with an integer <code>x</code> if there exist two elements in <code>nums1</code> that, when removed, and <code>x</code> is added to all the remaining elements of <code>nums1</code> (or subtracted in the case of a negative <code>x</code>), the resulting array becomes equal to <code>nums2</code>. Two arrays are considered <strong>equal</strong> when they contain the same integers with the same frequencies.</p>
+
+<p>Return the <strong>minimum</strong> possible integer <code>x</code> that makes <code>nums2</code> reachable from <code>nums1</code>.</p>
+
+<p>It is guaranteed that <code>nums2</code> is reachable from <code>nums1</code> with at least one <code>x</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io" style="
+    font-family: Menlo,sans-serif;
+    font-size: 0.85rem;
+">nums1 = [4,20,16,12,8], nums2 = [14,18,10]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io" style="
+    font-family: Menlo,sans-serif;
+    font-size: 0.85rem;
+">-2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>After removing elements at indices <code>[0,4]</code> and adding -2, <code>nums1</code> becomes <code>[18,14,10]</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io" style="
+    font-family: Menlo,sans-serif;
+    font-size: 0.85rem;
+">nums1 = [3,5,5,3], nums2 = [7,7]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io" style="
+    font-family: Menlo,sans-serif;
+    font-size: 0.85rem;
+">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>After removing elements at indices <code>[0,3]</code> and adding 2, <code>nums1</code> becomes <code>[7,7]</code>.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>3 &lt;= nums1.length &lt;= 200</code></li>
+	<li><code>nums2.length == nums1.length - 2</code></li>
+	<li><code>0 &lt;= nums1[i], nums2[i] &lt;= 1000</code></li>
+	<li>
+	<p>It is guaranteed that <code>nums2</code> is reachable from <code>nums1</code> with at least one <code>x</code>.</p>
+	</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Enumeration + Two Pointers
+
+> **Thinking**
+>
+> Two elements are dropped from $\textit{nums1}$, then every remaining value is shifted by $x$ to match $\textit{nums2}$. Trying every deletion pair is $O(n^2)$.
+>
+> After sorting, $x$ must be $\textit{nums2}[0]$ minus one of the first three values of $\textit{nums1}$, because at most two leading extras can be removed.
+>
+> For each candidate, two pointers count mismatches; at most two are allowed. The smallest feasible $x$ is the answer.
+
+First, we sort the arrays $\textit{nums1}$ and $\textit{nums2}$. Since we need to remove two elements from $\textit{nums1}$, we only need to consider the first three elements of $\textit{nums1}$, denoted as $a_1, a_2, a_3$. We can enumerate the first element $b_1$ of $\textit{nums2}$, then we can get $x = b_1 - a_i$, where $i \in \{1, 2, 3\}$. Then we can use the two pointers method to determine whether there exists an integer $x$ that makes $\textit{nums1}$ and $\textit{nums2}$ equal, and take the smallest $x$ that satisfies the condition.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int minimumAddedInteger(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int ans = 1 << 30;
+        for (int i = 0; i < 3; ++i) {
+            int x = nums2[0] - nums1[i];
+            if (f(nums1, nums2, x)) {
+                ans = Math.min(ans, x);
+            }
+        }
+        return ans;
+    }
+
+    private boolean f(int[] nums1, int[] nums2, int x) {
+        int i = 0, j = 0, cnt = 0;
+        while (i < nums1.length && j < nums2.length) {
+            if (nums2[j] - nums1[i] != x) {
+                ++cnt;
+            } else {
+                ++j;
+            }
+            ++i;
+        }
+        return cnt <= 2;
+    }
+}
+```

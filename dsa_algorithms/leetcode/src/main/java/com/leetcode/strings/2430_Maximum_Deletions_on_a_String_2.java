@@ -1,0 +1,67 @@
+package com.leetcode.strings;
+
+class Solution2430_2 {
+    public int deleteString(String s) {
+        int n = s.length();
+        int[][] g = new int[n + 1][n + 1];
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = i + 1; j < n; ++j) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    g[i][j] = g[i + 1][j + 1] + 1;
+                }
+            }
+        }
+        int[] f = new int[n];
+        for (int i = n - 1; i >= 0; --i) {
+            f[i] = 1;
+            for (int j = 1; j <= (n - i) / 2; ++j) {
+                if (g[i][i + j] >= j) {
+                    f[i] = Math.max(f[i], f[i + j] + 1);
+                }
+            }
+        }
+        return f[0];
+    }
+
+    // ===== Generated test cases (from the problem examples) =====
+    private static String _tcShow(Object o) {
+        String s = java.util.Arrays.deepToString(new Object[] {o});
+        return s.substring(1, s.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Solution2430_2 _tcSol = new Solution2430_2();
+        System.out.println("Test 1");
+        System.out.println("  Input   : " + "s = \"abcabcdabc\"");
+        try {
+            String s = "abcabcdabc";
+            System.out.println("  Output  : " + _tcShow(_tcSol.deleteString(s)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "2");
+        System.out.println();
+
+        System.out.println("Test 2");
+        System.out.println("  Input   : " + "s = \"aaabaab\"");
+        try {
+            String s = "aaabaab";
+            System.out.println("  Output  : " + _tcShow(_tcSol.deleteString(s)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "4");
+        System.out.println();
+
+        System.out.println("Test 3");
+        System.out.println("  Input   : " + "s = \"aaaaa\"");
+        try {
+            String s = "aaaaa";
+            System.out.println("  Output  : " + _tcShow(_tcSol.deleteString(s)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "5");
+        System.out.println();
+    }
+}

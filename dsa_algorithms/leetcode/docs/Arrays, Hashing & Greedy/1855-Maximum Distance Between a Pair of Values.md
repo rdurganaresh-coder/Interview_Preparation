@@ -1,0 +1,120 @@
+# 1855. Maximum Distance Between a Pair of Values
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-distance-between-a-pair-of-values/
+
+---
+
+[中文文档](/solution/1800-1899/1855.Maximum%20Distance%20Between%20a%20Pair%20of%20Values/README.md)
+
+## Description
+
+<p>You are given two <strong>non-increasing 0-indexed </strong>integer arrays <code>nums1</code>​​​​​​ and <code>nums2</code>​​​​​​.</p>
+
+<p>A pair of indices <code>(i, j)</code>, where <code>0 &lt;= i &lt; nums1.length</code> and <code>0 &lt;= j &lt; nums2.length</code>, is <strong>valid</strong> if both <code>i &lt;= j</code> and <code>nums1[i] &lt;= nums2[j]</code>. The <strong>distance</strong> of the pair is <code>j - i</code>​​​​.</p>
+
+<p>Return <em>the <strong>maximum distance</strong> of any <strong>valid</strong> pair </em><code>(i, j)</code><em>. If there are no valid pairs, return </em><code>0</code>.</p>
+
+<p>An array <code>arr</code> is <strong>non-increasing</strong> if <code>arr[i-1] &gt;= arr[i]</code> for every <code>1 &lt;= i &lt; arr.length</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [55,30,5,4,2], nums2 = [100,20,10,10,5]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The valid pairs are (0,0), (2,2), (2,3), (2,4), (3,3), (3,4), and (4,4).
+The maximum distance is 2 with pair (2,4).
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [2,2,2], nums2 = [10,10,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The valid pairs are (0,0), (0,1), and (1,1).
+The maximum distance is 1 with pair (0,1).
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [30,29,19,5], nums2 = [25,25,25,25,25]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The valid pairs are (2,2), (2,3), (2,4), (3,3), and (3,4).
+The maximum distance is 2 with pair (2,4).
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums1.length, nums2.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums1[i], nums2[j] &lt;= 10<sup>5</sup></code></li>
+	<li>Both <code>nums1</code> and <code>nums2</code> are <strong>non-increasing</strong>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> Both arrays are nonincreasing; we want the largest $j-i$ with $i\le j$ and $\textit{nums1}[i]\le \textit{nums2}[j]$. Trying every pair is $O(mn)$ and too slow for $n\le 10^5$.
+>
+> For a fixed $i$, the farthest legal $j$ is the last index in $\textit{nums2}[i:]$ that is at least $\textit{nums1}[i]$. Reversing $\textit{nums2}$ lets us find that index by binary search.
+
+Assume the lengths of $\textit{nums1}$ and $\textit{nums2}$ are $m$ and $n$ respectively.
+
+Traverse array $\textit{nums1}$, for each number $\textit{nums1}[i]$, perform a binary search for numbers in $\textit{nums2}$ in the range $[i,n)$, find the **last** position $j$ that is greater than or equal to $\textit{nums1}[i]$, calculate the distance between this position and $i$, and update the maximum distance value $\textit{ans}$.
+
+The time complexity is $O(m \log n)$, and the space complexity is $O(1)$, where $m$ and $n$ are the lengths of $\textit{nums1}$ and $\textit{nums2}$ respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int maxDistance(int[] nums1, int[] nums2) {
+        int ans = 0;
+        int m = nums1.length, n = nums2.length;
+        for (int i = 0; i < m; ++i) {
+            int left = i, right = n - 1;
+            while (left < right) {
+                int mid = (left + right + 1) >> 1;
+                if (nums2[mid] >= nums1[i]) {
+                    left = mid;
+                } else {
+                    right = mid - 1;
+                }
+            }
+            ans = Math.max(ans, left - i);
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2
+
+> **Thinking**
+>
+> Solution 1 uses only the monotonicity of $\textit{nums2}$. $\textit{nums1}$ is also nonincreasing, so the farthest $j$ never moves left as $i$ grows. Two pointers advance together in linear time.
+
+#### Java
+
+```java
+class Solution {
+    public int maxDistance(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+        int ans = 0;
+        for (int i = 0, j = 0; i < m; ++i) {
+            while (j < n && nums1[i] <= nums2[j]) {
+                ++j;
+            }
+            ans = Math.max(ans, j - i - 1);
+        }
+        return ans;
+    }
+}
+```

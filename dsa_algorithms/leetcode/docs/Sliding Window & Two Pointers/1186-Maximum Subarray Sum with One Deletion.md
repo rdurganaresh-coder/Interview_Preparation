@@ -1,0 +1,87 @@
+# 1186. Maximum Subarray Sum with One Deletion
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/
+
+---
+
+[中文文档](/solution/1100-1199/1186.Maximum%20Subarray%20Sum%20with%20One%20Deletion/README.md)
+
+## Description
+
+<p>Given an array of integers, return the maximum sum for a <strong>non-empty</strong>&nbsp;subarray (contiguous elements) with at most one element deletion.&nbsp;In other words, you want to choose a subarray and optionally delete one element from it so that there is still at least one element left and the&nbsp;sum of the remaining elements is maximum possible.</p>
+
+<p>Note that the subarray needs to be <strong>non-empty</strong> after deleting one element.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [1,-2,0,3]
+<strong>Output:</strong> 4
+<strong>Explanation: </strong>Because we can choose [1, -2, 0, 3] and drop -2, thus the subarray [1, 0, 3] becomes the maximum value.</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [1,-2,-2,3]
+<strong>Output:</strong> 3
+<strong>Explanation: </strong>We just choose [3] and it&#39;s the maximum sum.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [-1,-1,-1,-1]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong>&nbsp;The final subarray needs to be non-empty. You can&#39;t choose [-1] and delete -1 from it, then get an empty subarray to make the sum equals to 0.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= arr.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>4</sup> &lt;= arr[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Preprocessing + Enumeration
+
+> **Thinking**
+>
+> A subarray may drop at most one element. Kadane from each end yields the best segment ending or starting at an index; with no deletion the answer is their maximum. Deleting $\textit{arr}[i]$ adds the best left ending at $i-1$ to the best right starting at $i+1$. After filling $\textit{left}$ and $\textit{right}$, enumerate interior deletion points.
+
+We can preprocess the array $\textit{arr}$ to find the maximum subarray sum ending and starting with each element, storing them in arrays $\textit{left}$ and $\textit{right}$, respectively.
+
+If we do not delete any element, then the maximum subarray sum is the maximum value in $\textit{left}[i]$ or $\textit{right}[i]$; if we delete an element, we can enumerate each position $i$ in $[1..n-2]$, calculate the value of $\textit{left}[i-1] + \textit{right}[i+1]$, and take the maximum value.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{arr}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumSum(int[] arr) {
+        int n = arr.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        int ans = -(1 << 30);
+        for (int i = 0, s = 0; i < n; ++i) {
+            s = Math.max(s, 0) + arr[i];
+            left[i] = s;
+            ans = Math.max(ans, left[i]);
+        }
+        for (int i = n - 1, s = 0; i >= 0; --i) {
+            s = Math.max(s, 0) + arr[i];
+            right[i] = s;
+        }
+        for (int i = 1; i < n - 1; ++i) {
+            ans = Math.max(ans, left[i - 1] + right[i + 1]);
+        }
+        return ans;
+    }
+}
+```

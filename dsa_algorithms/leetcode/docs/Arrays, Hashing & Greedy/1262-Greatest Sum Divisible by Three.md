@@ -1,0 +1,119 @@
+# 1262. Greatest Sum Divisible by Three
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/greatest-sum-divisible-by-three/
+
+---
+
+[中文文档](/solution/1200-1299/1262.Greatest%20Sum%20Divisible%20by%20Three/README.md)
+
+## Description
+
+<p>Given an integer array <code>nums</code>, return <em>the <strong>maximum possible sum </strong>of elements of the array such that it is divisible by three</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [3,6,5,1,8]
+<strong>Output:</strong> 18
+<strong>Explanation:</strong> Pick numbers 3, 6, 1 and 8 their sum is 18 (maximum sum divisible by 3).</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [4]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> Since 4 is not divisible by 3, do not pick any number.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,4,4]
+<strong>Output:</strong> 12
+<strong>Explanation:</strong> Pick numbers 1, 3, 4 and 4 their sum is 12 (maximum sum divisible by 3).
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 4 * 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> We want the maximum subsequence sum divisible by $3$. $n \le 4\times 10^4$ forbids subsets. A sum has only three remainders modulo $3$, and taking or skipping the current value moves among those three.
+>
+> $f[i][j]$ is the best sum of the first $i$ numbers with remainder $j$. Skip inherits; take adds $x$ from remainder $j-x$. The answer is $f[n][0]$. Remainders collapse the constraint to a constant number of states.
+
+We define $f[i][j]$ as the maximum sum of several numbers selected from the first $i$ numbers, such that the sum modulo $3$ equals $j$. Initially, $f[0][0]=0$, and the rest are $-\infty$.
+
+For $f[i][j]$, we can consider the state of the $i$th number $x$:
+
+- If we do not select $x$, then $f[i][j]=f[i-1][j]$;
+- If we select $x$, then $f[i][j]=f[i-1][(j-x \bmod 3 + 3)\bmod 3]+x$.
+
+Therefore, we can get the state transition equation:
+
+$$
+f[i][j]=\max\{f[i-1][j],f[i-1][(j-x \bmod 3 + 3)\bmod 3]+x\}
+$$
+
+The final answer is $f[n][0]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxSumDivThree(int[] nums) {
+        int n = nums.length;
+        final int inf = 1 << 30;
+        int[][] f = new int[n + 1][3];
+        f[0][1] = f[0][2] = -inf;
+        for (int i = 1; i <= n; ++i) {
+            int x = nums[i - 1];
+            for (int j = 0; j < 3; ++j) {
+                f[i][j] = Math.max(f[i - 1][j], f[i - 1][(j - x % 3 + 3) % 3] + x);
+            }
+        }
+        return f[n][0];
+    }
+}
+```
+
+### Solution 2: Dynamic Programming (Rolling Array)
+
+> **Thinking**
+>
+> Solution 1 stores $O(n)$ rows. Row $i$ reads only three previous values, so a length-$3$ rolling array suffices. Extra space is constant; the transition is unchanged.
+
+$f[i][j]$ depends only on the previous row's three residues, so an array of length $3$ is enough. The space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public int maxSumDivThree(int[] nums) {
+        final int inf = 1 << 30;
+        int[] f = new int[] {0, -inf, -inf};
+        for (int x : nums) {
+            int[] g = f.clone();
+            for (int j = 0; j < 3; ++j) {
+                g[j] = Math.max(f[j], f[(j - x % 3 + 3) % 3] + x);
+            }
+            f = g;
+        }
+        return f[0];
+    }
+}
+```

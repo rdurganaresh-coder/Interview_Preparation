@@ -1,0 +1,105 @@
+# 836. Rectangle Overlap
+
+**Difficulty:** Easy  
+**Category:** Matrices & Grids  
+**LeetCode:** https://leetcode.com/problems/rectangle-overlap/
+
+---
+
+[中文文档](/solution/0800-0899/0836.Rectangle%20Overlap/README.md)
+
+## Description
+
+<p>An axis-aligned rectangle is represented as a list <code>[x1, y1, x2, y2]</code>, where <code>(x1, y1)</code> is the coordinate of its bottom-left corner, and <code>(x2, y2)</code> is the coordinate of its top-right corner. Its top and bottom edges are parallel to the X-axis, and its left and right edges are parallel to the Y-axis.</p>
+
+<p>Two rectangles overlap if the area of their intersection is <strong>positive</strong>. To be clear, two rectangles that only touch at the corner or edges do not overlap.</p>
+
+<p>Given two axis-aligned rectangles <code>rec1</code> and <code>rec2</code>, return <code>true</code><em> if they overlap, otherwise return </em><code>false</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">rec1 = [0,0,2,2], rec2 = [1,1,3,3]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">true</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The rectangles overlap in the region with corners at <code>(1,1)</code>, <code>(2,1)</code>, <code>(1,2)</code>, and <code>(2,2)</code>.</p>
+
+<p>This region has positive area, so the rectangles overlap.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">rec1 = [0,0,1,1], rec2 = [1,0,2,1]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">false</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The rectangles share the vertical edge where <code>x = 1</code>, but they do not have any common interior region.</p>
+
+<p>Since their intersection has zero area, the rectangles do not overlap.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">rec1 = [0,0,1,1], rec2 = [2,2,3,3]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">false</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The rectangles are completely separate. Rectangle <code>rec1</code> ends at <code>x = 1</code> and <code>y = 1</code>, while <code>rec2</code> starts at <code>x = 2</code> and <code>y = 2</code>.</p>
+
+<p>Therefore, they have no common points and do not overlap.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>rec1.length == 4</code></li>
+	<li><code>rec2.length == 4</code></li>
+	<li><code>-10<sup>9</sup> &lt;= rec1[i], rec2[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>rec1</code> and <code>rec2</code> represent a valid rectangle with a non-zero area.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Determine Non-Overlap Cases
+
+> **Thinking**
+>
+> We decide whether two axis-aligned rectangles have positive-area overlap. Describing the intersection box is messy; the complement is simpler: they miss if they are separated vertically or horizontally.
+>
+> If any of the four separations holds they are disjoint; negating that test is the overlap predicate. Areas are nonzero, so degenerate edges do not arise.
+
+Let the coordinates of rectangle $\textit{rec1}$ be $(x_1, y_1, x_2, y_2)$, and the coordinates of rectangle $\textit{rec2}$ be $(x_3, y_3, x_4, y_4)$.
+
+The rectangles $\textit{rec1}$ and $\textit{rec2}$ do not overlap if any of the following conditions are met:
+
+- $y_3 \geq y_2$: $\textit{rec2}$ is above $\textit{rec1}$;
+- $y_4 \leq y_1$: $\textit{rec2}$ is below $\textit{rec1}$;
+- $x_3 \geq x_2$: $\textit{rec2}$ is to the right of $\textit{rec1}$;
+- $x_4 \leq x_1$: $\textit{rec2}$ is to the left of $\textit{rec1}$.
+
+If none of the above conditions are met, the rectangles $\textit{rec1}$ and $\textit{rec2}$ overlap.
+
+The time complexity is $O(1)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
+        int x1 = rec1[0], y1 = rec1[1], x2 = rec1[2], y2 = rec1[3];
+        int x3 = rec2[0], y3 = rec2[1], x4 = rec2[2], y4 = rec2[3];
+        return !(y3 >= y2 || y4 <= y1 || x3 >= x2 || x4 <= x1);
+    }
+}
+```

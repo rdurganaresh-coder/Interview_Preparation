@@ -1,0 +1,95 @@
+# 1822. Sign of the Product of an Array
+
+**Difficulty:** Easy  
+**Category:** SQL & Database  
+**LeetCode:** https://leetcode.com/problems/sign-of-the-product-of-an-array/
+
+---
+
+[中文文档](/solution/1800-1899/1822.Sign%20of%20the%20Product%20of%20an%20Array/README.md)
+
+## Description
+
+<p>Implement a function <code>signFunc(x)</code> that returns:</p>
+
+<ul>
+	<li><code>1</code> if <code>x</code> is positive.</li>
+	<li><code>-1</code> if <code>x</code> is negative.</li>
+	<li><code>0</code> if <code>x</code> is equal to <code>0</code>.</li>
+</ul>
+
+<p>You are given an integer array <code>nums</code>. Let <code>product</code> be the product of all values in the array <code>nums</code>.</p>
+
+<p>Return <code>signFunc(product)</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [-1,-2,-3,-4,3,2,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The product of all values in the array is 144, and signFunc(144) = 1
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,5,0,2,-3]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> The product of all values in the array is 0, and signFunc(0) = 0
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [-1,1,-1,1,-1]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> The product of all values in the array is -1, and signFunc(-1) = -1
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+	<li><code>-100 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Direct Traversal
+
+> **Thinking**
+>
+> The sign of the product depends only on zeros and the number of negatives. Computing the full product can overflow.
+>
+> Keep a running sign $\textit{ans}$, return $0$ on a zero, and flip $\textit{ans}$ on a negative. The scan yields the sign without multiplying the values themselves.
+
+The problem requires us to return the sign of the product of the array elements, i.e., return $1$ for positive numbers, $-1$ for negative numbers, and $0$ if it equals $0$.
+
+We can define an answer variable $\textit{ans}$, initially set to $1$.
+
+Then we traverse each element $v$ in the array. If $v$ is a negative number, we multiply $\textit{ans}$ by $-1$. If $v$ is $0$, we return $0$ in advance.
+
+After the traversal is over, we return $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int arraySign(int[] nums) {
+        int ans = 1;
+        for (int v : nums) {
+            if (v == 0) {
+                return 0;
+            }
+            if (v < 0) {
+                ans *= -1;
+            }
+        }
+        return ans;
+    }
+}
+```

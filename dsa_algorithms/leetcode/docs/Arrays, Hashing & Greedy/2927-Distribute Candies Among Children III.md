@@ -1,0 +1,82 @@
+# 2927. Distribute Candies Among Children III
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/distribute-candies-among-children-iii/
+
+---
+
+[中文文档](/solution/2900-2999/2927.Distribute%20Candies%20Among%20Children%20III/README.md)
+
+## Description
+
+<p>You are given two positive integers <code>n</code> and <code>limit</code>.</p>
+
+<p>Return <em>the <strong>total number</strong> of ways to distribute </em><code>n</code> <em>candies among </em><code>3</code><em> children such that no child gets more than </em><code>limit</code><em> candies.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 5, limit = 2
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are 3 ways to distribute 5 candies such that no child gets more than 2 candies: (1, 2, 2), (2, 1, 2) and (2, 2, 1).
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 3, limit = 3
+<strong>Output:</strong> 10
+<strong>Explanation:</strong> There are 10 ways to distribute 3 candies such that no child gets more than 3 candies: (0, 0, 3), (0, 1, 2), (0, 2, 1), (0, 3, 0), (1, 0, 2), (1, 1, 1), (1, 2, 0), (2, 0, 1), (2, 1, 0) and (3, 0, 0).
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>8</sup></code></li>
+	<li><code>1 &lt;= limit &lt;= 10<sup>8</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Combinatorial Mathematics + Principle of Inclusion-Exclusion
+
+> **Thinking**
+>
+> We need nonnegative $x+y+z=n$ with each variable at most $\textit{limit}$. $n$ can be huge, so triple loops are impossible. Stars and bars give $C_{n+2}^{2}$ without the cap; inclusion-exclusion subtracts the cases with one variable at least $\textit{limit}+1$ and adds back two simultaneous violations.
+>
+> If $n>3\cdot \textit{limit}$ the count is $0$. The binomial arguments are guarded so they stay nonnegative. The formula is $O(1)$.
+
+According to the problem description, we need to distribute $n$ candies to $3$ children, with each child receiving between $[0, \textit{limit}]$ candies.
+
+This is equivalent to placing $n$ balls into $3$ boxes. Since the boxes can be empty, we can add $3$ virtual balls, and then use the method of inserting partitions, i.e., there are a total of $n + 3$ balls, and we insert $2$ partitions among the $n + 3 - 1$ positions, thus dividing the actual $n$ balls into $3$ groups, and allowing the boxes to be empty. Therefore, the initial number of schemes is $C_{n + 2}^2$.
+
+We need to exclude the schemes where the number of balls in a box exceeds $\textit{limit}$. Consider that there is a box where the number of balls exceeds $\textit{limit}$, then the remaining balls (including virtual balls) have at most $n + 3 - (\textit{limit} + 1) = n - \textit{limit} + 2$, and the number of positions is $n - \textit{limit} + 1$, so the number of schemes is $C_{n - \textit{limit} + 1}^2$. Since there are $3$ boxes, the number of such schemes is $3 \times C_{n - \textit{limit} + 1}^2$. In this way, we will exclude too many schemes where the number of balls in two boxes exceeds $\textit{limit}$ at the same time, so we need to add the number of such schemes, i.e., $3 \times C_{n - 2 \times \textit{limit}}^2$.
+
+The time complexity is $O(1)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public long distributeCandies(int n, int limit) {
+        if (n > 3 * limit) {
+            return 0;
+        }
+        long ans = comb2(n + 2);
+        if (n > limit) {
+            ans -= 3 * comb2(n - limit + 1);
+        }
+        if (n - 2 >= 2 * limit) {
+            ans += 3 * comb2(n - 2 * limit);
+        }
+        return ans;
+    }
+
+    private long comb2(int n) {
+        return 1L * n * (n - 1) / 2;
+    }
+}
+```

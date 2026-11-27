@@ -1,0 +1,91 @@
+# 345. Reverse Vowels of a String
+
+**Difficulty:** Easy  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/reverse-vowels-of-a-string/
+
+---
+
+[中文文档](/solution/0300-0399/0345.Reverse%20Vowels%20of%20a%20String/README.md)
+
+## Description
+
+<p>Given a string <code>s</code>, reverse only all the vowels in the string and return it.</p>
+
+<p>The vowels are <code>&#39;a&#39;</code>, <code>&#39;e&#39;</code>, <code>&#39;i&#39;</code>, <code>&#39;o&#39;</code>, and <code>&#39;u&#39;</code>, and they can appear in both lower and upper cases, more than once.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;IceCreAm&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">&quot;AceCreIm&quot;</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The vowels in <code>s</code> are <code>[&#39;I&#39;, &#39;e&#39;, &#39;e&#39;, &#39;A&#39;]</code>. On reversing the vowels, s becomes <code>&quot;AceCreIm&quot;</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;leetcode&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">&quot;leotcede&quot;</span></p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= s.length &lt;= 3 * 10<sup>5</sup></code></li>
+	<li><code>s</code> consist of <strong>printable ASCII</strong> characters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> Reverse only vowels; consonants stay. Extracting vowels uses extra memory. The same two-pointer swap applies, but only on vowels.
+>
+> Skip non-vowels from both ends, swap while $i<j$, and shrink. A small vowel set handles case.
+
+We can use two pointers $i$ and $j$, initially pointing to the start and end of the string respectively.
+
+In each loop, we check whether the character at $i$ is a vowel. If it's not, we move $i$ forward. Similarly, we check whether the character at $j$ is a vowel. If it's not, we move $j$ backward. If $i < j$ at this point, then both characters at $i$ and $j$ are vowels, so we swap these two characters. Then, we move $i$ forward and $j$ backward. We continue the above operations until $i \ge j$.
+
+The time complexity is $O(n)$, and the space complexity is $O(|\Sigma|)$, where $n$ is the length of the string, and $\Sigma$ is the size of the character set.
+
+#### Java
+
+```java
+class Solution {
+    public String reverseVowels(String s) {
+        boolean[] vowels = new boolean[128];
+        for (char c : "aeiouAEIOU".toCharArray()) {
+            vowels[c] = true;
+        }
+        char[] cs = s.toCharArray();
+        int i = 0, j = cs.length - 1;
+        while (i < j) {
+            while (i < j && !vowels[cs[i]]) {
+                ++i;
+            }
+            while (i < j && !vowels[cs[j]]) {
+                --j;
+            }
+            if (i < j) {
+                char t = cs[i];
+                cs[i] = cs[j];
+                cs[j] = t;
+                ++i;
+                --j;
+            }
+        }
+        return String.valueOf(cs);
+    }
+}
+```

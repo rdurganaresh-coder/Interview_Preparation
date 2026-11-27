@@ -1,0 +1,257 @@
+# 323. Number of Connected Components in an Undirected Graph
+
+**Difficulty:** Medium  
+**Category:** Graphs & Shortest Path  
+**LeetCode:** https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/
+
+---
+
+[中文文档](/solution/0300-0399/0323.Number%20of%20Connected%20Components%20in%20an%20Undirected%20Graph/README.md)
+
+## Description
+
+<p>You have a graph of <code>n</code> nodes labeled from 0 to <code>n - 1</code>. You are given an integer <code>n</code> and an array <code>edges</code> where <code>edges[i] = [a<sub>i</sub>, b<sub>i</sub>]</code> indicates that there is an edge between <code>a<sub>i</sub></code> and <code>b<sub>i</sub></code> in the graph.</p>
+
+<p>Return <em>the number of connected components in the graph</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0300-0399/0323.Number%20of%20Connected%20Components%20in%20an%20Undirected%20Graph/images/conn1-graph.jpg" style="width: 382px; height: 222px;" />
+<pre>
+<strong>Input:</strong> n = 5, edges = [[0,1],[1,2],[3,4]]
+<strong>Output:</strong> 2
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0300-0399/0323.Number%20of%20Connected%20Components%20in%20an%20Undirected%20Graph/images/conn2-graph.jpg" style="width: 382px; height: 222px;" />
+<pre>
+<strong>Input:</strong> n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]
+<strong>Output:</strong> 1
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 2000</code></li>
+	<li><code>1 &lt;= edges.length &lt;= 5000</code></li>
+	<li><code>edges[i] = [a<sub>i</sub>, b<sub>i</sub>]</code></li>
+	<li><code>a<sub>i</sub> != b<sub>i</sub></code></li>
+	<li>There are no repeated edges.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS
+
+> **Thinking**
+>
+> Count connected components in an undirected graph. Start a search at each unseen node and increment once per new component. $O(n+m)$ fits the limits.
+>
+> Build the adjacency list and DFS: return $0$ if seen, otherwise mark, recurse on neighbors, and return $1$. Summing over all nodes is the count.
+
+First, we construct an adjacency list $g$ based on the given edges, where $g[i]$ represents all neighbor nodes of node $i$.
+
+Then we traverse all nodes. For each node, we use DFS to traverse all its adjacent nodes and mark them as visited until all its adjacent nodes have been visited. In this way, we have found a connected component, and the answer is incremented by one. Then we continue to traverse the next unvisited node until all nodes have been visited.
+
+The time complexity is $O(n + m)$, and the space complexity is $O(n + m)$, where $n$ and $m$ are the number of nodes and edges, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private List<Integer>[] g;
+    private boolean[] vis;
+
+    public int countComponents(int n, int[][] edges) {
+        g = new List[n];
+        vis = new boolean[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            ans += dfs(i);
+        }
+        return ans;
+    }
+
+    private int dfs(int i) {
+        if (vis[i]) {
+            return 0;
+        }
+        vis[i] = true;
+        for (int j : g[i]) {
+            dfs(j);
+        }
+        return 1;
+    }
+}
+```
+
+### Solution 2: Union-Find
+
+> **Thinking**
+>
+> DFS needs the graph and a call stack. Union-find merges endpoints; a successful union decrements the component count from $n$. No explicit adjacency list is required.
+
+We can use a union-find set to maintain the connected components in the graph.
+
+First, we initialize a union-find set, then traverse all the edges. For each edge $(a, b)$, we merge nodes $a$ and $b$ into the same connected component. If the merge is successful, it means that nodes $a$ and $b$ were not in the same connected component before, and the number of connected components decreases by one.
+
+Finally, we return the number of connected components.
+
+The time complexity is $O(n + m \alpha(n))$, and the space complexity is $O(n)$, where $n$ and $m$ are the number of nodes and edges, respectively, and $\alpha(n)$ is the inverse of the Ackermann function, which can be regarded as a very small constant.
+
+#### Java
+
+```java
+class UnionFind {
+    private final int[] p;
+    private final int[] size;
+
+    public UnionFind(int n) {
+        p = new int[n];
+        size = new int[n];
+        for (int i = 0; i < n; ++i) {
+            p[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    public int find(int x) {
+        if (p[x] != x) {
+            p[x] = find(p[x]);
+        }
+        return p[x];
+    }
+
+    public boolean union(int a, int b) {
+        int pa = find(a), pb = find(b);
+        if (pa == pb) {
+            return false;
+        }
+        if (size[pa] > size[pb]) {
+            p[pb] = pa;
+            size[pa] += size[pb];
+        } else {
+            p[pa] = pb;
+            size[pb] += size[pa];
+        }
+        return true;
+    }
+}
+
+class Solution {
+    public int countComponents(int n, int[][] edges) {
+        UnionFind uf = new UnionFind(n);
+        for (var e : edges) {
+            n -= uf.union(e[0], e[1]) ? 1 : 0;
+        }
+        return n;
+    }
+}
+```
+
+### Solution 3: BFS
+
+> **Thinking**
+>
+> Solution 1 expands each component by recursion. A queue expands the same component in breadth-first order, and each new search still increments the count. Time stays $O(n + m)$.
+
+We can also use BFS (Breadth-First Search) to count the number of connected components in the graph.
+
+Similar to Solution 1, we first construct an adjacency list $g$ based on the given edges. Then we traverse all nodes. For each node, if it has not been visited, we start BFS traversal from this node, marking all its adjacent nodes as visited, until all its adjacent nodes have been visited. In this way, we have found a connected component, and the answer is incremented by one.
+
+After traversing all nodes, we get the number of connected components in the graph.
+
+The time complexity is $O(n + m)$, and the space complexity is $O(n + m)$, where $n$ and $m$ are the number of nodes and edges, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int countComponents(int n, int[][] edges) {
+        List<Integer>[] g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        int ans = 0;
+        boolean[] vis = new boolean[n];
+        for (int i = 0; i < n; ++i) {
+            if (vis[i]) {
+                continue;
+            }
+            vis[i] = true;
+            ++ans;
+            Deque<Integer> q = new ArrayDeque<>();
+            q.offer(i);
+            while (!q.isEmpty()) {
+                int a = q.poll();
+                for (int b : g[a]) {
+                    if (!vis[b]) {
+                        vis[b] = true;
+                        q.offer(b);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 4: Explicit Stack
+
+> **Thinking**
+>
+> The number of connected components is the number of searches that start at an unvisited node and cover its component. With $n \le 2000$, one $O(n + m)$ traversal is enough. Recursing along a chain uses a call depth equal to the node count and overflows Python once the chain reaches length $1000$. Each new component is therefore expanded on a stack: a node is marked when it is pushed, and unvisited neighbors are pushed after it is popped. Marking on push keeps every node out of the stack more than once. Each new start increments the answer.
+
+Build an adjacency list $g$ from the given edges. $g[i]$ holds every neighbor of node $i$.
+
+Scan the nodes. When node $i$ is still unvisited, increment the answer, push $i$, and mark it visited. While the stack is not empty, pop node $u$ and push every neighbor that has not been visited, marking it at the same time. That search covers the component of $i$. Continue with the next unvisited node until every node has been seen. The order of the neighbors does not change the number of components.
+
+The time complexity is $O(n + m)$, and the space complexity is $O(n + m)$, where $n$ and $m$ are the number of nodes and edges, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int countComponents(int n, int[][] edges) {
+        List<Integer>[] g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : edges) {
+            int a = e[0], b = e[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        boolean[] vis = new boolean[n];
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            if (vis[i]) {
+                continue;
+            }
+            ++ans;
+            Deque<Integer> stk = new ArrayDeque<>();
+            stk.push(i);
+            vis[i] = true;
+            while (!stk.isEmpty()) {
+                int u = stk.pop();
+                for (int v : g[u]) {
+                    if (!vis[v]) {
+                        vis[v] = true;
+                        stk.push(v);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

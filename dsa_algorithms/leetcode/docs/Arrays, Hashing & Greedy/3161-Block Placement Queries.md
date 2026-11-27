@@ -1,0 +1,159 @@
+# 3161. Block Placement Queries
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/block-placement-queries/
+
+---
+
+[中文文档](/solution/3100-3199/3161.Block%20Placement%20Queries/README.md)
+
+## Description
+
+<p>There exists an infinite number line, with its origin at 0 and extending towards the <strong>positive</strong> x-axis.</p>
+
+<p>You are given a 2D array <code>queries</code>, which contains two types of queries:</p>
+
+<ol>
+	<li>For a query of type 1, <code>queries[i] = [1, x]</code>. Build an obstacle at distance <code>x</code> from the origin. It is guaranteed that there is <strong>no</strong> obstacle at distance <code>x</code> when the query is asked.</li>
+	<li>For a query of type 2, <code>queries[i] = [2, x, sz]</code>. Check if it is possible to place a block of size <code>sz</code> <em>anywhere</em> in the range <code>[0, x]</code> on the line, such that the block <strong>entirely</strong> lies in the range <code>[0, x]</code>. A block <strong>cannot </strong>be placed if it intersects with any obstacle, but it may touch it. Note that you do<strong> not</strong> actually place the block. Queries are separate.</li>
+</ol>
+
+<p>Return a boolean array <code>results</code>, where <code>results[i]</code> is <code>true</code> if you can place the block specified in the <code>i<sup>th</sup></code> query of type 2, and <code>false</code> otherwise.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">queries = [[1,2],[2,3,3],[2,3,1],[2,2,2]]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[false,true,true]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3100-3199/3161.Block%20Placement%20Queries/images/example0block.png" style="padding: 10px; background: rgb(255, 255, 255); border-radius: 0.5rem; width: 309px; height: 129px;" /></strong></p>
+
+<p>For query 0, place an obstacle at <code>x = 2</code>. A block of size at most 2 can be placed before <code>x = 3</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">queries = </span>[[1,7],[2,7,6],[1,2],[2,7,5],[2,7,6]]</p>
+
+<p><strong>Output:</strong> [true,true,false]</p>
+
+<p><strong>Explanation:</strong></p>
+
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3100-3199/3161.Block%20Placement%20Queries/images/example1block.png" style="padding: 10px; background: rgb(255, 255, 255); border-radius: 0.5rem; width: 310px; height: 130px;" /></strong></p>
+
+<ul>
+	<li>Place an obstacle at <code>x = 7</code> for query 0. A block of size at most 7 can be placed before <code>x = 7</code>.</li>
+	<li>Place an obstacle at <code>x = 2</code> for query 2. Now, a block of size at most 5 can be placed before <code>x = 7</code>, and a block of size at most 2 before <code>x = 2</code>.</li>
+</ul>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= queries.length &lt;= 15 * 10<sup>4</sup></code></li>
+	<li><code>2 &lt;= queries[i].length &lt;= 3</code></li>
+	<li><code>1 &lt;= queries[i][0] &lt;= 2</code></li>
+	<li><code>1 &lt;= x, sz &lt;= min(5 * 10<sup>4</sup>, 3 * queries.length)</code></li>
+	<li>The input is generated such that for queries of type 1, no obstacle exists at distance <code>x</code> when the query is asked.</li>
+	<li>The input is generated such that there is at least one query of type 2.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Indexed Tree + Ordered Set
+
+> **Thinking**
+>
+> Obstacles are inserted only, and a query asks whether a block of size $sz$ fits in $[0,x]$. Scanning gaps online is $O(q^2)$.
+>
+> Reversed time turns insertions into deletions, which only enlarge gaps. A Fenwick tree can store prefix maxima of gap lengths keyed by the right endpoint.
+>
+> Load every obstacle plus sentinels, write gaps, then go backward: a query checks the prefix maximum up to $\textit{pre}$ and the tail $x-\textit{pre}$; a deletion updates the successor gap to $\textit{nxt}-\textit{pre}$. Reverse the collected answers.
+
+Obstacles are only inserted, so we can process the queries offline in reverse and turn "insert an obstacle" into "delete an obstacle". After a deletion the adjacent gap only grows, and a Fenwick tree can maintain prefix maxima.
+
+Put all obstacles into an ordered set, and add sentinels $0$ and $m+1$, where $m$ is the maximum coordinate. For every pair of neighboring obstacles $x_1, x_2$, update index $x_2$ in the Fenwick tree with the gap $x_2 - x_1$.
+
+Then scan the queries from back to front:
+
+- Type $2$: find the last obstacle $\textit{pre} \le x$. The block can be placed if the maximum gap in $[0, \textit{pre}]$ or the tail gap $(\textit{pre}, x]$ is at least $sz$.
+- Type $1$: delete obstacle $x$, and update the gap at its successor $\textit{nxt}$ to $\textit{nxt} - \textit{pre}$.
+
+The time complexity is $O(q \log m)$, and the space complexity is $O(m)$, where $q$ is the number of queries and $m$ is the maximum coordinate.
+
+#### Java
+
+```java
+class BinaryIndexedTree {
+    private int n;
+    private int[] c;
+
+    public BinaryIndexedTree(int n) {
+        this.n = n;
+        c = new int[n + 1];
+    }
+
+    public void update(int x, int v) {
+        while (x <= n) {
+            c[x] = Math.max(c[x], v);
+            x += x & -x;
+        }
+    }
+
+    public int query(int x) {
+        int mx = 0;
+        while (x > 0) {
+            mx = Math.max(mx, c[x]);
+            x -= x & -x;
+        }
+        return mx;
+    }
+}
+
+class Solution {
+    public List<Boolean> getResults(int[][] queries) {
+        int m = 0;
+        for (int[] q : queries) {
+            m = Math.max(m, q[1]);
+        }
+        TreeSet<Integer> ts = new TreeSet<>();
+        ts.add(0);
+        ts.add(m + 1);
+        for (int[] q : queries) {
+            if (q[0] == 1) {
+                ts.add(q[1]);
+            }
+        }
+        BinaryIndexedTree tree = new BinaryIndexedTree(m + 1);
+        int pre = 0;
+        for (int x : ts) {
+            if (x > 0) {
+                tree.update(x, x - pre);
+            }
+            pre = x;
+        }
+        List<Boolean> ans = new ArrayList<>();
+        for (int i = queries.length - 1; i >= 0; --i) {
+            int[] q = queries[i];
+            int x = q[1];
+            if (q[0] == 1) {
+                int nxt = ts.higher(x);
+                tree.update(nxt, nxt - ts.lower(x));
+                ts.remove(x);
+            } else {
+                int p = ts.floor(x);
+                ans.add(tree.query(p) >= q[2] || x - p >= q[2]);
+            }
+        }
+        Collections.reverse(ans);
+        return ans;
+    }
+}
+```

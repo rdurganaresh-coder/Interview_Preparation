@@ -1,0 +1,59 @@
+# 1523. Count Odd Numbers in an Interval Range
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/count-odd-numbers-in-an-interval-range/
+
+---
+
+[中文文档](/solution/1500-1599/1523.Count%20Odd%20Numbers%20in%20an%20Interval%20Range/README.md)
+
+## Description
+
+<p>Given two non-negative integers <code>low</code> and <code><font face="monospace">high</font></code>. Return the <em>count of odd numbers between </em><code>low</code><em> and </em><code><font face="monospace">high</font></code><em>&nbsp;(inclusive)</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> low = 3, high = 7
+<strong>Output:</strong> 3
+<b>Explanation: </b>The odd numbers between 3 and 7 are [3,5,7].</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> low = 8, high = 10
+<strong>Output:</strong> 1
+<b>Explanation: </b>The odd numbers between 8 and 10 are [9].</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>0 &lt;= low &lt;= high&nbsp;&lt;= 10^9</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Prefix Sum Concept
+
+> **Thinking**
+>
+> Count the odds in the closed interval $[\textit{low},\textit{high}]$. The span can reach $10^9$, so we cannot test each integer.
+>
+> The range $[0,x]$ contains $\lfloor(x+1)/2\rfloor$ odds. Subtracting the count for $[0,\textit{low}-1]$ from that for $[0,\textit{high}]$ gives $\lfloor(\textit{high}+1)/2\rfloor-\lfloor \textit{low}/2\rfloor$, which a shift computes in constant time.
+
+We know that the count of odd numbers in the range $[0, x]$ is $\lfloor\frac{x+1}{2}\rfloor$. Therefore, the count of odd numbers in the range $[\textit{low}, \textit{high}]$ is $\lfloor\frac{\textit{high}+1}{2}\rfloor - \lfloor\frac{\textit{low}}{2}\rfloor$.
+
+The time complexity is $O(1)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public int countOdds(int low, int high) {
+        return ((high + 1) >> 1) - (low >> 1);
+    }
+}
+```

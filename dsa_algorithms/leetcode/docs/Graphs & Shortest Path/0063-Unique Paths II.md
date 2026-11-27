@@ -1,0 +1,148 @@
+# 63. Unique Paths II
+
+**Difficulty:** Medium  
+**Category:** Graphs & Shortest Path  
+**LeetCode:** https://leetcode.com/problems/unique-paths-ii/
+
+---
+
+[中文文档](/solution/0000-0099/0063.Unique%20Paths%20II/README.md)
+
+## Description
+
+<p>You are given an <code>m x n</code> integer array <code>grid</code>. There is a robot initially located at the <b>top-left corner</b> (i.e., <code>grid[0][0]</code>). The robot tries to move to the <strong>bottom-right corner</strong> (i.e., <code>grid[m - 1][n - 1]</code>). The robot can only move either down or right at any point in time.</p>
+
+<p>An obstacle and space are marked as <code>1</code> or <code>0</code> respectively in <code>grid</code>. A path that the robot takes cannot include <strong>any</strong> square that is an obstacle.</p>
+
+<p>Return <em>the number of possible unique paths that the robot can take to reach the bottom-right corner</em>.</p>
+
+<p>The testcases are generated so that the answer will be less than or equal to <code>2 * 10<sup>9</sup></code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0000-0099/0063.Unique%20Paths%20II/images/robot1.jpg" style="width: 242px; height: 242px;" />
+<pre>
+<strong>Input:</strong> obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There is one obstacle in the middle of the 3x3 grid above.
+There are two ways to reach the bottom-right corner:
+1. Right -&gt; Right -&gt; Down -&gt; Down
+2. Down -&gt; Down -&gt; Right -&gt; Right
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0000-0099/0063.Unique%20Paths%20II/images/robot2.jpg" style="width: 162px; height: 162px;" />
+<pre>
+<strong>Input:</strong> obstacleGrid = [[0,1],[0,0]]
+<strong>Output:</strong> 1
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>m == obstacleGrid.length</code></li>
+	<li><code>n == obstacleGrid[i].length</code></li>
+	<li><code>1 &lt;= m, n &lt;= 100</code></li>
+	<li><code>obstacleGrid[i][j]</code> is <code>0</code> or <code>1</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Memoization Search
+
+> **Thinking**
+>
+> As in Unique Paths, a raw search that only moves down or right explodes: $m, n \le 100$. Obstacles also break the “first row and column are all $1$” shortcut.
+>
+> The bottleneck is expanding the same cell $(i, j)$ many times. From here, out-of-bounds or an obstacle is $0$, the destination is $1$, otherwise the two branches add.
+>
+> Memoize $\textit{dfs}(i, j)$ so each cell is computed once; time and space are both $O(mn)$.
+
+We design a function $\textit{dfs}(i, j)$ to represent the number of paths from the grid $(i, j)$ to the grid $(m - 1, n - 1)$. Here, $m$ and $n$ are the number of rows and columns of the grid, respectively.
+
+The execution process of the function $\textit{dfs}(i, j)$ is as follows:
+
+- If $i \ge m$ or $j \ge n$, or $\textit{obstacleGrid}[i][j] = 1$, the number of paths is $0$;
+- If $i = m - 1$ and $j = n - 1$, the number of paths is $1$;
+- Otherwise, the number of paths is $\textit{dfs}(i + 1, j) + \textit{dfs}(i, j + 1)$.
+
+To avoid redundant calculations, we can use memoization.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns of the grid, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private Integer[][] f;
+    private int[][] obstacleGrid;
+    private int m;
+    private int n;
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        m = obstacleGrid.length;
+        n = obstacleGrid[0].length;
+        this.obstacleGrid = obstacleGrid;
+        f = new Integer[m][n];
+        return dfs(0, 0);
+    }
+
+    private int dfs(int i, int j) {
+        if (i >= m || j >= n || obstacleGrid[i][j] == 1) {
+            return 0;
+        }
+        if (i == m - 1 && j == n - 1) {
+            return 1;
+        }
+        if (f[i][j] == null) {
+            f[i][j] = dfs(i + 1, j) + dfs(i, j + 1);
+        }
+        return f[i][j];
+    }
+}
+```
+
+### Solution 2: Dynamic Programming
+
+> **Thinking**
+>
+> Solution 1 is already $O(mn)$ after memoization, but it is still recursive, with a deeper implicit stack and larger constants. Obstacles cut the first row and column, so those borders are no longer all $1$; filling a table bottom-up is more direct.
+>
+> $f[i][j]$ is the number of paths from the start: $0$ on an obstacle, otherwise from above and the left. Prefill the first row and column up to the first obstacle, then fill the interior—no recursion.
+
+We can use a dynamic programming approach by defining a 2D array $f$, where $f[i][j]$ represents the number of paths from the grid $(0,0)$ to the grid $(i,j)$.
+
+We first initialize all values in the first column and the first row of $f$, then traverse the other rows and columns with two cases:
+
+- If $\textit{obstacleGrid}[i][j] = 1$, it means the number of paths is $0$, so $f[i][j] = 0$;
+- If $\textit{obstacleGrid}[i][j] = 0$, then $f[i][j] = f[i - 1][j] + f[i][j - 1]$.
+
+Finally, return $f[m - 1][n - 1]$.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns of the grid, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length, n = obstacleGrid[0].length;
+        int[][] f = new int[m][n];
+        for (int i = 0; i < m && obstacleGrid[i][0] == 0; ++i) {
+            f[i][0] = 1;
+        }
+        for (int j = 0; j < n && obstacleGrid[0][j] == 0; ++j) {
+            f[0][j] = 1;
+        }
+        for (int i = 1; i < m; ++i) {
+            for (int j = 1; j < n; ++j) {
+                if (obstacleGrid[i][j] == 0) {
+                    f[i][j] = f[i - 1][j] + f[i][j - 1];
+                }
+            }
+        }
+        return f[m - 1][n - 1];
+    }
+}
+```

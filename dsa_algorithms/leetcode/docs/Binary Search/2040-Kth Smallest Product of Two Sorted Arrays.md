@@ -1,0 +1,149 @@
+# 2040. Kth Smallest Product of Two Sorted Arrays
+
+**Difficulty:** Hard  
+**Category:** Binary Search  
+**LeetCode:** https://leetcode.com/problems/kth-smallest-product-of-two-sorted-arrays/
+
+---
+
+[中文文档](/solution/2000-2099/2040.Kth%20Smallest%20Product%20of%20Two%20Sorted%20Arrays/README.md)
+
+## Description
+
+Given two <strong>sorted 0-indexed</strong> integer arrays <code>nums1</code> and <code>nums2</code> as well as an integer <code>k</code>, return <em>the </em><code>k<sup>th</sup></code><em> (<strong>1-based</strong>) smallest product of </em><code>nums1[i] * nums2[j]</code><em> where </em><code>0 &lt;= i &lt; nums1.length</code><em> and </em><code>0 &lt;= j &lt; nums2.length</code>.
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [2,5], nums2 = [3,4], k = 2
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> The 2 smallest products are:
+- nums1[0] * nums2[0] = 2 * 3 = 6
+- nums1[0] * nums2[1] = 2 * 4 = 8
+The 2<sup>nd</sup> smallest product is 8.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [-4,-2,0,3], nums2 = [2,4], k = 6
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> The 6 smallest products are:
+- nums1[0] * nums2[1] = (-4) * 4 = -16
+- nums1[0] * nums2[0] = (-4) * 2 = -8
+- nums1[1] * nums2[1] = (-2) * 4 = -8
+- nums1[1] * nums2[0] = (-2) * 2 = -4
+- nums1[2] * nums2[0] = 0 * 2 = 0
+- nums1[2] * nums2[1] = 0 * 4 = 0
+The 6<sup>th</sup> smallest product is 0.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums1 = [-2,-1,0,1,2], nums2 = [-3,-1,2,4,5], k = 3
+<strong>Output:</strong> -6
+<strong>Explanation:</strong> The 3 smallest products are:
+- nums1[0] * nums2[4] = (-2) * 5 = -10
+- nums1[0] * nums2[3] = (-2) * 4 = -8
+- nums1[4] * nums2[0] = 2 * (-3) = -6
+The 3<sup>rd</sup> smallest product is -6.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums1.length, nums2.length &lt;= 5 * 10<sup>4</sup></code></li>
+	<li><code>-10<sup>5</sup> &lt;= nums1[i], nums2[j] &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= k &lt;= nums1.length * nums2.length</code></li>
+	<li><code>nums1</code> and <code>nums2</code> are sorted.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> There are up to $2.5 \times 10^9$ products, so they cannot be listed. The $k$-th is monotone in a threshold $p$: the count of products $\le p$ never decreases.
+>
+> Binary-search $p$ on $[-M,M]$. For each $x$ in $\textit{nums1}$, positives use $\textit{nums2}[i] \le p/x$, negatives reverse the inequality, and zeros contribute the whole array when $p \ge 0$. Sortedness lets each count be a binary search.
+>
+> `bisect_left` returns the smallest $p$ whose count is at least $k$.
+
+We can use binary search to enumerate the value of the product $p$, defining the binary search interval as $[l, r]$, where $l = -\textit{max}(|\textit{nums1}[0]|, |\textit{nums1}[n - 1]|) \times \textit{max}(|\textit{nums2}[0]|, |\textit{nums2}[n - 1]|)$, $r = -l$.
+
+For each $p$, we calculate the number of products less than or equal to $p$. If this number is greater than or equal to $k$, it means the $k$-th smallest product must be less than or equal to $p$, so we can reduce the right endpoint of the interval to $p$. Otherwise, we increase the left endpoint of the interval to $p + 1$.
+
+The key to the problem is how to calculate the number of products less than or equal to $p$. We can enumerate each number $x$ in $\textit{nums1}$ and discuss in cases:
+
+- If $x > 0$, then $x \times \textit{nums2}[i]$ is monotonically increasing as $i$ increases. We can use binary search to find the smallest $i$ such that $x \times \textit{nums2}[i] > p$. Then, $i$ is the number of products less than or equal to $p$, which is accumulated into the count $\textit{cnt}$;
+- If $x < 0$, then $x \times \textit{nums2}[i]$ is monotonically decreasing as $i$ increases. We can use binary search to find the smallest $i$ such that $x \times \textit{nums2}[i] \leq p$. Then, $n - i$ is the number of products less than or equal to $p$, which is accumulated into the count $\textit{cnt}$;
+- If $x = 0$, then $x \times \textit{nums2}[i] = 0$. If $p \geq 0$, then $n$ is the number of products less than or equal to $p$, which is accumulated into the count $\textit{cnt}$.
+
+This way, we can find the $k$-th smallest product through binary search.
+
+The time complexity is $O(m \log n \log M)$, where $m$ and $n$ are the lengths of $\textit{nums1}$ and $\textit{nums2}$, respectively, and $M$ is the maximum absolute value in $\textit{nums1}$ and $\textit{nums2}$.
+
+#### Java
+
+```java
+class Solution {
+    private int[] nums1;
+    private int[] nums2;
+
+    public long kthSmallestProduct(int[] nums1, int[] nums2, long k) {
+        this.nums1 = nums1;
+        this.nums2 = nums2;
+        int m = nums1.length;
+        int n = nums2.length;
+        int a = Math.max(Math.abs(nums1[0]), Math.abs(nums1[m - 1]));
+        int b = Math.max(Math.abs(nums2[0]), Math.abs(nums2[n - 1]));
+        long r = (long) a * b;
+        long l = (long) -a * b;
+        while (l < r) {
+            long mid = (l + r) >> 1;
+            if (count(mid) >= k) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+
+    private long count(long p) {
+        long cnt = 0;
+        int n = nums2.length;
+        for (int x : nums1) {
+            if (x > 0) {
+                int l = 0, r = n;
+                while (l < r) {
+                    int mid = (l + r) >> 1;
+                    if ((long) x * nums2[mid] > p) {
+                        r = mid;
+                    } else {
+                        l = mid + 1;
+                    }
+                }
+                cnt += l;
+            } else if (x < 0) {
+                int l = 0, r = n;
+                while (l < r) {
+                    int mid = (l + r) >> 1;
+                    if ((long) x * nums2[mid] <= p) {
+                        r = mid;
+                    } else {
+                        l = mid + 1;
+                    }
+                }
+                cnt += n - l;
+            } else if (p >= 0) {
+                cnt += n;
+            }
+        }
+        return cnt;
+    }
+}
+```

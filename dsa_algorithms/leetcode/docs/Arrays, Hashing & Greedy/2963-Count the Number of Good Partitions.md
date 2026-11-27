@@ -1,0 +1,105 @@
+# 2963. Count the Number of Good Partitions
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/count-the-number-of-good-partitions/
+
+---
+
+[中文文档](/solution/2900-2999/2963.Count%20the%20Number%20of%20Good%20Partitions/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> array <code>nums</code> consisting of <strong>positive</strong> integers.</p>
+
+<p>A partition of an array into one or more <strong>contiguous</strong> subarrays is called <strong>good</strong> if no two subarrays contain the same number.</p>
+
+<p>Return <em>the <strong>total number</strong> of good partitions of </em><code>nums</code>.</p>
+
+<p>Since the answer may be large, return it <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,3,4]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> The 8 possible good partitions are: ([1], [2], [3], [4]), ([1], [2], [3,4]), ([1], [2,3], [4]), ([1], [2,3,4]), ([1,2], [3], [4]), ([1,2], [3,4]), ([1,2,3], [4]), and ([1,2,3,4]).
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,1,1,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The only possible good partition is: ([1,1,1,1]).
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,2,1,3]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The 2 possible good partitions are: ([1,2,1], [3]) and ([1,2,1,3]).
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table + Grouping + Fast Power
+
+> **Thinking**
+>
+> A good partition keeps equal values in one part, so each value’s first-to-last span must lie inside a single piece. Last-occurrence map $\textit{last}$ cuts the array into unsplittable blocks; each boundary between blocks may be cut or not.
+>
+> While scanning, $j$ tracks the current block’s right end; $i=j$ increments the block count $k$. $k$ blocks give $k-1$ optional cuts, i.e. $2^{k-1}$ modulo the prime.
+
+According to the problem description, we know that the same number must be in the same subarray. Therefore, we use a hash table $\textit{last}$ to record the index of the last occurrence of each number.
+
+Next, we use an index $j$ to mark the index of the last element that has appeared among the elements, and use a variable $k$ to record the number of subarrays that can currently be divided.
+
+Then, we traverse the array $\textit{nums}$ from left to right. For the current number $\textit{nums}[i]$ we are traversing, we get its last occurrence index and update $j = \max(j, \textit{last}[\textit{nums}[i]])$. If $i = j$, it means that the current position can be the end of a subarray, and we increase $k$ by $1$. Continue to traverse until the entire array is traversed.
+
+Finally, we consider the number of division schemes for $k$ subarrays. The number of subarrays is $k$, and there are $k-1$ positions that can be divided (concatenated), so the number of schemes is $2^{k-1}$. Since the answer may be very large, we need to take the modulo of $10^9 + 7$. Here we can use fast power to speed up the calculation.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int numberOfGoodPartitions(int[] nums) {
+        Map<Integer, Integer> last = new HashMap<>();
+        int n = nums.length;
+        for (int i = 0; i < n; ++i) {
+            last.put(nums[i], i);
+        }
+        final int mod = (int) 1e9 + 7;
+        int j = -1;
+        int k = 0;
+        for (int i = 0; i < n; ++i) {
+            j = Math.max(j, last.get(nums[i]));
+            k += i == j ? 1 : 0;
+        }
+        return qpow(2, k - 1, mod);
+    }
+
+    private int qpow(long a, int n, int mod) {
+        long ans = 1;
+        for (; n > 0; n >>= 1) {
+            if ((n & 1) == 1) {
+                ans = ans * a % mod;
+            }
+            a = a * a % mod;
+        }
+        return (int) ans;
+    }
+}
+```

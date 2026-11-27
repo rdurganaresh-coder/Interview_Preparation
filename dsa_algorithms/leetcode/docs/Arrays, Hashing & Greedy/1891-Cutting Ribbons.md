@@ -1,0 +1,112 @@
+# 1891. Cutting Ribbons
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/cutting-ribbons/
+
+---
+
+[中文文档](/solution/1800-1899/1891.Cutting%20Ribbons/README.md)
+
+## Description
+
+<p>You are given an integer array <code>ribbons</code>, where <code>ribbons[i]</code> represents the length of the <code>i<sup>th</sup></code> ribbon, and an integer <code>k</code>. You may cut any of the ribbons into any number of segments of <strong>positive integer</strong> lengths, or perform no cuts at all.</p>
+
+<ul>
+	<li>For example, if you have a ribbon of length <code>4</code>, you can:
+    <ul>
+    	<li>Keep the ribbon of length <code>4</code>,</li>
+    	<li>Cut it into one ribbon of length <code>3</code> and one ribbon of length <code>1</code>,</li>
+    	<li>Cut it into two ribbons of length <code>2</code>,</li>
+    	<li>Cut it into one ribbon of length <code>2</code> and two ribbons of length <code>1</code>, or</li>
+    	<li>Cut it into four ribbons of length <code>1</code>.</li>
+    </ul>
+    </li>
+</ul>
+
+<p>Your task is to determine the <strong>maximum</strong> length of ribbon, <code>x</code>, that allows you to cut <em>at least</em> <code>k</code> ribbons, each of length <code>x</code>. You can discard any leftover ribbon from the cuts. If it is <strong>impossible</strong> to cut <code>k</code> ribbons of the same length, return 0.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> ribbons = [9,7,5], k = 3
+<strong>Output:</strong> 5
+<strong>Explanation:</strong>
+- Cut the first ribbon to two ribbons, one of length 5 and one of length 4.
+- Cut the second ribbon to two ribbons, one of length 5 and one of length 2.
+- Keep the third ribbon as it is.
+Now you have 3 ribbons of length 5.</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> ribbons = [7,5,9], k = 4
+<strong>Output:</strong> 4
+<strong>Explanation:</strong>
+- Cut the first ribbon to two ribbons, one of length 4 and one of length 3.
+- Cut the second ribbon to two ribbons, one of length 4 and one of length 1.
+- Cut the third ribbon to three ribbons, two of length 4 and one of length 1.
+Now you have 4 ribbons of length 4.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> ribbons = [5,7,9], k = 22
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> You cannot obtain k ribbons of the same positive integer length.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= ribbons.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= ribbons[i] &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= k &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> Ribbons may only be cut shorter; we want the maximum equal length that yields at least $k$ pieces. Longer pieces give fewer of them.
+>
+> Binary-search the length in $[0,\max \textit{ribbons}]$ and test whether $\sum \lfloor x/\textit{mid}\rfloor \ge k$. Feasible lengths can grow; otherwise shrink.
+
+We observe that if we can obtain $k$ ropes of length $x$, then we can also obtain $k$ ropes of length $x-1$. This implies that there is a monotonicity property, and we can use binary search to find the maximum length $x$ such that we can obtain $k$ ropes of length $x$.
+
+We define the left boundary of the binary search as $\textit{left}=0$, the right boundary as $\textit{right}=\max(\textit{ribbons})$, and the middle value as $\textit{mid}=(\textit{left}+\textit{right}+1)/2$. We then calculate the number of ropes we can obtain with length $\textit{mid}$, denoted as $\textit{cnt}$. If $\textit{cnt} \geq k$, it means we can obtain $k$ ropes of length $\textit{mid}$, so we update $\textit{left}$ to $\textit{mid}$. Otherwise, we update $\textit{right}$ to $\textit{mid}-1$.
+
+Finally, we return $\textit{left}$ as the maximum length of the ropes we can obtain.
+
+The time complexity is $O(n \log M)$, and the space complexity is $O(1)$, where $n$ and $M$ are the number of ropes and the maximum length of the ropes, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int maxLength(int[] ribbons, int k) {
+        int left = 0, right = 0;
+        for (int x : ribbons) {
+            right = Math.max(right, x);
+        }
+        while (left < right) {
+            int mid = (left + right + 1) >>> 1;
+            int cnt = 0;
+            for (int x : ribbons) {
+                cnt += x / mid;
+            }
+            if (cnt >= k) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+}
+```

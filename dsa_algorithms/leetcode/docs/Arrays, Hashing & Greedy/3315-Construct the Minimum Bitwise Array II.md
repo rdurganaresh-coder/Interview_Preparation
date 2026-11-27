@@ -1,0 +1,107 @@
+# 3315. Construct the Minimum Bitwise Array II
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/construct-the-minimum-bitwise-array-ii/
+
+---
+
+[中文文档](/solution/3300-3399/3315.Construct%20the%20Minimum%20Bitwise%20Array%20II/README.md)
+
+## Description
+
+<p>You are given an array <code>nums</code> consisting of <code>n</code> <span data-keyword="prime-number">prime</span> integers.</p>
+
+<p>You need to construct an array <code>ans</code> of length <code>n</code>, such that, for each index <code>i</code>, the bitwise <code>OR</code> of <code>ans[i]</code> and <code>ans[i] + 1</code> is equal to <code>nums[i]</code>, i.e. <code>ans[i] OR (ans[i] + 1) == nums[i]</code>.</p>
+
+<p>Additionally, you must <strong>minimize</strong> each value of <code>ans[i]</code> in the resulting array.</p>
+
+<p>If it is <em>not possible</em> to find such a value for <code>ans[i]</code> that satisfies the <strong>condition</strong>, then set <code>ans[i] = -1</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,3,5,7]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[-1,1,4,3]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>For <code>i = 0</code>, as there is no value for <code>ans[0]</code> that satisfies <code>ans[0] OR (ans[0] + 1) = 2</code>, so <code>ans[0] = -1</code>.</li>
+	<li>For <code>i = 1</code>, the smallest <code>ans[1]</code> that satisfies <code>ans[1] OR (ans[1] + 1) = 3</code> is <code>1</code>, because <code>1 OR (1 + 1) = 3</code>.</li>
+	<li>For <code>i = 2</code>, the smallest <code>ans[2]</code> that satisfies <code>ans[2] OR (ans[2] + 1) = 5</code> is <code>4</code>, because <code>4 OR (4 + 1) = 5</code>.</li>
+	<li>For <code>i = 3</code>, the smallest <code>ans[3]</code> that satisfies <code>ans[3] OR (ans[3] + 1) = 7</code> is <code>3</code>, because <code>3 OR (3 + 1) = 7</code>.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [11,13,31]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[9,12,15]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>For <code>i = 0</code>, the smallest <code>ans[0]</code> that satisfies <code>ans[0] OR (ans[0] + 1) = 11</code> is <code>9</code>, because <code>9 OR (9 + 1) = 11</code>.</li>
+	<li>For <code>i = 1</code>, the smallest <code>ans[1]</code> that satisfies <code>ans[1] OR (ans[1] + 1) = 13</code> is <code>12</code>, because <code>12 OR (12 + 1) = 13</code>.</li>
+	<li>For <code>i = 2</code>, the smallest <code>ans[2]</code> that satisfies <code>ans[2] OR (ans[2] + 1) = 31</code> is <code>15</code>, because <code>15 OR (15 + 1) = 31</code>.</li>
+</ul>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+	<li><code>2 &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>nums[i]</code> is a prime number.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Bit Manipulation
+
+> **Thinking**
+>
+> The bitwise identity is the same as in part I; only the value range grows to $10^9$. The even prime is still $2$, and an odd $x$ is still repaired by flipping the bit below its lowest zero.
+>
+> A loop up to bit $32$ covers the full range, so no extra data structure is required.
+>
+> The implementation matches part I: scan each odd $x$ and XOR $2^{i-1}$.
+
+For an integer $a$, the result of $a \lor (a + 1)$ is always odd. Therefore, if $\textit{nums}[i]$ is even, then $\textit{ans}[i]$ does not exist, and we directly return $-1$. In this problem, $\textit{nums}[i]$ is a prime number, so to check if it is even, we only need to check if it equals $2$.
+
+If $\textit{nums}[i]$ is odd, suppose $\textit{nums}[i] = \texttt{0b1101101}$. Since $a \lor (a + 1) = \textit{nums}[i]$, this is equivalent to changing the last $0$ bit of $a$ to $1$. To solve for $a$, we need to change the bit after the last $0$ in $\textit{nums}[i]$ to $0$. We start traversing from the least significant bit (index $1$) and find the first $0$ bit. If it is at position $i$, we change the $(i - 1)$-th bit of $\textit{nums}[i]$ to $1$, i.e., $\textit{ans}[i] = \textit{nums}[i] \oplus 2^{i - 1}$.
+
+By traversing all elements in $\textit{nums}$, we can obtain the answer.
+
+The time complexity is $O(n \log M)$, and the space complexity is $O(1)$, where $n$ and $M$ are the length of the array $\textit{nums}$ and the maximum value in the array, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int[] minBitwiseArray(List<Integer> nums) {
+        int n = nums.size();
+        int[] ans = new int[n];
+        for (int i = 0; i < n; ++i) {
+            int x = nums.get(i);
+            if (x == 2) {
+                ans[i] = -1;
+            } else {
+                for (int j = 1; j < 32; ++j) {
+                    if ((x >> j & 1) == 0) {
+                        ans[i] = x ^ 1 << (j - 1);
+                        break;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

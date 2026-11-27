@@ -1,0 +1,104 @@
+# 2365. Task Scheduler II
+
+**Difficulty:** Medium  
+**Category:** Heaps & Priority Queues  
+**LeetCode:** https://leetcode.com/problems/task-scheduler-ii/
+
+---
+
+[中文文档](/solution/2300-2399/2365.Task%20Scheduler%20II/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> array of positive integers <code>tasks</code>, representing tasks that need to be completed <strong>in order</strong>, where <code>tasks[i]</code> represents the <strong>type</strong> of the <code>i<sup>th</sup></code> task.</p>
+
+<p>You are also given a positive integer <code>space</code>, which represents the <strong>minimum</strong> number of days that must pass <strong>after</strong> the completion of a task before another task of the <strong>same</strong> type can be performed.</p>
+
+<p>Each day, until all tasks have been completed, you must either:</p>
+
+<ul>
+	<li>Complete the next task from <code>tasks</code>, or</li>
+	<li>Take a break.</li>
+</ul>
+
+<p>Return<em> the <strong>minimum</strong> number of days needed to complete all tasks</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> tasks = [1,2,1,2,3,1], space = 3
+<strong>Output:</strong> 9
+<strong>Explanation:</strong>
+One way to complete all tasks in 9 days is as follows:
+Day 1: Complete the 0th task.
+Day 2: Complete the 1st task.
+Day 3: Take a break.
+Day 4: Take a break.
+Day 5: Complete the 2nd task.
+Day 6: Complete the 3rd task.
+Day 7: Take a break.
+Day 8: Complete the 4th task.
+Day 9: Complete the 5th task.
+It can be shown that the tasks cannot be completed in less than 9 days.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> tasks = [5,8,8,5], space = 2
+<strong>Output:</strong> 6
+<strong>Explanation:</strong>
+One way to complete all tasks in 6 days is as follows:
+Day 1: Complete the 0th task.
+Day 2: Complete the 1st task.
+Day 3: Take a break.
+Day 4: Take a break.
+Day 5: Complete the 2nd task.
+Day 6: Complete the 3rd task.
+It can be shown that the tasks cannot be completed in less than 6 days.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= tasks.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= tasks[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>1 &lt;= space &lt;= tasks.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table + Simulation
+
+> **Thinking**
+>
+> Equal tasks need at least $\textit{space}$ days between them and must run in the given order. $n \le 10^5$, so we should not insert idle days on an explicit calendar.
+>
+> A map stores the next allowed day of each task. Advance one day, take the max with that allowed day, then write the next allowed time as $\textit{ans}+\textit{space}+1$.
+
+We can use a hash table $\textit{day}$ to record the next time each task can be executed. Initially, all values in $\textit{day}$ are $0$. We use a variable $\textit{ans}$ to record the current time.
+
+We iterate through the array $\textit{tasks}$. For each task $\textit{task}$, we increment the current time $\textit{ans}$ by one, indicating that one day has passed since the last task execution. If $\textit{day}[\textit{task}] > \textit{ans}$ at this time, it means that task $\textit{task}$ can only be executed on the $\textit{day}[\textit{task}]$ day. Therefore, we update the current time $\textit{ans} = \max(\textit{ans}, \textit{day}[\textit{task}])$. Then we update the value of $\textit{day}[\textit{task}]$ to $\textit{ans} + \textit{space} + 1$, indicating that the next time task $\textit{task}$ can be executed is at $\textit{ans} + \textit{space} + 1$.
+
+After the iteration, we return $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{tasks}$.
+
+#### Java
+
+```java
+class Solution {
+    public long taskSchedulerII(int[] tasks, int space) {
+        Map<Integer, Long> day = new HashMap<>();
+        long ans = 0;
+        for (int task : tasks) {
+            ++ans;
+            ans = Math.max(ans, day.getOrDefault(task, 0L));
+            day.put(task, ans + space + 1);
+        }
+        return ans;
+    }
+}
+```

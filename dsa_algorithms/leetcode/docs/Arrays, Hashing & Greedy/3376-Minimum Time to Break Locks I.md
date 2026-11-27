@@ -1,0 +1,212 @@
+# 3376. Minimum Time to Break Locks I
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/minimum-time-to-break-locks-i/
+
+---
+
+[中文文档](/solution/3300-3399/3376.Minimum%20Time%20to%20Break%20Locks%20I/README.md)
+
+## Description
+
+<p>Bob is stuck in a dungeon and must break <code>n</code> locks, each requiring some amount of <strong>energy</strong> to break. The required energy for each lock is stored in an array called <code>strength</code> where <code>strength[i]</code> indicates the energy needed to break the <code>i<sup>th</sup></code> lock.</p>
+
+<p>To break a lock, Bob uses a sword with the following characteristics:</p>
+
+<ul>
+	<li>The initial energy of the sword is 0.</li>
+	<li>The initial factor <code><font face="monospace">x</font></code> by which the energy of the sword increases is 1.</li>
+	<li>Every minute, the energy of the sword increases by the current factor <code>x</code>.</li>
+	<li>To break the <code>i<sup>th</sup></code> lock, the energy of the sword must reach <strong>at least</strong> <code>strength[i]</code>.</li>
+	<li>After breaking a lock, the energy of the sword resets to 0, and the factor <code>x</code> increases by a given value <code>k</code>.</li>
+</ul>
+
+<p>Your task is to determine the <strong>minimum</strong> time in minutes required for Bob to break all <code>n</code> locks and escape the dungeon.</p>
+
+<p>Return the <strong>minimum </strong>time required for Bob to break all <code>n</code> locks.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">strength = [3,4,1], k = 1</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">4</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<table style="border: 1px solid black;">
+	<tbody>
+		<tr>
+			<th style="border: 1px solid black;">Time</th>
+			<th style="border: 1px solid black;">Energy</th>
+			<th style="border: 1px solid black;">x</th>
+			<th style="border: 1px solid black;">Action</th>
+			<th style="border: 1px solid black;">Updated x</th>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">0</td>
+			<td style="border: 1px solid black;">0</td>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">Nothing</td>
+			<td style="border: 1px solid black;">1</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">Break 3<sup>rd</sup> Lock</td>
+			<td style="border: 1px solid black;">2</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">2</td>
+			<td style="border: 1px solid black;">2</td>
+			<td style="border: 1px solid black;">2</td>
+			<td style="border: 1px solid black;">Nothing</td>
+			<td style="border: 1px solid black;">2</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">3</td>
+			<td style="border: 1px solid black;">4</td>
+			<td style="border: 1px solid black;">2</td>
+			<td style="border: 1px solid black;">Break 2<sup>nd</sup> Lock</td>
+			<td style="border: 1px solid black;">3</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">4</td>
+			<td style="border: 1px solid black;">3</td>
+			<td style="border: 1px solid black;">3</td>
+			<td style="border: 1px solid black;">Break 1<sup>st</sup> Lock</td>
+			<td style="border: 1px solid black;">3</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>The locks cannot be broken in less than 4 minutes; thus, the answer is 4.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">strength = [2,5,4], k = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">5</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<table style="border: 1px solid black;">
+	<tbody>
+		<tr>
+			<th style="border: 1px solid black;">Time</th>
+			<th style="border: 1px solid black;">Energy</th>
+			<th style="border: 1px solid black;">x</th>
+			<th style="border: 1px solid black;">Action</th>
+			<th style="border: 1px solid black;">Updated x</th>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">0</td>
+			<td style="border: 1px solid black;">0</td>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">Nothing</td>
+			<td style="border: 1px solid black;">1</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">Nothing</td>
+			<td style="border: 1px solid black;">1</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">2</td>
+			<td style="border: 1px solid black;">2</td>
+			<td style="border: 1px solid black;">1</td>
+			<td style="border: 1px solid black;">Break 1<sup>st</sup> Lock</td>
+			<td style="border: 1px solid black;">3</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">3</td>
+			<td style="border: 1px solid black;">3</td>
+			<td style="border: 1px solid black;">3</td>
+			<td style="border: 1px solid black;">Nothing</td>
+			<td style="border: 1px solid black;">3</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">4</td>
+			<td style="border: 1px solid black;">6</td>
+			<td style="border: 1px solid black;">3</td>
+			<td style="border: 1px solid black;">Break 2<sup>n</sup><sup>d</sup> Lock</td>
+			<td style="border: 1px solid black;">5</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;">5</td>
+			<td style="border: 1px solid black;">5</td>
+			<td style="border: 1px solid black;">5</td>
+			<td style="border: 1px solid black;">Break 3<sup>r</sup><sup>d</sup> Lock</td>
+			<td style="border: 1px solid black;">7</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>The locks cannot be broken in less than 5 minutes; thus, the answer is 5.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == strength.length</code></li>
+	<li><code>1 &lt;= n &lt;= 8</code></li>
+	<li><code>1 &lt;= k &lt;= 10</code></li>
+	<li><code>1 &lt;= strength[i] &lt;= 10<sup>6</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1
+
+> **Thinking**
+>
+> The order of locks changes the energy: $x$ starts at $1$ and grows by $K$ after each break. With $n \le 8$ we may DP over subsets.
+>
+> $\textit{dfs}(i)$ is the remaining time after set $i$ is broken. Energy is $1+|i|\cdot K$; an unbroken lock $s$ costs $\lceil s/x \rceil$.
+>
+> The full set returns $0$. There are $2^n$ states and $n$ transitions, which fits the limits.
+
+#### Java
+
+```java
+class Solution {
+    private List<Integer> strength;
+    private Integer[] f;
+    private int k;
+    private int n;
+
+    public int findMinimumTime(List<Integer> strength, int K) {
+        n = strength.size();
+        f = new Integer[1 << n];
+        k = K;
+        this.strength = strength;
+        return dfs(0);
+    }
+
+    private int dfs(int i) {
+        if (i == (1 << n) - 1) {
+            return 0;
+        }
+        if (f[i] != null) {
+            return f[i];
+        }
+        int cnt = Integer.bitCount(i);
+        int x = 1 + cnt * k;
+        f[i] = 1 << 30;
+        for (int j = 0; j < n; ++j) {
+            if ((i >> j & 1) == 0) {
+                f[i] = Math.min(f[i], dfs(i | 1 << j) + (strength.get(j) + x - 1) / x);
+            }
+        }
+        return f[i];
+    }
+}
+```

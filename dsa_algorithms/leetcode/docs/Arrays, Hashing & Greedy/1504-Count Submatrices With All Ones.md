@@ -1,0 +1,149 @@
+# 1504. Count Submatrices With All Ones
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/count-submatrices-with-all-ones/
+
+---
+
+[中文文档](/solution/1500-1599/1504.Count%20Submatrices%20With%20All%20Ones/README.md)
+
+## Description
+
+<p>Given an <code>m x n</code> binary matrix <code>mat</code>, <em>return the number of <strong>submatrices</strong> that have all ones</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1500-1599/1504.Count%20Submatrices%20With%20All%20Ones/images/ones1-grid.jpg" style="width: 244px; height: 245px;" />
+<pre>
+<strong>Input:</strong> mat = [[1,0,1],[1,1,0],[1,1,0]]
+<strong>Output:</strong> 13
+<strong>Explanation:</strong> 
+There are 6 rectangles of side 1x1.
+There are 2 rectangles of side 1x2.
+There are 3 rectangles of side 2x1.
+There is 1 rectangle of side 2x2. 
+There is 1 rectangle of side 3x1.
+Total number of rectangles = 6 + 2 + 3 + 1 + 1 = 13.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1500-1599/1504.Count%20Submatrices%20With%20All%20Ones/images/ones2-grid.jpg" style="width: 324px; height: 245px;" />
+<pre>
+<strong>Input:</strong> mat = [[0,1,1,0],[0,1,1,1],[1,1,1,0]]
+<strong>Output:</strong> 24
+<strong>Explanation:</strong> 
+There are 8 rectangles of side 1x1.
+There are 5 rectangles of side 1x2.
+There are 2 rectangles of side 1x3. 
+There are 4 rectangles of side 2x1.
+There are 2 rectangles of side 2x2. 
+There are 2 rectangles of side 3x1. 
+There is 1 rectangle of side 3x2. 
+Total number of rectangles = 8 + 5 + 2 + 4 + 2 + 2 + 1 = 24.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= m, n &lt;= 150</code></li>
+	<li><code>mat[i][j]</code> is either <code>0</code> or <code>1</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration + Prefix Sum
+
+> **Thinking**
+>
+> Counting all-$1$ submatrices by enumerating four borders and scanning the interior is far too slow. Even a 2D prefix-sum check over every pair of corners is $O(m^2 n^2)$. With side length up to $150$, we need to drop one nested loop.
+>
+> After fixing the bottom-right cell $(i,j)$, a submatrix is determined by how far we extend upward. Precompute $g[i][j]$ as the run of ones ending at that cell in its row. Walking $k$ upward from $i$ and taking the running minimum of $g[k][j]$ gives the legal width for each height; add that width at every step. Each corner is then processed in $O(m)$, for $O(m^2 n)$ overall.
+
+We can enumerate the bottom-right corner $(i, j)$ of the matrix, and then enumerate the first row $k$ upwards. The width of the matrix with $(i, j)$ as the bottom-right corner in each row is $\min_{k \leq i} g[k][j]$, where $g[k][j]$ represents the width of the matrix with $(k, j)$ as the bottom-right corner in the $k$-th row.
+
+Therefore, we can preprocess a 2D array $g[i][j]$, where $g[i][j]$ represents the number of consecutive $1$s from the $j$-th column to the left in the $i$-th row.
+
+The time complexity is $O(m^2n)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns of the matrix, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int numSubmat(int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+        int[][] g = new int[m][n];
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (mat[i][j] == 1) {
+                    g[i][j] = j == 0 ? 1 : 1 + g[i][j - 1];
+                }
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int col = 1 << 30;
+                for (int k = i; k >= 0 && col > 0; --k) {
+                    col = Math.min(col, g[k][j]);
+                    ans += col;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Monotonic Stack
+
+> **Thinking**
+>
+> Solution 1 still walks $O(m)$ rows upward at every bottom-right cell and adds the running minimum width, so the total stays $O(m^2n)$. With side length $150$, that inner scan is the remaining cost.
+>
+> A narrower width on the same column caps every row above it, so those rows do not need another pass. One strictly increasing stack of widths per column makes the stack top the nearest smaller width above the current cell. Between that top and the current row the minimum width is $g[i][j]$, and the answer at the top and above is already stored. Each cell is pushed and popped at most once, which turns the upward scan into amortized $O(1)$.
+
+We still preprocess a 2D array $g$, where $g[i][j]$ is the number of consecutive $1$s from column $j$ to the left in row $i$.
+
+The count is then taken column by column. For column $j$, scan row $i$ from top to bottom and keep a monotonic stack of triples $(w, r, c)$: the width $w$, the row $r$, and the number $c$ of all-$1$ submatrices whose bottom-right corner is $(r, j)$. Widths on the stack stay strictly increasing.
+
+When handling $g[i][j]$, pop every stack top whose width is at least the current value. If the stack is empty, every row from $0$ through $i$ has minimum width $g[i][j]$, so there are $g[i][j] \times (i + 1)$ submatrices with bottom-right corner $(i, j)$. Otherwise let the top be $(w, r, c)$. The contribution of row $r$ and above is already stored in $c$, and every row from $r + 1$ through $i$ has minimum width $g[i][j]$, so the count is $c + g[i][j] \times (i - r)$. Add this value to the answer, then push the current width, the row index, and the count onto the stack.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns of the matrix, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int numSubmat(int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+        int[][] g = new int[m][n];
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (mat[i][j] == 1) {
+                    g[i][j] = j == 0 ? 1 : 1 + g[i][j - 1];
+                }
+            }
+        }
+        int ans = 0;
+        for (int j = 0; j < n; ++j) {
+            List<int[]> stk = new ArrayList<>();
+            for (int i = 0; i < m; ++i) {
+                int cur = g[i][j];
+                while (!stk.isEmpty() && stk.get(stk.size() - 1)[0] >= cur) {
+                    stk.remove(stk.size() - 1);
+                }
+                int cnt = cur * (i + 1);
+                if (!stk.isEmpty()) {
+                    int[] t = stk.get(stk.size() - 1);
+                    cnt = t[2] + cur * (i - t[1]);
+                }
+                ans += cnt;
+                stk.add(new int[] {cur, i, cnt});
+            }
+        }
+        return ans;
+    }
+}
+```

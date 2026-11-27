@@ -1,0 +1,194 @@
+# 3535. Unit Conversion II
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/unit-conversion-ii/
+
+---
+
+[中文文档](/solution/3500-3599/3535.Unit%20Conversion%20II/README.md)
+
+## Description
+
+<p>There are <code>n</code> types of units indexed from <code>0</code> to <code>n - 1</code>.</p>
+
+<p>You are given a 2D integer array <code>conversions</code> of length <code>n - 1</code>, where <code>conversions[i] = [sourceUnit<sub>i</sub>, targetUnit<sub>i</sub>, conversionFactor<sub>i</sub>]</code>. This indicates that a single unit of type <code>sourceUnit<sub>i</sub></code> is equivalent to <code>conversionFactor<sub>i</sub></code> units of type <code>targetUnit<sub>i</sub></code>.</p>
+
+<p>You are also given a 2D integer array <code>queries</code> of length <code>q</code>, where <code>queries[i] = [unitA<sub>i</sub>, unitB<sub>i</sub>]</code>.</p>
+
+<p>Return an array <code face="monospace">answer</code> of length <code>q</code> where <code>answer[i]</code> is the number of units of type <code>unitB<sub>i</sub></code> equivalent to 1 unit of type <code>unitA<sub>i</sub></code>, and can be represented as <code>p/q</code> where <code>p</code> and <code>q</code> are coprime. Return each <code>answer[i]</code> as <code>pq<sup>-1</sup></code> <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>, where <code>q<sup>-1</sup></code> represents the multiplicative inverse of <code>q</code> modulo <code>10<sup>9</sup> + 7</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">conversions = [[0,1,2],[0,2,6]], queries = [[1,2],[1,0]]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[3,500000004]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>In the first query, we can convert unit 1 into 3 units of type 2 using the inverse of <code>conversions[0]</code>, then <code>conversions[1]</code>.</li>
+	<li>In the second query, we can convert unit 1 into 1/2 units of type 0 using the inverse of <code>conversions[0]</code>. We return 500000004 since it is the multiplicative inverse of 2.</li>
+</ul>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3500-3599/3535.Unit%20Conversion%20II/images/example1.png" style="width: 500px; height: 500px;" /></div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">conversions = [[0,1,2],[0,2,6],[0,3,8],[2,4,2],[2,5,4],[3,6,3]], queries = [[1,2],[0,4],[6,5],[4,6],[6,1]]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[3,12,1,2,83333334]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>In the first query, we can convert unit 1 into 3 units of type 2 using the inverse of <code>conversions[0]</code>, then <code>conversions[1]</code>.</li>
+	<li>In the second query, we can convert unit 0 into 12 units of type 4 using <code>conversions[1]</code>, then <code>conversions[3]</code>.</li>
+	<li>In the third query, we can convert unit 6 into 1 unit of type 5 using the inverse of <code>conversions[5]</code>, the inverse of <code>conversions[2]</code>, <code>conversions[1]</code>, then <code>conversions[4]</code>.</li>
+	<li>In the fourth query, we can convert unit 4 into 2 units of type 6 using the inverse of <code>conversions[3]</code>, the inverse of <code>conversions[1]</code>, <code>conversions[2]</code>, then <code>conversions[5]</code>.</li>
+	<li>In the fifth query, we can convert unit 6 into 1/12 units of type 1 using the inverse of <code>conversions[5]</code>, the inverse of <code>conversions[2]</code>, then <code>conversions[0]</code>. We return 83333334 since it is the multiplicative inverse of 12.</li>
+</ul>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3500-3599/3535.Unit%20Conversion%20II/images/example2.png" style="width: 504px; height: 493px;" /></div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>conversions.length == n - 1</code></li>
+	<li><code>0 &lt;= sourceUnit<sub>i</sub>, targetUnit<sub>i</sub> &lt; n</code></li>
+	<li><code>1 &lt;= conversionFactor<sub>i</sub> &lt;= 10<sup>9</sup></code></li>
+	<li><code>1 &lt;= q &lt;= 10<sup>5</sup></code></li>
+	<li><code>queries.length == q</code></li>
+	<li><code>0 &lt;= unitA<sub>i</sub>, unitB<sub>i</sub> &lt; n</code></li>
+	<li>It is guaranteed that unit 0 can be <strong>uniquely</strong> converted into any other unit through a combination of forward or backward conversions.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS + Modular Inverse
+
+> **Thinking**
+>
+> The conversion tree is the same as before, so $\textit{res}[i]$ — how many units of $i$ equal one unit of $0$ — is already known. Queries ask for a ratio between two units.
+>
+> The factor from $\textit{unitA}$ to $\textit{unitB}$ is $\textit{res}[B] \cdot \textit{res}[A]^{-1}$. The modulus is prime, so the inverse is $a^{\textit{MOD}-2}$.
+
+The conversion relations form a directed tree rooted at $0$. Starting a DFS from node $0$, we maintain `res[i]` as the number of units of type $i$ that equal $1$ unit of type $0$.
+
+For a query $(\textit{unitA}, \textit{unitB})$, the answer is $\frac{\textit{res}[\textit{unitB}]}{\textit{res}[\textit{unitA}]}$, which modulo $10^9 + 7$ equals `res[unitB] * res[unitA]^(MOD - 2) % MOD`, where `MOD - 2` is used to compute the modular inverse via Fermat's little theorem.
+
+The time complexity is $O(n + q \log \textit{MOD})$, and the space complexity is $O(n)$, where $n$ is the number of unit types and $q$ is the number of queries.
+
+#### Java
+
+```java
+class Solution {
+    private final int mod = (int) 1e9 + 7;
+    private List<int[]>[] g;
+    private int[] res;
+
+    public int[] queryConversions(int[][] conversions, int[][] queries) {
+        int n = conversions.length + 1;
+        g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : conversions) {
+            g[e[0]].add(new int[] {e[1], e[2]});
+        }
+
+        res = new int[n];
+        dfs(0, 1);
+
+        int[] ans = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            int x = queries[i][0], y = queries[i][1];
+            ans[i] = (int) ((long) res[y] * qpow(res[x], mod - 2) % mod);
+        }
+        return ans;
+    }
+
+    private void dfs(int s, long mul) {
+        res[s] = (int) mul;
+        for (var e : g[s]) {
+            dfs(e[0], mul * e[1] % mod);
+        }
+    }
+
+    private long qpow(long x, int n) {
+        long res = 1;
+        while (n > 0) {
+            if ((n & 1) == 1) {
+                res = res * x % mod;
+            }
+            x = x * x % mod;
+            n >>= 1;
+        }
+        return res;
+    }
+}
+```
+
+### Solution 2: Explicit Stack + Modular Inverse
+
+> **Thinking**
+>
+> There are $n - 1$ conversions and a unique path from $0$, so the graph is a directed tree rooted at $0$. With $n \le 10^5$, recursing from the root and multiplying along the way reaches depth $n$ on a chain and overflows the call stack. Each unit's factor relative to $0$ depends only on that path.
+>
+> An explicit stack of $(\textit{unit}, \textit{accumulated}\ \textit{factor})$ therefore starts at $(0, 1)$. Popping a frame writes $\textit{res}[i]$, and each successor is pushed with the current factor multiplied by the edge weight, modulo $10^9 + 7$.
+>
+> A query asks for a ratio between two units. The factor from $\textit{unitA}$ to $\textit{unitB}$ is $\textit{res}[B] \cdot \textit{res}[A]^{-1}$. The modulus is prime, so the inverse is $a^{\textit{MOD}-2}$.
+
+The conversion relations form a directed tree rooted at $0$. An explicit stack walks from the root. Each frame is $(\textit{unit}, \textit{accumulated}\ \textit{factor})$, starting from $(0, 1)$. Popping a frame writes `res[i]`, the number of units of type $i$ that equal $1$ unit of type $0$. Each successor is pushed with the current factor multiplied by the edge weight, modulo $10^9 + 7$.
+
+For a query $(\textit{unitA}, \textit{unitB})$, the answer is $\frac{\textit{res}[\textit{unitB}]}{\textit{res}[\textit{unitA}]}$, which modulo $10^9 + 7$ equals `res[unitB] * res[unitA]^(MOD - 2) % MOD`, where `MOD - 2` is used to compute the modular inverse via Fermat's little theorem.
+
+The time complexity is $O(n + q \log \textit{MOD})$, and the space complexity is $O(n)$, where $n$ is the number of unit types and $q$ is the number of queries.
+
+#### Java
+
+```java
+class Solution {
+    private final int mod = (int) 1e9 + 7;
+
+    public int[] queryConversions(int[][] conversions, int[][] queries) {
+        int n = conversions.length + 1;
+        List<int[]>[] g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (var e : conversions) {
+            g[e[0]].add(new int[] {e[1], e[2]});
+        }
+        int[] res = new int[n];
+        Deque<long[]> stk = new ArrayDeque<>();
+        stk.push(new long[] {0, 1});
+        while (!stk.isEmpty()) {
+            long[] cur = stk.pop();
+            int s = (int) cur[0];
+            long mul = cur[1];
+            res[s] = (int) mul;
+            for (var e : g[s]) {
+                stk.push(new long[] {e[0], mul * e[1] % mod});
+            }
+        }
+        int[] ans = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            int x = queries[i][0], y = queries[i][1];
+            ans[i] = (int) ((long) res[y] * qpow(res[x], mod - 2) % mod);
+        }
+        return ans;
+    }
+
+    private long qpow(long x, int n) {
+        long res = 1;
+        while (n > 0) {
+            if ((n & 1) == 1) {
+                res = res * x % mod;
+            }
+            x = x * x % mod;
+            n >>= 1;
+        }
+        return res;
+    }
+}
+```

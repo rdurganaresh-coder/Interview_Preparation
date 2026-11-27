@@ -1,0 +1,102 @@
+# 982. Triples with Bitwise AND Equal To Zero
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/triples-with-bitwise-and-equal-to-zero/
+
+---
+
+[中文文档](/solution/0900-0999/0982.Triples%20with%20Bitwise%20AND%20Equal%20To%20Zero/README.md)
+
+## Description
+
+<p>Given an integer array nums, return <em>the number of <strong>AND triples</strong></em>.</p>
+
+<p>An <strong>AND triple</strong> is a triple of indices <code>(i, j, k)</code> such that:</p>
+
+<ul>
+	<li><code>0 &lt;= i &lt; nums.length</code></li>
+	<li><code>0 &lt;= j &lt; nums.length</code></li>
+	<li><code>0 &lt;= k &lt; nums.length</code></li>
+	<li><code>nums[i] &amp; nums[j] &amp; nums[k] == 0</code>, where <code>&amp;</code> represents the bitwise-AND operator.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,1,3]
+<strong>Output:</strong> 12
+<strong>Explanation:</strong> We could choose the following i, j, k triples:
+(i=0, j=0, k=1) : 2 &amp; 2 &amp; 1
+(i=0, j=1, k=0) : 2 &amp; 1 &amp; 2
+(i=0, j=1, k=1) : 2 &amp; 1 &amp; 1
+(i=0, j=1, k=2) : 2 &amp; 1 &amp; 3
+(i=0, j=2, k=1) : 2 &amp; 3 &amp; 1
+(i=1, j=0, k=0) : 1 &amp; 2 &amp; 2
+(i=1, j=0, k=1) : 1 &amp; 2 &amp; 1
+(i=1, j=0, k=2) : 1 &amp; 2 &amp; 3
+(i=1, j=1, k=0) : 1 &amp; 1 &amp; 2
+(i=1, j=2, k=0) : 1 &amp; 3 &amp; 2
+(i=2, j=0, k=1) : 3 &amp; 2 &amp; 1
+(i=2, j=1, k=0) : 3 &amp; 1 &amp; 2
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [0,0,0]
+<strong>Output:</strong> 27
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+	<li><code>0 &lt;= nums[i] &lt; 2<sup>16</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration + Counting
+
+> **Thinking**
+>
+> Count triples with $x\& y\& z=0$. $n\le 1000$, so three nested loops are tight. Enumerate the first two values and count each $x\& y$, then pair that mask with every $z$ and add the frequency when the AND is zero. The universe is smaller than $2^{16}$, so the table is affordable.
+
+First, we enumerate any two numbers $x$ and $y$, and use a hash table or array $\textit{cnt}$ to count the occurrences of their bitwise AND result $x \& y$.
+
+Then, we enumerate the bitwise AND result $xy$, and enumerate $z$. If $xy \& z = 0$, then we add the value of $\textit{cnt}[xy]$ to the answer.
+
+Finally, we return the answer.
+
+The time complexity is $O(n^2 + n \times M)$, and the space complexity is $O(M)$, where $n$ is the length of the array $\textit{nums}$; and $M$ is the maximum value in the array $\textit{nums}$, with $M \leq 2^{16}$ in this problem.
+
+#### Java
+
+```java
+class Solution {
+    public int countTriplets(int[] nums) {
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+        int[] cnt = new int[mx + 1];
+        for (int x : nums) {
+            for (int y : nums) {
+                cnt[x & y]++;
+            }
+        }
+        int ans = 0;
+        for (int xy = 0; xy <= mx; ++xy) {
+            for (int z : nums) {
+                if ((xy & z) == 0) {
+                    ans += cnt[xy];
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

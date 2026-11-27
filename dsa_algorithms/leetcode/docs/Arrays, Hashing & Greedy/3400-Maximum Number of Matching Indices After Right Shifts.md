@@ -1,0 +1,90 @@
+# 3400. Maximum Number of Matching Indices After Right Shifts
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-number-of-matching-indices-after-right-shifts/
+
+---
+
+[中文文档](/solution/3400-3499/3400.Maximum%20Number%20of%20Matching%20Indices%20After%20Right%20Shifts/README.md)
+
+## Description
+
+<p>You are given two integer arrays, <code>nums1</code> and <code>nums2</code>, of the same length.</p>
+
+<p>An index <code>i</code> is considered <strong>matching</strong> if <code>nums1[i] == nums2[i]</code>.</p>
+
+<p>Return the <strong>maximum</strong> number of <strong>matching</strong> indices after performing any number of <strong>right shifts</strong> on <code>nums1</code>.</p>
+
+<p>A <strong>right shift</strong> is defined as shifting the element at index <code>i</code> to index <code>(i + 1) % n</code>, for all indices.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums1 = [3,1,2,3,1,2], nums2 = [1,2,3,1,2,3]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">6</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>If we right shift <code>nums1</code> 2 times, it becomes <code>[1, 2, 3, 1, 2, 3]</code>. Every index matches, so the output is 6.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums1 = [1,4,2,5,3,1], nums2 = [2,3,1,2,4,6]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">3</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>If we right shift <code>nums1</code> 3 times, it becomes <code>[5, 3, 1, 1, 4, 2]</code>. Indices 1, 2, and 4 match, so the output is 3.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>nums1.length == nums2.length</code></li>
+	<li><code>1 &lt;= nums1.length, nums2.length &lt;= 3000</code></li>
+	<li><code>1 &lt;= nums1[i], nums2[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration
+
+> **Thinking**
+>
+> We need the maximum number of index-wise matches after some cyclic right shifts of $\textit{nums1}$. Materializing a rotated copy for every offset does not reduce the number of comparisons.
+>
+> With $n \le 3000$, enumerating all $n$ offsets and comparing element-wise is $O(n^2)$ and fits the limits. Matching depends only on the relative offset, so an explicit rotation is unnecessary.
+>
+> After $k$ right shifts, the value originally at $(i+k)\bmod n$ lands at index $i$. We therefore enumerate $k$, compare $\textit{nums1}[(i+k)\bmod n]$ with $\textit{nums2}[i]$, and keep the maximum count.
+
+We can enumerate the number of right shifts $k$, where $0 \leq k < n$. For each $k$, we can calculate the number of matching indices between the array $\textit{nums1}$ after right shifting $k$ times and $\textit{nums2}$. The maximum value is taken as the answer.
+
+The time complexity is $O(n^2)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums1}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumMatchingIndices(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+        int ans = 0;
+        for (int k = 0; k < n; ++k) {
+            int t = 0;
+            for (int i = 0; i < n; ++i) {
+                if (nums1[(i + k) % n] == nums2[i]) {
+                    ++t;
+                }
+            }
+            ans = Math.max(ans, t);
+        }
+        return ans;
+    }
+}
+```

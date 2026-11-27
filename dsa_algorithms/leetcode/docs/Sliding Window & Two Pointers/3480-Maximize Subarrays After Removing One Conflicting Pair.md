@@ -1,0 +1,121 @@
+# 3480. Maximize Subarrays After Removing One Conflicting Pair
+
+**Difficulty:** Hard  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximize-subarrays-after-removing-one-conflicting-pair/
+
+---
+
+[中文文档](/solution/3400-3499/3480.Maximize%20Subarrays%20After%20Removing%20One%20Conflicting%20Pair/README.md)
+
+## Description
+
+<p>You are given an integer <code>n</code> which represents an array <code>nums</code> containing the numbers from 1 to <code>n</code> in order. Additionally, you are given a 2D array <code>conflictingPairs</code>, where <code>conflictingPairs[i] = [a, b]</code> indicates that <code>a</code> and <code>b</code> form a conflicting pair.</p>
+
+<p>Remove <strong>exactly</strong> one element from <code>conflictingPairs</code>. Afterward, count the number of <span data-keyword="subarray-nonempty">non-empty subarrays</span> of <code>nums</code> which do not contain both <code>a</code> and <code>b</code> for any remaining conflicting pair <code>[a, b]</code>.</p>
+
+<p>Return the <strong>maximum</strong> number of subarrays possible after removing <strong>exactly</strong> one conflicting pair.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">n = 4, conflictingPairs = [[2,3],[1,4]]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">9</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>Remove <code>[2, 3]</code> from <code>conflictingPairs</code>. Now, <code>conflictingPairs = [[1, 4]]</code>.</li>
+	<li>There are 9 subarrays in <code>nums</code> where <code>[1, 4]</code> do not appear together. They are <code>[1]</code>, <code>[2]</code>, <code>[3]</code>, <code>[4]</code>, <code>[1, 2]</code>, <code>[2, 3]</code>, <code>[3, 4]</code>, <code>[1, 2, 3]</code> and <code>[2, 3, 4]</code>.</li>
+	<li>The maximum number of subarrays we can achieve after removing one element from <code>conflictingPairs</code> is 9.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">n = 5, conflictingPairs = [[1,2],[2,5],[3,5]]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">12</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>Remove <code>[1, 2]</code> from <code>conflictingPairs</code>. Now, <code>conflictingPairs = [[2, 5], [3, 5]]</code>.</li>
+	<li>There are 12 subarrays in <code>nums</code> where <code>[2, 5]</code> and <code>[3, 5]</code> do not appear together.</li>
+	<li>The maximum number of subarrays we can achieve after removing one element from <code>conflictingPairs</code> is 12.</li>
+</ul>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= conflictingPairs.length &lt;= 2 * n</code></li>
+	<li><code>conflictingPairs[i].length == 2</code></li>
+	<li><code>1 &lt;= conflictingPairs[i][j] &lt;= n</code></li>
+	<li><code>conflictingPairs[i][0] != conflictingPairs[i][1]</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Enumeration + Maintaining Minimum and Second Minimum Values
+
+> **Thinking**
+>
+> A valid subarray cannot contain both ends of any conflicting pair. We delete exactly one pair and want as many valid subarrays as possible. The scan must be linear.
+>
+> With no deletion, a left end $a$ cannot reach the smallest conflicting right end $b_1$ seen from $a$ rightward. It contributes $b_1-a$.
+>
+> Deleting the pair that created $b_1$ replaces it by the second smallest $b_2$ and adds $b_2-b_1$. Those extras are grouped by $b_1$; we add the best extra to the no-deletion total.
+
+We store all conflicting pairs $(a, b)$ (assuming $a < b$) in a list $g$, where $g[a]$ represents the set of all numbers $b$ that conflict with $a$.
+
+If no deletion occurs, we can enumerate each subarray's left endpoint $a$ in reverse order. The upper bound of its right endpoint is the minimum value $b_1$ among all $g[x \geq a]$ (excluding $b_1$), and the contribution to the answer is $b_1 - a$.
+
+If we delete a conflicting pair containing $b_1$, then the new $b_1$ becomes the second minimum value $b_2$ among all $g[x \geq a]$, and its additional contribution to the answer is $b_2 - b_1$. We use an array $\textit{cnt}$ to record the additional contribution for each $b_1$.
+
+The final answer is the sum of all $b_1 - a$ contributions plus the maximum value of $\textit{cnt}[b_1]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of conflicting pairs.
+
+#### Java
+
+```java
+class Solution {
+    public long maxSubarrays(int n, int[][] conflictingPairs) {
+        List<Integer>[] g = new List[n + 1];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (int[] pair : conflictingPairs) {
+            int a = pair[0], b = pair[1];
+            if (a > b) {
+                int c = a;
+                a = b;
+                b = c;
+            }
+            g[a].add(b);
+        }
+        long[] cnt = new long[n + 2];
+        long ans = 0, add = 0;
+        int b1 = n + 1, b2 = n + 1;
+        for (int a = n; a > 0; --a) {
+            for (int b : g[a]) {
+                if (b < b1) {
+                    b2 = b1;
+                    b1 = b;
+                } else if (b < b2) {
+                    b2 = b;
+                }
+            }
+            ans += b1 - a;
+            cnt[b1] += b2 - b1;
+            add = Math.max(add, cnt[b1]);
+        }
+        ans += add;
+        return ans;
+    }
+}
+```

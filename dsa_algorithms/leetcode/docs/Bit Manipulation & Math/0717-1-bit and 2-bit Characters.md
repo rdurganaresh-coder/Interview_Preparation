@@ -1,0 +1,82 @@
+# 717. 1-bit and 2-bit Characters
+
+**Difficulty:** Easy  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/1-bit-and-2-bit-characters/
+
+---
+
+[中文文档](/solution/0700-0799/0717.1-bit%20and%202-bit%20Characters/README.md)
+
+## Description
+
+<p>We have two special characters:</p>
+
+<ul>
+	<li>The first character can be represented by one bit <code>0</code>.</li>
+	<li>The second character can be represented by two bits (<code>10</code> or <code>11</code>).</li>
+</ul>
+
+<p>Given a binary array <code>bits</code> that ends with <code>0</code>, return <code>true</code> if the last character must be a one-bit character.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> bits = [1,0,0]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The only way to decode it is two-bit character and one-bit character.
+So the last character is one-bit character.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> bits = [1,1,1,0]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The only way to decode it is two-bit character and two-bit character.
+So the last character is not one-bit character.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= bits.length &lt;= 1000</code></li>
+	<li><code>bits[i]</code> is either <code>0</code> or <code>1</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Direct Traversal
+
+> **Thinking**
+>
+> The code uses $0$ and $10$/$11$. We ask whether the last bit is a one-bit character. Decoding from the left is unique, so no search is needed.
+>
+> A $0$ is always one bit; a $1$ always consumes the next bit. Simulate until just before the last index and see whether we land on it.
+>
+> Advance $i$ by $\textit{bits}[i]+1$ while $i<n-1$. Then $i=n-1$ if and only if the last bit stands alone.
+
+We can directly traverse the first $n-1$ elements of the array $\textit{bits}$, and each time decide how many elements to skip based on the value of the current element:
+
+- If the current element is $0$, skip $1$ element (representing a one-bit character);
+- If the current element is $1$, skip $2$ elements (representing a two-bit character).
+
+When the traversal ends, if the current index equals $n-1$, it means the last character is a one-bit character, and we return $\textit{true}$; otherwise, return $\textit{false}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{bits}$.
+
+#### Java
+
+```java
+class Solution {
+    public boolean isOneBitCharacter(int[] bits) {
+        int i = 0, n = bits.length;
+        while (i < n - 1) {
+            i += bits[i] + 1;
+        }
+        return i == n - 1;
+    }
+}
+```

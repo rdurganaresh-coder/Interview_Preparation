@@ -1,0 +1,49 @@
+package com.leetcode.arrays_hashing_greedy;
+
+class Solution2125 {
+    public int numberOfBeams(String[] bank) {
+        int ans = 0, pre = 0;
+        for (String row : bank) {
+            int cur = 0;
+            for (int i = 0; i < row.length(); ++i) {
+                cur += row.charAt(i) - '0';
+            }
+            if (cur > 0) {
+                ans += pre * cur;
+                pre = cur;
+            }
+        }
+        return ans;
+    }
+
+    // ===== Generated test cases (from the problem examples) =====
+    private static String _tcShow(Object o) {
+        String s = java.util.Arrays.deepToString(new Object[] {o});
+        return s.substring(1, s.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Solution2125 _tcSol = new Solution2125();
+        System.out.println("Test 1");
+        System.out.println("  Input   : " + "bank = [\"011001\",\"000000\",\"010100\",\"001000\"]");
+        try {
+            String[] bank = new String[]{"011001", "000000", "010100", "001000"};
+            System.out.println("  Output  : " + _tcShow(_tcSol.numberOfBeams(bank)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "8");
+        System.out.println();
+
+        System.out.println("Test 2");
+        System.out.println("  Input   : " + "bank = [\"000\",\"111\",\"000\"]");
+        try {
+            String[] bank = new String[]{"000", "111", "000"};
+            System.out.println("  Output  : " + _tcShow(_tcSol.numberOfBeams(bank)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "0");
+        System.out.println();
+    }
+}

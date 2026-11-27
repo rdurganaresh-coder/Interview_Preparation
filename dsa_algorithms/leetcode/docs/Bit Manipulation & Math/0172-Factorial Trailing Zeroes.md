@@ -1,0 +1,83 @@
+# 172. Factorial Trailing Zeroes
+
+**Difficulty:** Medium  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/factorial-trailing-zeroes/
+
+---
+
+[中文文档](/solution/0100-0199/0172.Factorial%20Trailing%20Zeroes/README.md)
+
+## Description
+
+<p>Given an integer <code>n</code>, return <em>the number of trailing zeroes in </em><code>n!</code>.</p>
+
+<p>Note that <code>n! = n * (n - 1) * (n - 2) * ... * 3 * 2 * 1</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 3
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> 3! = 6, no trailing zero.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 5
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 5! = 120, one trailing zero.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> n = 0
+<strong>Output:</strong> 0
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>0 &lt;= n &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Follow up:</strong> Could you write a solution that works in logarithmic time complexity?</p>
+
+## Solutions
+
+### Solution 1: Mathematics
+
+> **Thinking**
+>
+> Trailing zeros of $n!$ come from factors $10=2\times 5$. There are always more twos than fives, so the count is the number of factors $5$ in $[1,n]$. Computing $n!$ overflows even at $n\le 10^4$. The follow-up wants logarithmic time: repeatedly replace $n$ by $\lfloor n/5\rfloor$ to add the contributions of $5,5^2,5^3,\ldots$.
+
+The problem is actually asking how many factors of $5$ are there in $[1,n]$.
+
+Let's take $130$ as an example for analysis:
+
+1. Divide by $5$ for the first time, get $26$, indicating that there are $26$ numbers containing the factor $5$;
+2. Divide by $5$ for the second time, get $5$, indicating that there are $5$ numbers containing the factor $5^2$;
+3. Divide by $5$ for the third time, get $1$, indicating that there is $1$ number containing the factor $5^3$;
+4. Sum up to get the count of all factors of $5$ in $[1,n]$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$.
+
+#### Java
+
+```java
+class Solution {
+    public int trailingZeroes(int n) {
+        int ans = 0;
+        while (n > 0) {
+            n /= 5;
+            ans += n;
+        }
+        return ans;
+    }
+}
+```

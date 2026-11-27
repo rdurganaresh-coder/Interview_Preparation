@@ -1,0 +1,118 @@
+# 3478. Choose K Elements With Maximum Sum
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/choose-k-elements-with-maximum-sum/
+
+---
+
+[中文文档](/solution/3400-3499/3478.Choose%20K%20Elements%20With%20Maximum%20Sum/README.md)
+
+## Description
+
+<p>You are given two integer arrays, <code>nums1</code> and <code>nums2</code>, both of length <code>n</code>, along with a positive integer <code>k</code>.</p>
+
+<p>For each index <code>i</code> from <code>0</code> to <code>n - 1</code>, perform the following:</p>
+
+<ul>
+	<li>Find <strong>all</strong> indices <code>j</code> where <code>nums1[j]</code> is less than <code>nums1[i]</code>.</li>
+	<li>Choose <strong>at most</strong> <code>k</code> values of <code>nums2[j]</code> at these indices to <strong>maximize</strong> the total sum.</li>
+</ul>
+
+<p>Return an array <code>answer</code> of size <code>n</code>, where <code>answer[i]</code> represents the result for the corresponding index <code>i</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums1 = [4,2,1,5,3], nums2 = [10,20,30,40,50], k = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[80,30,0,80,50]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>For <code>i = 0</code>: Select the 2 largest values from <code>nums2</code> at indices <code>[1, 2, 4]</code> where <code>nums1[j] &lt; nums1[0]</code>, resulting in <code>50 + 30 = 80</code>.</li>
+	<li>For <code>i = 1</code>: Select the 2 largest values from <code>nums2</code> at index <code>[2]</code> where <code>nums1[j] &lt; nums1[1]</code>, resulting in 30.</li>
+	<li>For <code>i = 2</code>: No indices satisfy <code>nums1[j] &lt; nums1[2]</code>, resulting in 0.</li>
+	<li>For <code>i = 3</code>: Select the 2 largest values from <code>nums2</code> at indices <code>[0, 1, 2, 4]</code> where <code>nums1[j] &lt; nums1[3]</code>, resulting in <code>50 + 30 = 80</code>.</li>
+	<li>For <code>i = 4</code>: Select the 2 largest values from <code>nums2</code> at indices <code>[1, 2]</code> where <code>nums1[j] &lt; nums1[4]</code>, resulting in <code>30 + 20 = 50</code>.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums1 = [2,2,2,2], nums2 = [3,1,2,3], k = 1</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[0,0,0,0]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Since all elements in <code>nums1</code> are equal, no indices satisfy the condition <code>nums1[j] &lt; nums1[i]</code> for any <code>i</code>, resulting in 0 for all positions.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == nums1.length == nums2.length</code></li>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums1[i], nums2[i] &lt;= 10<sup>6</sup></code></li>
+	<li><code>1 &lt;= k &lt;= n</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Priority Queue (Min-Heap)
+
+> **Thinking**
+>
+> For each $i$ we pick at most $k$ values $\textit{nums2}[j]$ among indices with $\textit{nums1}[j]<\textit{nums1}[i]$. $n\le 10^5$ forbids a fresh filter per $i$.
+>
+> After sorting by $\textit{nums1}$, the eligible $j$ only grow, so a min-heap of size $k$ can keep the current top-$k$ sum.
+>
+> Pointer $j$ pushes $\textit{nums2}$ of strictly smaller $\textit{nums1}$ keys; overflow pops the heap minimum. The heap sum is the answer at that $i$.
+
+We can convert the array $\textit{nums1}$ into an array $\textit{arr}$, where each element is a tuple $(x, i)$, representing the value $x$ at index $i$ in $\textit{nums1}$. Then, we sort the array $\textit{arr}$ in ascending order by $x$.
+
+We use a min-heap $pq$ to maintain the elements from the array $\textit{nums2}$. Initially, $pq$ is empty. We use a variable $s$ to record the sum of the elements in $pq$. Additionally, we use a pointer $j$ to maintain the current position in the array $\textit{arr}$ that needs to be added to $pq$.
+
+We traverse the array $\textit{arr}$. For the $h$-th element $(x, i)$, we add all elements $\textit{nums2}[\textit{arr}[j][1]]$ to $pq$ that satisfy $j < h$ and $\textit{arr}[j][0] < x$, and add these elements to $s$. If the size of $pq$ exceeds $k$, we pop the smallest element from $pq$ and subtract it from $s$. Then, we update the value of $\textit{ans}[i]$ to $s$.
+
+After traversing, we return the answer array $\textit{ans}$.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public long[] findMaxSum(int[] nums1, int[] nums2, int k) {
+        int n = nums1.length;
+        int[][] arr = new int[n][0];
+        for (int i = 0; i < n; ++i) {
+            arr[i] = new int[] {nums1[i], i};
+        }
+        Arrays.sort(arr, (a, b) -> a[0] - b[0]);
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        long s = 0;
+        long[] ans = new long[n];
+        int j = 0;
+        for (int h = 0; h < n; ++h) {
+            int x = arr[h][0], i = arr[h][1];
+            while (j < h && arr[j][0] < x) {
+                int y = nums2[arr[j][1]];
+                pq.offer(y);
+                s += y;
+                if (pq.size() > k) {
+                    s -= pq.poll();
+                }
+                ++j;
+            }
+            ans[i] = s;
+        }
+        return ans;
+    }
+}
+```

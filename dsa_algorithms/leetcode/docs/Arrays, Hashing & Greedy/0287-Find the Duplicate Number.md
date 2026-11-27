@@ -1,0 +1,97 @@
+# 287. Find the Duplicate Number
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/find-the-duplicate-number/
+
+---
+
+[中文文档](/solution/0200-0299/0287.Find%20the%20Duplicate%20Number/README.md)
+
+## Description
+
+<p>Given an array of integers <code>nums</code> containing&nbsp;<code>n + 1</code> integers where each integer is in the range <code>[1, n]</code> inclusive.</p>
+
+<p>There is only <strong>one repeated number</strong> in <code>nums</code>, return <em>this&nbsp;repeated&nbsp;number</em>.</p>
+
+<p>You must solve the problem <strong>without</strong> modifying the array <code>nums</code>&nbsp;and using only constant extra space.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [1,3,4,2,2]
+<strong>Output:</strong> 2
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [3,1,3,4,2]
+<strong>Output:</strong> 3
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [3,3,3,3,3]
+<strong>Output:</strong> 3</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>nums.length == n + 1</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= n</code></li>
+	<li>All the integers in <code>nums</code> appear only <strong>once</strong> except for <strong>precisely one integer</strong> which appears <strong>two or more</strong> times.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><b>Follow up:</b></p>
+
+<ul>
+	<li>How can we prove that at least one duplicate number must exist in <code>nums</code>?</li>
+	<li>Can you solve the problem in linear runtime complexity?</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> We cannot mutate the array or use a hash table. By pigeonhole, if more than $x$ values lie in $[1,x]$, the duplicate is there.
+>
+> Binary-search the value range: count how many entries are $\le \textit{mid}$; if that count exceeds $\textit{mid}$, search the left half, otherwise the right.
+
+We can observe that if the number of elements in $[1,..x]$ is greater than $x$, then the duplicate number must be in $[1,..x]$, otherwise the duplicate number must be in $[x+1,..n]$.
+
+Therefore, we can use binary search to find $x$, and check whether the number of elements in $[1,..x]$ is greater than $x$ at each iteration. This way, we can determine which interval the duplicate number is in, and narrow down the search range until we find the duplicate number.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int findDuplicate(int[] nums) {
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            int cnt = 0;
+            for (int v : nums) {
+                if (v <= mid) {
+                    ++cnt;
+                }
+            }
+            if (cnt > mid) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+}
+```

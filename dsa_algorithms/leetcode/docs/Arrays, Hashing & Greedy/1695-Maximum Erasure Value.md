@@ -1,0 +1,116 @@
+# 1695. Maximum Erasure Value
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-erasure-value/
+
+---
+
+[中文文档](/solution/1600-1699/1695.Maximum%20Erasure%20Value/README.md)
+
+## Description
+
+<p>You are given an array of positive integers <code>nums</code> and want to erase a subarray containing&nbsp;<strong>unique elements</strong>. The <strong>score</strong> you get by erasing the subarray is equal to the <strong>sum</strong> of its elements.</p>
+
+<p>Return <em>the <strong>maximum score</strong> you can get by erasing <strong>exactly one</strong> subarray.</em></p>
+
+<p>An array <code>b</code> is called to be a <span class="tex-font-style-it">subarray</span> of <code>a</code> if it forms a contiguous subsequence of <code>a</code>, that is, if it is equal to <code>a[l],a[l+1],...,a[r]</code> for some <code>(l,r)</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [4,2,4,5,6]
+<strong>Output:</strong> 17
+<strong>Explanation:</strong> The optimal subarray here is [2,4,5,6].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5,2,1,2,5,2,1,2,5]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> The optimal subarray here is [5,2,1] or [1,2,5].
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Array or Hash Table + Prefix Sum
+
+> **Thinking**
+>
+> We want the maximum sum of a contiguous subarray of distinct values. $n$ is $10^5$; the last-seen index pushes the left end $j$ past duplicates, and prefix sums give the range sum.
+>
+> Array $d$ stores the latest index of each value. On $v$, set $j=\max(j,d[v])$ and update with $s[i]-s[j]$.
+
+We use an array or hash table $d$ to record the last occurrence position of each number, and use a prefix sum array $s$ to record the sum from the starting point to the current position. We use a variable $j$ to record the left endpoint of the current non-repeating subarray.
+
+We iterate through the array. For each number $v$, if $d[v]$ exists, we update $j$ to $\max(j, d[v])$, which ensures that the current non-repeating subarray does not contain $v$. Then we update the answer to $\max(\textit{ans}, s[i] - s[j])$, and finally update $d[v]$ to $i$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumUniqueSubarray(int[] nums) {
+        int[] d = new int[10001];
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; ++i) {
+            s[i + 1] = s[i] + nums[i];
+        }
+        int ans = 0, j = 0;
+        for (int i = 1; i <= n; ++i) {
+            int v = nums[i - 1];
+            j = Math.max(j, d[v]);
+            ans = Math.max(ans, s[i] - s[j]);
+            d[v] = i;
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Two Pointers (Sliding Window)
+
+> **Thinking**
+>
+> Solution 1 uses prefix sums and an index table. A sliding window can store the live distinct sum: shrink from the left on a duplicate and skip the prefix array.
+
+The problem is essentially asking us to find the longest subarray where all elements are distinct. We can use two pointers $i$ and $j$ to point to the left and right boundaries of the subarray, initially $i = 0$ and $j = 0$. Additionally, we use a hash table $\textit{vis}$ to record the elements in the subarray.
+
+We iterate through the array. For each number $x$, if $x$ is in $\textit{vis}$, we continuously remove $\textit{nums}[i]$ from $\textit{vis}$ until $x$ is no longer in $\textit{vis}$. This way, we find a subarray that contains no duplicate elements. We add $x$ to $\textit{vis}$, update the subarray sum $s$, and then update the answer $\textit{ans} = \max(\textit{ans}, s)$.
+
+After the iteration, we can get the maximum subarray sum.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumUniqueSubarray(int[] nums) {
+        Set<Integer> vis = new HashSet<>();
+        int ans = 0, s = 0, i = 0;
+        for (int x : nums) {
+            while (vis.contains(x)) {
+                s -= nums[i];
+                vis.remove(nums[i++]);
+            }
+            vis.add(x);
+            s += x;
+            ans = Math.max(ans, s);
+        }
+        return ans;
+    }
+}
+```

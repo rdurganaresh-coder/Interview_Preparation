@@ -1,0 +1,127 @@
+# 1099. Two Sum Less Than K
+
+**Difficulty:** Easy  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/two-sum-less-than-k/
+
+---
+
+[中文文档](/solution/1000-1099/1099.Two%20Sum%20Less%20Than%20K/README.md)
+
+## Description
+
+<p>Given an array <code>nums</code> of integers and&nbsp;integer <code>k</code>, return the maximum <code>sum</code> such that there exists <code>i &lt; j</code> with <code>nums[i] + nums[j] = sum</code> and <code>sum &lt; k</code>. If no <code>i</code>, <code>j</code> exist satisfying this equation, return <code>-1</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [34,23,1,24,75,33,54,8], k = 60
+<strong>Output:</strong> 58
+<strong>Explanation: </strong>We can use 34 and 24 to sum 58 which is less than 60.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [10,20,30], k = 15
+<strong>Output:</strong> -1
+<strong>Explanation: </strong>In this case it is not possible to get a pair sum less that 15.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+	<li><code>1 &lt;= nums[i] &lt;= 1000</code></li>
+	<li><code>1 &lt;= k &lt;= 2000</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Binary Search
+
+> **Thinking**
+>
+> The largest pair sum strictly below $k$ is quadratic if every pair is tested. After sorting, each $x$ needs the largest right value below $k-x$, which is a binary search.
+>
+> For index $i$, `bisect_left` on $(i,n)$ finds $k-x$; the previous index, if still greater than $i$, updates the answer.
+>
+> The answer stays $-1$ when no pair qualifies.
+
+We can first sort the array $\textit{nums}$, and initialize the answer as $-1$.
+
+Next, we enumerate each element $\textit{nums}[i]$ in the array, and find the maximum $\textit{nums}[j]$ in the array that satisfies $\textit{nums}[j] + \textit{nums}[i] < k$. Here, we can use binary search to speed up the search process. If we find such a $\textit{nums}[j]$, then we can update the answer, i.e., $\textit{ans} = \max(\textit{ans}, \textit{nums}[i] + \textit{nums}[j])$.
+
+After the enumeration ends, return the answer.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int twoSumLessThanK(int[] nums, int k) {
+        Arrays.sort(nums);
+        int ans = -1;
+        int n = nums.length;
+        for (int i = 0; i < n; ++i) {
+            int j = search(nums, k - nums[i], i + 1, n) - 1;
+            if (i < j) {
+                ans = Math.max(ans, nums[i] + nums[j]);
+            }
+        }
+        return ans;
+    }
+
+    private int search(int[] nums, int x, int l, int r) {
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            if (nums[mid] >= x) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+}
+```
+
+### Solution 2: Sorting + Two Pointers
+
+> **Thinking**
+>
+> One binary search per $x$ is $O(n \log n)$. Two pointers use the same monotonicity: a small sum moves the left end right; a sum of at least $k$ moves the right end left.
+>
+> A single pass covers the Pareto front of distinct-index pairs with a smaller constant.
+
+Similar to Solution 1, we can first sort the array $\textit{nums}$, and initialize the answer as $-1$.
+
+Next, we use two pointers $i$ and $j$ to point to the left and right ends of the array, respectively. Each time we judge whether $s = \textit{nums}[i] + \textit{nums}[j]$ is less than $k$. If it is less than $k$, then we can update the answer, i.e., $\textit{ans} = \max(\textit{ans}, s)$, and move $i$ one step to the right, otherwise move $j$ one step to the left.
+
+After the enumeration ends, return the answer.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int twoSumLessThanK(int[] nums, int k) {
+        Arrays.sort(nums);
+        int ans = -1;
+        for (int i = 0, j = nums.length - 1; i < j;) {
+            int s = nums[i] + nums[j];
+            if (s < k) {
+                ans = Math.max(ans, s);
+                ++i;
+            } else {
+                --j;
+            }
+        }
+        return ans;
+    }
+}
+```

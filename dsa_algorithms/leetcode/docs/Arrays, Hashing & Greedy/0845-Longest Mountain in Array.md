@@ -1,0 +1,141 @@
+# 845. Longest Mountain in Array
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/longest-mountain-in-array/
+
+---
+
+[中文文档](/solution/0800-0899/0845.Longest%20Mountain%20in%20Array/README.md)
+
+## Description
+
+<p>You may recall that an array <code>arr</code> is a <strong>mountain array</strong> if and only if:</p>
+
+<ul>
+	<li><code>arr.length &gt;= 3</code></li>
+	<li>There exists some index <code>i</code> (<strong>0-indexed</strong>) with <code>0 &lt; i &lt; arr.length - 1</code> such that:
+	<ul>
+		<li><code>arr[0] &lt; arr[1] &lt; ... &lt; arr[i - 1] &lt; arr[i]</code></li>
+		<li><code>arr[i] &gt; arr[i + 1] &gt; ... &gt; arr[arr.length - 1]</code></li>
+	</ul>
+	</li>
+</ul>
+
+<p>Given an integer array <code>arr</code>, return <em>the length of the longest subarray, which is a mountain</em>. Return <code>0</code> if there is no mountain subarray.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [2,1,4,7,3,2,5]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> The largest mountain is [1,4,7,3,2] which has length 5.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [2,2,2]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no mountain.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= arr.length &lt;= 10<sup>4</sup></code></li>
+	<li><code>0 &lt;= arr[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Follow up:</strong></p>
+
+<ul>
+	<li>Can you solve it using only one pass?</li>
+	<li>Can you solve it in <code>O(1)</code> space?</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Preprocessing + Enumeration
+
+> **Thinking**
+>
+> A mountain rises strictly then falls strictly, and has length at least $3$. $n\le 10^4$, so expanding from every peak works but retraces the same slopes.
+>
+> $f[i]$ is the longest ascent ending at $i$, $g[i]$ the longest descent starting at $i$. A peak exists only when both exceed $1$, and its length is $f[i]+g[i]-1$.
+
+We define two arrays $f$ and $g$, where $f[i]$ represents the length of the longest increasing subsequence ending at $\textit{arr}[i]$, and $g[i]$ represents the length of the longest decreasing subsequence starting at $\textit{arr}[i]$. Then for each index $i$, if $f[i] \gt 1$ and $g[i] \gt 1$, the length of the mountain with $\textit{arr}[i]$ as the peak is $f[i] + g[i] - 1$. We only need to enumerate all $i$ and find the maximum value.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{arr}$.
+
+#### Java
+
+```java
+class Solution {
+    public int longestMountain(int[] arr) {
+        int n = arr.length;
+        int[] f = new int[n];
+        int[] g = new int[n];
+        Arrays.fill(f, 1);
+        Arrays.fill(g, 1);
+        for (int i = 1; i < n; ++i) {
+            if (arr[i] > arr[i - 1]) {
+                f[i] = f[i - 1] + 1;
+            }
+        }
+        int ans = 0;
+        for (int i = n - 2; i >= 0; --i) {
+            if (arr[i] > arr[i + 1]) {
+                g[i] = g[i + 1] + 1;
+                if (f[i] > 1) {
+                    ans = Math.max(ans, f[i] + g[i] - 1);
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: One Pass (Enumerate Left Base of Mountain)
+
+> **Thinking**
+>
+> The two arrays can be dropped. Scan from a left base: climb to a peak, descend to the right base, update the answer, then move the left pointer to the current right end.
+>
+> Positions that cannot form a peak are skipped. Each element is visited a constant number of times.
+
+We can enumerate the left base of the mountain and then search to the right for the right base of the mountain. We can use two pointers $l$ and $r$, where $l$ represents the index of the left base and $r$ represents the index of the right base. Initially, $l=0$ and $r=0$. Then we move $r$ to the right to find the position of the peak. At this point, we check if $r$ satisfies $r + 1 \lt n$ and $\textit{arr}[r] \gt \textit{arr}[r + 1]$. If so, we continue moving $r$ to the right until we find the position of the right base. At this point, the length of the mountain is $r - l + 1$. We update the answer and then update the value of $l$ to $r$, continuing to search for the next mountain.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{arr}$.
+
+#### Java
+
+```java
+class Solution {
+    public int longestMountain(int[] arr) {
+        int n = arr.length;
+        int ans = 0;
+        for (int l = 0, r = 0; l + 2 < n; l = r) {
+            r = l + 1;
+            if (arr[l] < arr[r]) {
+                while (r + 1 < n && arr[r] < arr[r + 1]) {
+                    ++r;
+                }
+                if (r + 1 < n && arr[r] > arr[r + 1]) {
+                    while (r + 1 < n && arr[r] > arr[r + 1]) {
+                        ++r;
+                    }
+                    ans = Math.max(ans, r - l + 1);
+                } else {
+                    ++r;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

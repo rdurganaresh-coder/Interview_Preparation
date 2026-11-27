@@ -1,0 +1,142 @@
+# 2559. Count Vowel Strings in Ranges
+
+**Difficulty:** Medium  
+**Category:** Strings  
+**LeetCode:** https://leetcode.com/problems/count-vowel-strings-in-ranges/
+
+---
+
+[中文文档](/solution/2500-2599/2559.Count%20Vowel%20Strings%20in%20Ranges/README.md)
+
+## Description
+
+<p>You are given a <strong>0-indexed</strong> array of strings <code>words</code> and a 2D array of integers <code>queries</code>.</p>
+
+<p>Each query <code>queries[i] = [l<sub>i</sub>, r<sub>i</sub>]</code> asks us to find the number of strings present at the indices ranging from <code>l<sub>i</sub></code> to <code>r<sub>i</sub></code> (both <strong>inclusive</strong>) of <code>words</code> that start and end with a vowel.</p>
+
+<p>Return <em>an array </em><code>ans</code><em> of size </em><code>queries.length</code><em>, where </em><code>ans[i]</code><em> is the answer to the </em><code>i</code><sup>th</sup><em> query</em>.</p>
+
+<p><strong>Note</strong> that the vowel letters are <code>&#39;a&#39;</code>, <code>&#39;e&#39;</code>, <code>&#39;i&#39;</code>, <code>&#39;o&#39;</code>, and <code>&#39;u&#39;</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> words = [&quot;aba&quot;,&quot;bcb&quot;,&quot;ece&quot;,&quot;aa&quot;,&quot;e&quot;], queries = [[0,2],[1,4],[1,1]]
+<strong>Output:</strong> [2,3,0]
+<strong>Explanation:</strong> The strings starting and ending with a vowel are &quot;aba&quot;, &quot;ece&quot;, &quot;aa&quot; and &quot;e&quot;.
+The answer to the query [0,2] is 2 (strings &quot;aba&quot; and &quot;ece&quot;).
+to query [1,4] is 3 (strings &quot;ece&quot;, &quot;aa&quot;, &quot;e&quot;).
+to query [1,1] is 0.
+We return [2,3,0].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> words = [&quot;a&quot;,&quot;e&quot;,&quot;i&quot;], queries = [[0,2],[0,1],[2,2]]
+<strong>Output:</strong> [3,2,1]
+<strong>Explanation:</strong> Every string satisfies the conditions, so we return [3,2,1].</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= words.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= words[i].length &lt;= 40</code></li>
+	<li><code>words[i]</code> consists only of lowercase English letters.</li>
+	<li><code>sum(words[i].length) &lt;= 3 * 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= queries.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= l<sub>i</sub> &lt;= r<sub>i</sub> &lt;&nbsp;words.length</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Preprocessing + Binary Search
+
+> **Thinking**
+>
+> Each query asks how many words in a range start and end with a vowel. Testing every word per query is too slow at $n,q\le 10^5$.
+>
+> Collect the qualifying indices in order. A query becomes a count of indices inside $[l,r]$, i.e. the difference of two binary searches.
+
+We can preprocess all the indices of the strings that start and end with a vowel, and record them in order in the array $\textit{nums}$.
+
+Next, we iterate through each query $(l, r)$, and use binary search to find the first index $i$ in $\textit{nums}$ that is greater than or equal to $l$, and the first index $j$ that is greater than $r$. Therefore, the answer to the current query is $j - i$.
+
+The time complexity is $O(n + m \log n)$, and the space complexity is $O(n)$, where $n$ and $m$ are the lengths of the arrays $\textit{words}$ and $\textit{queries}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private List<Integer> nums = new ArrayList<>();
+
+    public int[] vowelStrings(String[] words, int[][] queries) {
+        Set<Character> vowels = Set.of('a', 'e', 'i', 'o', 'u');
+        for (int i = 0; i < words.length; ++i) {
+            char a = words[i].charAt(0), b = words[i].charAt(words[i].length() - 1);
+            if (vowels.contains(a) && vowels.contains(b)) {
+                nums.add(i);
+            }
+        }
+        int m = queries.length;
+        int[] ans = new int[m];
+        for (int i = 0; i < m; ++i) {
+            int l = queries[i][0], r = queries[i][1];
+            ans[i] = search(r + 1) - search(l);
+        }
+        return ans;
+    }
+
+    private int search(int x) {
+        int l = 0, r = nums.size();
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            if (nums.get(mid) >= x) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+}
+```
+
+### Solution 2: Prefix Sum
+
+> **Thinking**
+>
+> Solution 1 still costs a logarithm per query. A $0/1$ prefix sum of the vowel-string indicator answers each range as $s[r+1]-s[l]$ in constant time.
+
+We can create a prefix sum array $s$ of length $n+1$, where $s[i]$ represents the number of strings that start and end with a vowel in the first $i$ strings of the array $\textit{words}$. Initially, $s[0] = 0$.
+
+Next, we iterate through the array $\textit{words}$. If the current string starts and ends with a vowel, then $s[i+1] = s[i] + 1$, otherwise $s[i+1] = s[i]$.
+
+Finally, we iterate through each query $(l, r)$. Therefore, the answer to the current query is $s[r+1] - s[l]$.
+
+The time complexity is $O(n + m)$, and the space complexity is $O(n)$, where $n$ and $m$ are the lengths of the arrays $\textit{words}$ and $\textit{queries}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int[] vowelStrings(String[] words, int[][] queries) {
+        Set<Character> vowels = Set.of('a', 'e', 'i', 'o', 'u');
+        int n = words.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; ++i) {
+            char a = words[i].charAt(0), b = words[i].charAt(words[i].length() - 1);
+            s[i + 1] = s[i] + (vowels.contains(a) && vowels.contains(b) ? 1 : 0);
+        }
+        int m = queries.length;
+        int[] ans = new int[m];
+        for (int i = 0; i < m; ++i) {
+            int l = queries[i][0], r = queries[i][1];
+            ans[i] = s[r + 1] - s[l];
+        }
+        return ans;
+    }
+}
+```

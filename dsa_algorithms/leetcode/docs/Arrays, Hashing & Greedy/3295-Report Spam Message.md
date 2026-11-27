@@ -1,0 +1,85 @@
+# 3295. Report Spam Message
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/report-spam-message/
+
+---
+
+[中文文档](/solution/3200-3299/3295.Report%20Spam%20Message/README.md)
+
+## Description
+
+<p>You are given an array of strings <code>message</code> and an array of strings <code>bannedWords</code>.</p>
+
+<p>An array of words is considered <strong>spam</strong> if there are <strong>at least</strong> two words in it that <b>exactly</b> match any word in <code>bannedWords</code>.</p>
+
+<p>Return <code>true</code> if the array <code>message</code> is spam, and <code>false</code> otherwise.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">message = [&quot;hello&quot;,&quot;world&quot;,&quot;leetcode&quot;], bannedWords = [&quot;world&quot;,&quot;hello&quot;]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">true</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The words <code>&quot;hello&quot;</code> and <code>&quot;world&quot;</code> from the <code>message</code> array both appear in the <code>bannedWords</code> array.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">message = [&quot;hello&quot;,&quot;programming&quot;,&quot;fun&quot;], bannedWords = [&quot;world&quot;,&quot;programming&quot;,&quot;leetcode&quot;]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">false</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Only one word from the <code>message</code> array (<code>&quot;programming&quot;</code>) appears in the <code>bannedWords</code> array.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= message.length, bannedWords.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= message[i].length, bannedWords[i].length &lt;= 15</code></li>
+	<li><code>message[i]</code> and <code>bannedWords[i]</code> consist only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table
+
+> **Thinking**
+>
+> A message is spam if at least two words lie in the banned list. $n,m\le 10^5$, so scanning the banned list per word is quadratic.
+>
+> Put banned words in a hash set and count hits in the message; return whether the count is at least $2$. Expected linear time.
+
+We use a hash table $s$ to store all the words in $\textit{bannedWords}$. Then, we traverse each word in $\textit{message}$. If the word appears in the hash table $s$, we increment the counter $\textit{cnt}$ by one. If $\textit{cnt}$ is greater than or equal to $2$, we return $\textit{true}$; otherwise, we return $\textit{false}$.
+
+The time complexity is $O((n + m)|w|)$, and the space complexity is $O(m|w|)$, where $n$ is the length of the array $\textit{message}$, and $m$ and $|w|$ are the length of the array $\textit{bannedWords}$ and the maximum length of the words in the array, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public boolean reportSpam(String[] message, String[] bannedWords) {
+        Set<String> s = new HashSet<>();
+        for (var w : bannedWords) {
+            s.add(w);
+        }
+        int cnt = 0;
+        for (var w : message) {
+            if (s.contains(w) && ++cnt >= 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```

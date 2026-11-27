@@ -1,0 +1,160 @@
+# 1905. Count Sub Islands
+
+**Difficulty:** Medium  
+**Category:** Graphs & Shortest Path  
+**LeetCode:** https://leetcode.com/problems/count-sub-islands/
+
+---
+
+[中文文档](/solution/1900-1999/1905.Count%20Sub%20Islands/README.md)
+
+## Description
+
+<p>You are given two <code>m x n</code> binary matrices <code>grid1</code> and <code>grid2</code> containing only <code>0</code>&#39;s (representing water) and <code>1</code>&#39;s (representing land). An <strong>island</strong> is a group of <code>1</code>&#39;s connected <strong>4-directionally</strong> (horizontal or vertical). Any cells outside of the grid are considered water cells.</p>
+
+<p>An island in <code>grid2</code> is considered a <strong>sub-island </strong>if there is an island in <code>grid1</code> that contains <strong>all</strong> the cells that make up <strong>this</strong> island in <code>grid2</code>.</p>
+
+<p>Return the <em><strong>number</strong> of islands in </em><code>grid2</code> <em>that are considered <strong>sub-islands</strong></em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1900-1999/1905.Count%20Sub%20Islands/images/test1.png" style="width: 493px; height: 205px;" />
+<pre>
+<strong>Input:</strong> grid1 = [[1,1,1,0,0],[0,1,1,1,1],[0,0,0,0,0],[1,0,0,0,0],[1,1,0,1,1]], grid2 = [[1,1,1,0,0],[0,0,1,1,1],[0,1,0,0,0],[1,0,1,1,0],[0,1,0,1,0]]
+<strong>Output:</strong> 3
+<strong>Explanation: </strong>In the picture above, the grid on the left is grid1 and the grid on the right is grid2.
+The 1s colored red in grid2 are those considered to be part of a sub-island. There are three sub-islands.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1900-1999/1905.Count%20Sub%20Islands/images/testcasex2.png" style="width: 491px; height: 201px;" />
+<pre>
+<strong>Input:</strong> grid1 = [[1,0,1,0,1],[1,1,1,1,1],[0,0,0,0,0],[1,1,1,1,1],[1,0,1,0,1]], grid2 = [[0,0,0,0,0],[1,1,1,1,1],[0,1,0,1,0],[0,1,0,1,0],[1,0,0,0,1]]
+<strong>Output:</strong> 2 
+<strong>Explanation: </strong>In the picture above, the grid on the left is grid1 and the grid on the right is grid2.
+The 1s colored red in grid2 are those considered to be part of a sub-island. There are two sub-islands.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>m == grid1.length == grid2.length</code></li>
+	<li><code>n == grid1[i].length == grid2[i].length</code></li>
+	<li><code>1 &lt;= m, n &lt;= 500</code></li>
+	<li><code>grid1[i][j]</code> and <code>grid2[i][j]</code> are either <code>0</code> or <code>1</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS
+
+> **Thinking**
+>
+> Each island of $\textit{grid2}$ is a sub-island only if every land cell also lies on land in $\textit{grid1}$. Checking cells in isolation cannot group them by island.
+>
+> One DFS (or BFS) walks a component, zeros $\textit{grid2}$ to mark it visited, and ANDs the corresponding $\textit{grid1}$ cells to decide whether the island is valid.
+>
+> A linear scan starts a search at every remaining $1$ in $\textit{grid2}$ and sums the return values.
+
+We can traverse each cell $(i, j)$ in the matrix $\textit{grid2}$. If the value of the cell is $1$, we start a depth-first search from this cell, set the value of all cells connected to this cell to $0$, and record whether the corresponding cell in $\textit{grid1}$ is also $1$ for all cells connected to this cell. If it is $1$, it means that this cell is also an island in $\textit{grid1}$, otherwise it is not. Finally, we count the number of sub-islands in $\textit{grid2}$.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns of the matrices $\textit{grid1}$ and $\textit{grid2}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private final int[] dirs = {-1, 0, 1, 0, -1};
+    private int[][] grid1;
+    private int[][] grid2;
+    private int m;
+    private int n;
+
+    public int countSubIslands(int[][] grid1, int[][] grid2) {
+        m = grid1.length;
+        n = grid1[0].length;
+        this.grid1 = grid1;
+        this.grid2 = grid2;
+        int ans = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid2[i][j] == 1) {
+                    ans += dfs(i, j);
+                }
+            }
+        }
+        return ans;
+    }
+
+    private int dfs(int i, int j) {
+        int ok = grid1[i][j];
+        grid2[i][j] = 0;
+        for (int k = 0; k < 4; ++k) {
+            int x = i + dirs[k], y = j + dirs[k + 1];
+            if (x >= 0 && x < m && y >= 0 && y < n && grid2[x][y] == 1) {
+                ok &= dfs(x, y);
+            }
+        }
+        return ok;
+    }
+}
+```
+
+### Solution 2: Explicit Stack
+
+> **Thinking**
+>
+> An island of $\textit{grid2}$ is a sub-island only when every land cell is also land in $\textit{grid1}$. Cells that are not grouped by connectivity cannot be counted as one island.
+>
+> Recursing along a snake of $1000$ land cells overflows the call stack, and $m,n\le 500$ can hold that snake.
+>
+> The check only has to walk the whole island, zero $\textit{grid2}$, and AND the matching $\textit{grid1}$ cells. It does not need a recursive return.
+>
+> When a remaining $1$ is found, push it onto an explicit stack. Pop a cell, AND it with $\textit{grid1}$, and push each neighboring land cell after marking it. The sum of these results is the number of sub-islands.
+
+Scan every cell of $\textit{grid2}$. When it is still $1$, walk that island with an explicit stack, set $\textit{grid2}$ to $0$ along the way, and AND the matching $\textit{grid1}$ cells. A result of $1$ means the island is a sub-island.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns of the matrices $\textit{grid1}$ and $\textit{grid2}$, respectively.
+
+#### Java
+
+```java
+class Solution {
+    public int countSubIslands(int[][] grid1, int[][] grid2) {
+        int m = grid1.length, n = grid1[0].length;
+        int ans = 0;
+        int[] dirs = {-1, 0, 1, 0, -1};
+        Deque<int[]> stk = new ArrayDeque<>();
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid2[i][j] == 1) {
+                    ans += flood(grid1, grid2, stk, dirs, i, j);
+                }
+            }
+        }
+        return ans;
+    }
+
+    private int flood(int[][] grid1, int[][] grid2, Deque<int[]> stk, int[] dirs, int i, int j) {
+        int m = grid1.length, n = grid1[0].length;
+        int ok = 1;
+        grid2[i][j] = 0;
+        stk.push(new int[] {i, j});
+        while (!stk.isEmpty()) {
+            int[] cur = stk.pop();
+            i = cur[0];
+            j = cur[1];
+            ok &= grid1[i][j];
+            for (int k = 0; k < 4; ++k) {
+                int x = i + dirs[k], y = j + dirs[k + 1];
+                if (x >= 0 && x < m && y >= 0 && y < n && grid2[x][y] == 1) {
+                    grid2[x][y] = 0;
+                    stk.push(new int[] {x, y});
+                }
+            }
+        }
+        return ok;
+    }
+}
+```

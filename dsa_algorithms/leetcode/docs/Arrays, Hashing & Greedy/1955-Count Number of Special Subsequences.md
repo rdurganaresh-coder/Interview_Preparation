@@ -1,0 +1,165 @@
+# 1955. Count Number of Special Subsequences
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/count-number-of-special-subsequences/
+
+---
+
+[中文文档](/solution/1900-1999/1955.Count%20Number%20of%20Special%20Subsequences/README.md)
+
+## Description
+
+<p>A sequence is <strong>special</strong> if it consists of a <strong>positive</strong> number of <code>0</code>s, followed by a <strong>positive</strong> number of <code>1</code>s, then a <strong>positive</strong> number of <code>2</code>s.</p>
+
+<ul>
+	<li>For example, <code>[0,1,2]</code> and <code>[0,0,1,1,1,2]</code> are special.</li>
+	<li>In contrast, <code>[2,1,0]</code>, <code>[1]</code>, and <code>[0,1,2,0]</code> are not special.</li>
+</ul>
+
+<p>Given an array <code>nums</code> (consisting of <strong>only</strong> integers <code>0</code>, <code>1</code>, and <code>2</code>), return<em> the <strong>number of different subsequences</strong> that are special</em>. Since the answer may be very large, <strong>return it modulo </strong><code>10<sup>9</sup> + 7</code>.</p>
+
+<p>A <strong>subsequence</strong> of an array is a sequence that can be derived from the array by deleting some or no elements without changing the order of the remaining elements. Two subsequences are <strong>different</strong> if the <strong>set of indices</strong> chosen are different.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [0,1,2,2]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The special subsequences are bolded [<strong><u>0</u></strong>,<strong><u>1</u></strong>,<strong><u>2</u></strong>,2], [<strong><u>0</u></strong>,<strong><u>1</u></strong>,2,<strong><u>2</u></strong>], and [<strong><u>0</u></strong>,<strong><u>1</u></strong>,<strong><u>2</u></strong>,<strong><u>2</u></strong>].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [2,2,0,0]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There are no special subsequences in [2,2,0,0].
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [0,1,2,0,1,2]
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> The special subsequences are bolded:
+- [<strong><u>0</u></strong>,<strong><u>1</u></strong>,<strong><u>2</u></strong>,0,1,2]
+- [<strong><u>0</u></strong>,<strong><u>1</u></strong>,2,0,1,<strong><u>2</u></strong>]
+- [<strong><u>0</u></strong>,<strong><u>1</u></strong>,<strong><u>2</u></strong>,0,1,<strong><u>2</u></strong>]
+- [<strong><u>0</u></strong>,<strong><u>1</u></strong>,2,0,<strong><u>1</u></strong>,<strong><u>2</u></strong>]
+- [<strong><u>0</u></strong>,1,2,<strong><u>0</u></strong>,<strong><u>1</u></strong>,<strong><u>2</u></strong>]
+- [<strong><u>0</u></strong>,1,2,0,<strong><u>1</u></strong>,<strong><u>2</u></strong>]
+- [0,1,2,<strong><u>0</u></strong>,<strong><u>1</u></strong>,<strong><u>2</u></strong>]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 2</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Dynamic Programming
+
+> **Thinking**
+>
+> A special subsequence is ones of $0$s, then $1$s, then $2$s. There are exponentially many subsequences, so we count by ending value.
+>
+> $f[i][j]$ is the number among the first $i$ elements that end with $j$. A $0$ doubles previous $0$-sequences plus a new singleton; $1$ and $2$ append to the previous stage or the same stage.
+>
+> The answer is $f[n-1][2]$ modulo $10^9+7$.
+
+We define $f[i][j]$ to represent the number of special subsequences ending with $j$ among the first $i+1$ elements. Initially, $f[i][j]=0$, and if $\textit{nums}[0]=0$, then $f[0][0]=1$.
+
+For $i \gt 0$, we consider the value of $\textit{nums}[i]$:
+
+If $\textit{nums}[i] = 0$: If we do not choose $\textit{nums}[i]$, then $f[i][0] = f[i-1][0]$; if we choose $\textit{nums}[i]$, then $f[i][0]=f[i-1][0]+1$, because we can add a $0$ to the end of any special subsequence ending with $0$ to get a new special subsequence, or we can use $\textit{nums}[i]$ alone as a special subsequence. Therefore, $f[i][0] = 2 \times f[i - 1][0] + 1$. The rest of $f[i][j]$ is equal to $f[i-1][j]$.
+
+If $\textit{nums}[i] = 1$: If we do not choose $\textit{nums}[i]$, then $f[i][1] = f[i-1][1]$; if we choose $\textit{nums}[i]$, then $f[i][1]=f[i-1][1]+f[i-1][0]$, because we can add a $1$ to the end of any special subsequence ending with $0$ or $1$ to get a new special subsequence. Therefore, $f[i][1] = f[i-1][0] + 2 \times f[i - 1][1]$. The rest of $f[i][j]$ is equal to $f[i-1][j]$.
+
+If $\textit{nums}[i] = 2$: If we do not choose $\textit{nums}[i]$, then $f[i][2] = f[i-1][2]$; if we choose $\textit{nums}[i]$, then $f[i][2]=f[i-1][2]+f[i-1][1]$, because we can add a $2$ to the end of any special subsequence ending with $1$ or $2$ to get a new special subsequence. Therefore, $f[i][2] = f[i-1][1] + 2 \times f[i - 1][2]$. The rest of $f[i][j]$ is equal to $f[i-1][j]$.
+
+In summary, we can get the following state transition equations:
+
+$$
+\begin{aligned}
+f[i][0] &= 2 \times f[i - 1][0] + 1, \quad \textit{nums}[i] = 0 \\
+f[i][1] &= f[i-1][0] + 2 \times f[i - 1][1], \quad \textit{nums}[i] = 1 \\
+f[i][2] &= f[i-1][1] + 2 \times f[i - 1][2], \quad \textit{nums}[i] = 2 \\
+f[i][j] &= f[i-1][j], \quad \textit{nums}[i] \neq j
+\end{aligned}
+$$
+
+The final answer is $f[n-1][2]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+Similar code found with 1 license type
+
+#### Java
+
+```java
+class Solution {
+    public int countSpecialSubsequences(int[] nums) {
+        final int mod = (int) 1e9 + 7;
+        int n = nums.length;
+        int[][] f = new int[n][3];
+        f[0][0] = nums[0] == 0 ? 1 : 0;
+        for (int i = 1; i < n; ++i) {
+            if (nums[i] == 0) {
+                f[i][0] = (2 * f[i - 1][0] % mod + 1) % mod;
+                f[i][1] = f[i - 1][1];
+                f[i][2] = f[i - 1][2];
+            } else if (nums[i] == 1) {
+                f[i][0] = f[i - 1][0];
+                f[i][1] = (f[i - 1][0] + 2 * f[i - 1][1] % mod) % mod;
+                f[i][2] = f[i - 1][2];
+            } else {
+                f[i][0] = f[i - 1][0];
+                f[i][1] = f[i - 1][1];
+                f[i][2] = (f[i - 1][1] + 2 * f[i - 1][2] % mod) % mod;
+            }
+        }
+        return f[n - 1][2];
+    }
+}
+```
+
+### Solution 2: Dynamic Programming (Space Optimization)
+
+> **Thinking**
+>
+> Only three previous counters are needed, so an in-place array of length $3$ drops extra space to constant.
+
+We notice that in the above state transition equations, the value of $f[i][j]$ is only related to $f[i-1][j]$. Therefore, we can remove the first dimension and optimize the space complexity to $O(1)$.
+
+We can use an array $f$ of length 3 to represent the number of special subsequences ending with 0, 1, and 2, respectively. For each element in the array, we update the array $f$ according to the value of the current element.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int countSpecialSubsequences(int[] nums) {
+        final int mod = (int) 1e9 + 7;
+        int n = nums.length;
+        int[] f = new int[3];
+        f[0] = nums[0] == 0 ? 1 : 0;
+        for (int i = 1; i < n; ++i) {
+            if (nums[i] == 0) {
+                f[0] = (2 * f[0] % mod + 1) % mod;
+            } else if (nums[i] == 1) {
+                f[1] = (f[0] + 2 * f[1] % mod) % mod;
+            } else {
+                f[2] = (f[1] + 2 * f[2] % mod) % mod;
+            }
+        }
+        return f[2];
+    }
+}
+```

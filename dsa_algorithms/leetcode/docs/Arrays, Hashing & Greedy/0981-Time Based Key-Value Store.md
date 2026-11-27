@@ -1,0 +1,97 @@
+# 981. Time Based Key-Value Store
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/time-based-key-value-store/
+
+---
+
+[中文文档](/solution/0900-0999/0981.Time%20Based%20Key-Value%20Store/README.md)
+
+## Description
+
+<p>Design a time-based key-value data structure that can store multiple values for the same key at different time stamps and retrieve the key&#39;s value at a certain timestamp.</p>
+
+<p>Implement the <code>TimeMap</code> class:</p>
+
+<ul>
+	<li><code>TimeMap()</code> Initializes the object of the data structure.</li>
+	<li><code>void set(String key, String value, int timestamp)</code> Stores the key <code>key</code> with the value <code>value</code> at the given time <code>timestamp</code>.</li>
+	<li><code>String get(String key, int timestamp)</code> Returns a value such that <code>set</code> was called previously, with <code>timestamp_prev &lt;= timestamp</code>. If there are multiple such values, it returns the value associated with the largest <code>timestamp_prev</code>. If there are no values, it returns <code>&quot;&quot;</code>.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input</strong>
+[&quot;TimeMap&quot;, &quot;set&quot;, &quot;get&quot;, &quot;get&quot;, &quot;set&quot;, &quot;get&quot;, &quot;get&quot;]
+[[], [&quot;foo&quot;, &quot;bar&quot;, 1], [&quot;foo&quot;, 1], [&quot;foo&quot;, 3], [&quot;foo&quot;, &quot;bar2&quot;, 4], [&quot;foo&quot;, 4], [&quot;foo&quot;, 5]]
+<strong>Output</strong>
+[null, null, &quot;bar&quot;, &quot;bar&quot;, null, &quot;bar2&quot;, &quot;bar2&quot;]
+
+<strong>Explanation</strong>
+TimeMap timeMap = new TimeMap();
+timeMap.set(&quot;foo&quot;, &quot;bar&quot;, 1);  // store the key &quot;foo&quot; and value &quot;bar&quot; along with timestamp = 1.
+timeMap.get(&quot;foo&quot;, 1);         // return &quot;bar&quot;
+timeMap.get(&quot;foo&quot;, 3);         // return &quot;bar&quot;, since there is no value corresponding to foo at timestamp 3 and timestamp 2, then the only value is at timestamp 1 is &quot;bar&quot;.
+timeMap.set(&quot;foo&quot;, &quot;bar2&quot;, 4); // store the key &quot;foo&quot; and value &quot;bar2&quot; along with timestamp = 4.
+timeMap.get(&quot;foo&quot;, 4);         // return &quot;bar2&quot;
+timeMap.get(&quot;foo&quot;, 5);         // return &quot;bar2&quot;
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= key.length, value.length &lt;= 100</code></li>
+	<li><code>key</code> and <code>value</code> consist of lowercase English letters and digits.</li>
+	<li><code>1 &lt;= timestamp &lt;= 10<sup>7</sup></code></li>
+	<li>All the timestamps <code>timestamp</code> of <code>set</code> are strictly increasing.</li>
+	<li>At most <code>2 * 10<sup>5</sup></code> calls will be made to <code>set</code> and <code>get</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table + Ordered Set (or Binary Search)
+
+> **Thinking**
+>
+> $\textit{set}$ timestamps are strictly increasing, so each key's history is already sorted. $\textit{get}$ wants the latest value at a time $\le$ the query. A linear scan is too slow over $2\times 10^5$ calls. Store $(\textit{timestamp},\textit{value})$ lists per key and binary-search the upper bound.
+
+We can use a hash table $\textit{kvt}$ to record key-value pairs, where the key is the string $\textit{key}$ and the value is an ordered set. Each element in the set is a tuple $(\textit{timestamp}, \textit{value})$, representing the value $\textit{value}$ corresponding to the key $\textit{key}$ at the timestamp $\textit{timestamp}$.
+
+When we need to query the value corresponding to the key $\textit{key}$ at the timestamp $\textit{timestamp}$, we can use the ordered set to find the largest timestamp $\textit{timestamp}'$ such that $\textit{timestamp}' \leq \textit{timestamp}$, and then return the corresponding value.
+
+In terms of time complexity, for the $\textit{set}$ operation, since the insertion operation of the hash table has a time complexity of $O(1)$, the time complexity is $O(1)$. For the $\textit{get}$ operation, since the lookup operation of the hash table has a time complexity of $O(1)$ and the lookup operation of the ordered set has a time complexity of $O(\log n)$, the time complexity is $O(\log n)$. The space complexity is $O(n)$, where $n$ is the number of $\textit{set}$ operations.
+
+#### Java
+
+```java
+class TimeMap {
+    private Map<String, TreeMap<Integer, String>> ktv = new HashMap<>();
+
+    public TimeMap() {
+    }
+
+    public void set(String key, String value, int timestamp) {
+        ktv.computeIfAbsent(key, k -> new TreeMap<>()).put(timestamp, value);
+    }
+
+    public String get(String key, int timestamp) {
+        if (!ktv.containsKey(key)) {
+            return "";
+        }
+        var tv = ktv.get(key);
+        Integer t = tv.floorKey(timestamp);
+        return t == null ? "" : tv.get(t);
+    }
+}
+
+/**
+ * Your TimeMap object will be instantiated and called as such:
+ * TimeMap obj = new TimeMap();
+ * obj.set(key,value,timestamp);
+ * String param_2 = obj.get(key,timestamp);
+ */
+```

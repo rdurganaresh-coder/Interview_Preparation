@@ -1,0 +1,220 @@
+# 1872. Stone Game VIII
+
+**Difficulty:** Hard  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/stone-game-viii/
+
+---
+
+[中文文档](/solution/1800-1899/1872.Stone%20Game%20VIII/README.md)
+
+## Description
+
+<p>Alice and Bob take turns playing a game, with <strong>Alice starting first</strong>.</p>
+
+<p>There are <code>n</code> stones arranged in a row. On each player&#39;s turn, while the number of stones is <strong>more than one</strong>, they will do the following:</p>
+
+<ol>
+	<li>Choose an integer <code>x &gt; 1</code>, and <strong>remove</strong> the leftmost <code>x</code> stones from the row.</li>
+	<li>Add the <strong>sum</strong> of the <strong>removed</strong> stones&#39; values to the player&#39;s score.</li>
+	<li>Place a <strong>new stone</strong>, whose value is equal to that sum, on the left side of the row.</li>
+</ol>
+
+<p>The game stops when <strong>only</strong> <strong>one</strong> stone is left in the row.</p>
+
+<p>The <strong>score difference</strong> between Alice and Bob is <code>(Alice&#39;s score - Bob&#39;s score)</code>. Alice&#39;s goal is to <strong>maximize</strong> the score difference, and Bob&#39;s goal is the <strong>minimize</strong> the score difference.</p>
+
+<p>Given an integer array <code>stones</code> of length <code>n</code> where <code>stones[i]</code> represents the value of the <code>i<sup>th</sup></code> stone <strong>from the left</strong>, return <em>the <strong>score difference</strong> between Alice and Bob if they both play <strong>optimally</strong>.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> stones = [-1,2,-3,4,-5]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong>
+- Alice removes the first 4 stones, adds (-1) + 2 + (-3) + 4 = 2 to her score, and places a stone of
+  value 2 on the left. stones = [2,-5].
+- Bob removes the first 2 stones, adds 2 + (-5) = -3 to his score, and places a stone of value -3 on
+  the left. stones = [-3].
+The difference between their scores is 2 - (-3) = 5.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> stones = [7,-6,5,10,5,-2,-6]
+<strong>Output:</strong> 13
+<strong>Explanation:</strong>
+- Alice removes all stones, adds 7 + (-6) + 5 + 10 + 5 + (-2) + (-6) = 13 to her score, and places a
+  stone of value 13 on the left. stones = [13].
+The difference between their scores is 13 - 0 = 13.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> stones = [-10,-12]
+<strong>Output:</strong> -22
+<strong>Explanation:</strong>
+- Alice can only make one move, which is to remove both stones. She adds (-10) + (-12) = -22 to her
+  score and places a stone of value -22 on the left. stones = [-22].
+The difference between their scores is (-22) - 0 = -22.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == stones.length</code></li>
+	<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>4</sup> &lt;= stones[i] &lt;= 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Prefix Sum + Memoization Search
+
+> **Thinking**
+>
+> Each move merges a prefix of at least two piles and scores the new prefix sum; both players maximize the score difference. $n\le 10^5$ forbids searching every cut.
+>
+> Merging leaves the prefix-sum array $s$ unchanged. From index $i$ the current player may take $s[i]$ and leave $i+1$ to the opponent, or postpone the cut. $\textit{dfs}(i)=\max(\textit{dfs}(i+1),s[i]-\textit{dfs}(i+1))$, starting at $i=1$. Memoization yields linearly many states.
+
+According to the problem description, each time we take the leftmost $x$ stones, add their sum to our score, and then put a stone with this sum value on the leftmost side, it is equivalent to merging these $x$ stones into a stone with this sum value, and the prefix sum remains unchanged.
+
+We can use a prefix sum array $s$ of length $n$ to represent the prefix sum of the array $\textit{stones}$, where $s[i]$ represents the sum of the elements $\textit{stones}[0..i]$.
+
+Next, we design a function $\textit{dfs}(i)$, which means that we currently take stones from $\textit{stones}[i:]$, and return the maximum score difference that the current player can get.
+
+The execution process of the function $\textit{dfs}(i)$ is as follows:
+
+- If $i \geq n - 1$, it means that we can only take all the stones at present, so we return $s[n - 1]$.
+- Otherwise, we can choose to take all the stones from $\textit{stones}[i + 1:]$, and the score difference obtained is $\textit{dfs}(i + 1)$; we can also choose to take the stones $\textit{stones}[:i]$, and the score difference obtained is $s[i] - \textit{dfs}(i + 1)$. We take the maximum of the two situations, which is the maximum score difference that the current player can get.
+
+Finally, we can get the score difference between Alice and Bob as $\textit{dfs}(1)$, that is, Alice must start the game by taking stones from $\textit{stones}[1:]$.
+
+To avoid repeated calculations, we can use memoization search.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{stones}$.
+
+#### Java
+
+```java
+class Solution {
+    private Integer[] f;
+    private int[] s;
+    private int n;
+
+    public int stoneGameVIII(int[] stones) {
+        n = stones.length;
+        f = new Integer[n];
+        for (int i = 1; i < n; ++i) {
+            stones[i] += stones[i - 1];
+        }
+        s = stones;
+        return dfs(1);
+    }
+
+    private int dfs(int i) {
+        if (i >= n - 1) {
+            return s[i];
+        }
+        if (f[i] == null) {
+            f[i] = Math.max(dfs(i + 1), s[i] - dfs(i + 1));
+        }
+        return f[i];
+    }
+}
+```
+
+### Solution 2: Prefix Sum + Dynamic Programming
+
+> **Thinking**
+>
+> Solution 1 fills a linear table from the end, and each cell only reads the next one. That table rolls into one scalar.
+>
+> $f$ starts as $s[n-1]$, then $f=\max(f,s[i]-f)$ for $i=n-2,\ldots,1$. Extra space becomes constant.
+
+We can also use dynamic programming to solve this problem.
+
+Similar to Solution 1, we first use a prefix sum array $s$ of length $n$ to represent the prefix sum of the array $\textit{stones}$, where $s[i]$ represents the sum of the elements $\textit{stones}[0..i]$.
+
+We define $f[i]$ to represent the maximum score difference that the current player can get when taking stones from $\textit{stones}[i:]$.
+
+If the player chooses to take the stones $\textit{stones}[:i]$, then the score obtained is $s[i]$. At this time, the other player will take stones from $\textit{stones}[i+1:]$, and the maximum score difference that the other player can get is $f[i+1]$. Therefore, the maximum score difference that the current player can get is $s[i] - f[i+1]$.
+
+If the player chooses to take stones from $\textit{stones}[i+1:]$, then the maximum score difference obtained is $f[i+1]$.
+
+Therefore, we can get the state transition equation:
+
+$$
+f[i] = \max\{s[i] - f[i+1], f[i+1]\}
+$$
+
+Finally, we can get the score difference between Alice and Bob as $f[1]$, that is, Alice must start the game by taking stones from $\textit{stones}[1:]$.
+
+We notice that $f[i]$ is only related to $f[i+1]$, so we only need to use a variable $f$ to represent $f[i]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{stones}$.
+
+#### Java
+
+```java
+class Solution {
+    public int stoneGameVIII(int[] stones) {
+        int n = stones.length;
+        for (int i = 1; i < n; ++i) {
+            stones[i] += stones[i - 1];
+        }
+        int f = stones[n - 1];
+        for (int i = n - 2; i > 0; --i) {
+            f = Math.max(f, stones[i] - f);
+        }
+        return f;
+    }
+}
+```
+
+### Solution 3: Prefix Sum + Dynamic Programming
+
+> **Thinking**
+>
+> Each move merges a prefix of at least two piles and scores the new prefix sum; both players maximize the score difference. $n\le 10^5$ forbids searching every cut.
+>
+> From index $i$ the current player takes $s[i]$ and leaves $i+1$, or postpones the cut. That recurrence always calls $i+1$ first, so the chain has length $n$ and overflows the stack.
+>
+> The next index is known if we walk from the end. Let $f[i]$ be the best difference on $\textit{stones}[i:]$, with $f[n-1]=s[n-1]$, and fill $i$ from $n-2$ down to $1$.
+
+According to the problem description, each time we take the leftmost $x$ stones, add their sum to our score, and then put a stone with this sum value on the leftmost side, it is equivalent to merging these $x$ stones into a stone with this sum value, and the prefix sum remains unchanged.
+
+We can use a prefix sum array $s$ of length $n$ to represent the prefix sum of the array $\textit{stones}$, where $s[i]$ represents the sum of the elements $\textit{stones}[0..i]$.
+
+Let $f[i]$ be the maximum score difference the current player can get on $\textit{stones}[i:]$. The answer is $f[1]$, because Alice must start by taking at least the first two stones. Set $f[n - 1] = s[n - 1]$: only one pile remains, so the player takes it.
+
+Fill $i$ from $n - 2$ down to $1$. Postponing the cut keeps $f[i + 1]$. Taking $\textit{stones}[0..i]$ scores $s[i]$ and leaves the opponent with $f[i + 1]$, so the difference is $s[i] - f[i + 1]$. Take the larger one:
+
+$$
+f[i] = \max(f[i + 1], s[i] - f[i + 1])
+$$
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{stones}$.
+
+#### Java
+
+```java
+class Solution {
+    public int stoneGameVIII(int[] stones) {
+        int n = stones.length;
+        for (int i = 1; i < n; ++i) {
+            stones[i] += stones[i - 1];
+        }
+        int[] f = new int[n];
+        f[n - 1] = stones[n - 1];
+        for (int i = n - 2; i > 0; --i) {
+            f[i] = Math.max(f[i + 1], stones[i] - f[i + 1]);
+        }
+        return f[1];
+    }
+}
+```

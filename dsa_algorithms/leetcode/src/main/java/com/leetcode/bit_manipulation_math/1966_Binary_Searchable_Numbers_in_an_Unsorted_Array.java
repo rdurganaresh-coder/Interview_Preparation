@@ -1,0 +1,56 @@
+package com.leetcode.bit_manipulation_math;
+
+class Solution1966 {
+    public int binarySearchableNumbers(int[] nums) {
+        int n = nums.length;
+        int[] ok = new int[n];
+        Arrays.fill(ok, 1);
+        int mx = -1000000, mi = 1000000;
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] < mx) {
+                ok[i] = 0;
+            }
+            mx = Math.max(mx, nums[i]);
+        }
+        int ans = 0;
+        for (int i = n - 1; i >= 0; --i) {
+            if (nums[i] > mi) {
+                ok[i] = 0;
+            }
+            mi = Math.min(mi, nums[i]);
+            ans += ok[i];
+        }
+        return ans;
+    }
+
+    // ===== Generated test cases (from the problem examples) =====
+    private static String _tcShow(Object o) {
+        String s = java.util.Arrays.deepToString(new Object[] {o});
+        return s.substring(1, s.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Solution1966 _tcSol = new Solution1966();
+        System.out.println("Test 1");
+        System.out.println("  Input   : " + "nums = [7]");
+        try {
+            int[] nums = new int[]{7};
+            System.out.println("  Output  : " + _tcShow(_tcSol.binarySearchableNumbers(nums)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "1");
+        System.out.println();
+
+        System.out.println("Test 2");
+        System.out.println("  Input   : " + "nums = [-1,5,2]");
+        try {
+            int[] nums = new int[]{-1, 5, 2};
+            System.out.println("  Output  : " + _tcShow(_tcSol.binarySearchableNumbers(nums)));
+        } catch (Throwable e) {
+            System.out.println("  Output  : ERROR " + e);
+        }
+        System.out.println("  Expected: " + "1");
+        System.out.println();
+    }
+}

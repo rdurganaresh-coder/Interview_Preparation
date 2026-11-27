@@ -1,0 +1,100 @@
+# 961. N-Repeated Element in Size 2N Array
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/n-repeated-element-in-size-2n-array/
+
+---
+
+[中文文档](/solution/0900-0999/0961.N-Repeated%20Element%20in%20Size%202N%20Array/README.md)
+
+## Description
+
+<p>You are given an integer array <code>nums</code> with the following properties:</p>
+
+<ul>
+	<li><code>nums.length == 2 * n</code>.</li>
+	<li><code>nums</code> contains <code>n + 1</code> <strong>unique</strong> values, <code>n</code> of which occur <strong>exactly once</strong> in the array.</li>
+	<li>Exactly one element of <code>nums</code> is repeated <code>n</code> times.</li>
+</ul>
+
+<p>Return <em>the element that is repeated </em><code>n</code><em> times</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<pre><strong>Input:</strong> nums = [1,2,3,3]
+<strong>Output:</strong> 3
+</pre><p><strong class="example">Example 2:</strong></p>
+<pre><strong>Input:</strong> nums = [2,1,2,5,3,2]
+<strong>Output:</strong> 2
+</pre><p><strong class="example">Example 3:</strong></p>
+<pre><strong>Input:</strong> nums = [5,1,5,2,5,3,5,4]
+<strong>Output:</strong> 5
+</pre>
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= n &lt;= 5000</code></li>
+	<li><code>nums.length == 2 * n</code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+	<li><code>nums</code> contains <code>n + 1</code> <strong>unique</strong> elements and one of them is repeated exactly <code>n</code> times.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table
+
+> **Thinking**
+>
+> An array of length $2n$ has one value repeated $n$ times and $n$ unique others. The first value already in a set is the answer.
+
+Since the array $\textit{nums}$ has a total of $2n$ elements, with $n + 1$ distinct elements, and one element repeated $n$ times, this means the remaining $n$ elements in the array are all distinct.
+
+Therefore, we only need to iterate through the array $\textit{nums}$ and use a hash table $s$ to record the elements we've encountered. When we encounter an element $x$, if $x$ already exists in the hash table $s$, it means $x$ is the repeated element, and we can directly return $x$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int repeatedNTimes(int[] nums) {
+        Set<Integer> s = new HashSet<>(nums.length / 2 + 1);
+        for (int i = 0;; ++i) {
+            if (!s.add(nums[i])) {
+                return nums[i];
+            }
+        }
+    }
+}
+```
+
+### Solution 2: Mathematics
+
+> **Thinking**
+>
+> The set uses linear space. The repeated value appears at distance at most $2$ in a circular reading, so compare each index $i\ge 2$ with the two before it; if none match, the answer is $\textit{nums}[0]$.
+
+According to the problem description, half of the elements in the array $\textit{nums}$ are the same. If we view the array as a circular arrangement, then there is at most $1$ other element between two identical elements.
+
+Therefore, we iterate through the array $\textit{nums}$ starting from index $2$. For each index $i$, we compare $\textit{nums}[i]$ with $\textit{nums}[i - 1]$ and $\textit{nums}[i - 2]$. If they are equal, we return that value.
+
+If we don't find the repeated element in the above process, then the repeated element must be $\textit{nums}[0]$, and we can directly return $\textit{nums}[0]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int repeatedNTimes(int[] nums) {
+        for (int i = 2; i < nums.length; ++i) {
+            if (nums[i] == nums[i - 1] || nums[i] == nums[i - 2]) {
+                return nums[i];
+            }
+        }
+        return nums[0];
+    }
+}
+```

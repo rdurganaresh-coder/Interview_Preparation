@@ -1,0 +1,125 @@
+# 2013. Detect Squares
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/detect-squares/
+
+---
+
+[中文文档](/solution/2000-2099/2013.Detect%20Squares/README.md)
+
+## Description
+
+<p>You are given a stream of points on the X-Y plane. Design an algorithm that:</p>
+
+<ul>
+	<li><strong>Adds</strong> new points from the stream into a data structure. <strong>Duplicate</strong> points are allowed and should be treated as different points.</li>
+	<li>Given a query point, <strong>counts</strong> the number of ways to choose three points from the data structure such that the three points and the query point form an <strong>axis-aligned square</strong> with <strong>positive area</strong>.</li>
+</ul>
+
+<p>An <strong>axis-aligned square</strong> is a square whose edges are all the same length and are either parallel or perpendicular to the x-axis and y-axis.</p>
+
+<p>Implement the <code>DetectSquares</code> class:</p>
+
+<ul>
+	<li><code>DetectSquares()</code> Initializes the object with an empty data structure.</li>
+	<li><code>void add(int[] point)</code> Adds a new point <code>point = [x, y]</code> to the data structure.</li>
+	<li><code>int count(int[] point)</code> Counts the number of ways to form <strong>axis-aligned squares</strong> with point <code>point = [x, y]</code> as described above.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2000-2099/2013.Detect%20Squares/images/image.png" style="width: 869px; height: 504px;" />
+<pre>
+<strong>Input</strong>
+[&quot;DetectSquares&quot;, &quot;add&quot;, &quot;add&quot;, &quot;add&quot;, &quot;count&quot;, &quot;count&quot;, &quot;add&quot;, &quot;count&quot;]
+[[], [[3, 10]], [[11, 2]], [[3, 2]], [[11, 10]], [[14, 8]], [[11, 2]], [[11, 10]]]
+<strong>Output</strong>
+[null, null, null, null, 1, 0, null, 2]
+
+<strong>Explanation</strong>
+DetectSquares detectSquares = new DetectSquares();
+detectSquares.add([3, 10]);
+detectSquares.add([11, 2]);
+detectSquares.add([3, 2]);
+detectSquares.count([11, 10]); // return 1. You can choose:
+// - The first, second, and third points
+detectSquares.count([14, 8]); // return 0. The query point cannot form a square with any points in the data structure.
+detectSquares.add([11, 2]); // Adding duplicate points is allowed.
+detectSquares.count([11, 10]); // return 2. You can choose:
+// - The first, second, and third points
+// - The first, third, and fourth points
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>point.length == 2</code></li>
+	<li><code>0 &lt;= x, y &lt;= 1000</code></li>
+	<li>At most <code>3000</code> calls <strong>in total</strong> will be made to <code>add</code> and <code>count</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table
+
+> **Thinking**
+>
+> At most $5000$ calls and coordinates in $[0,1000]$. Enumerating all triples per $\textit{count}$ is clumsy. An axis-aligned square is fixed by one horizontal side.
+>
+> Store frequencies in $\textit{cnt}[x][y]$. For query $(x_1,y_1)$, enumerate existing $x_2 \ne x_1$ with side $d=x_2-x_1$; the other two vertices of the upper/lower squares follow.
+>
+> The product of the three frequencies is the count. $\textit{add}$ is $O(1)$; $\textit{count}$ is linear in distinct $x$.
+
+We can use a hash table $\textit{cnt}$ to maintain all the information of the points, where $\textit{cnt}[x][y]$ represents the count of point $(x, y)$.
+
+When calling the $\textit{add}(x, y)$ method, we increase the value of $\textit{cnt}[x][y]$ by $1$.
+
+When calling the $\textit{count}(x_1, y_1)$ method, we need to get three other points to form an axis-aligned square. We can enumerate the point $(x_2, y_1)$ that is parallel to the $x$-axis and at a distance $d$ from $(x_1, y_1)$. If such a point exists, based on these two points, we can determine the other two points as $(x_1, y_1 + d)$ and $(x_2, y_1 + d)$, or $(x_1, y_1 - d)$ and $(x_2, y_1 - d)$. We can add up the number of schemes for these two situations.
+
+In terms of time complexity, the time complexity of calling the $\textit{add}(x, y)$ method is $O(1)$, and the time complexity of calling the $\textit{count}(x_1, y_1)$ method is $O(n)$; the space complexity is $O(n)$. Here, $n$ is the number of points in the data stream.
+
+#### Java
+
+```java
+class DetectSquares {
+    private Map<Integer, Map<Integer, Integer>> cnt = new HashMap<>();
+
+    public DetectSquares() {
+    }
+
+    public void add(int[] point) {
+        int x = point[0], y = point[1];
+        cnt.computeIfAbsent(x, k -> new HashMap<>()).merge(y, 1, Integer::sum);
+    }
+
+    public int count(int[] point) {
+        int x1 = point[0], y1 = point[1];
+        if (!cnt.containsKey(x1)) {
+            return 0;
+        }
+        int ans = 0;
+        for (var e : cnt.entrySet()) {
+            int x2 = e.getKey();
+            if (x2 != x1) {
+                int d = x2 - x1;
+                var cnt1 = cnt.get(x1);
+                var cnt2 = e.getValue();
+                ans += cnt2.getOrDefault(y1, 0) * cnt1.getOrDefault(y1 + d, 0)
+                    * cnt2.getOrDefault(y1 + d, 0);
+                ans += cnt2.getOrDefault(y1, 0) * cnt1.getOrDefault(y1 - d, 0)
+                    * cnt2.getOrDefault(y1 - d, 0);
+            }
+        }
+        return ans;
+    }
+}
+
+/**
+ * Your DetectSquares object will be instantiated and called as such:
+ * DetectSquares obj = new DetectSquares();
+ * obj.add(point);
+ * int param_2 = obj.count(point);
+ */
+```

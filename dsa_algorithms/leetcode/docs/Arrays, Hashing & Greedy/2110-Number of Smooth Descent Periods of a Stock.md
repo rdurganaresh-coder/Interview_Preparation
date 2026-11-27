@@ -1,0 +1,95 @@
+# 2110. Number of Smooth Descent Periods of a Stock
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/number-of-smooth-descent-periods-of-a-stock/
+
+---
+
+[中文文档](/solution/2100-2199/2110.Number%20of%20Smooth%20Descent%20Periods%20of%20a%20Stock/README.md)
+
+## Description
+
+<p>You are given an integer array <code>prices</code> representing the daily price history of a stock, where <code>prices[i]</code> is the stock price on the <code>i<sup>th</sup></code> day.</p>
+
+<p>A <strong>smooth descent period</strong> of a stock consists of <strong>one or more contiguous</strong> days such that the price on each day is <strong>lower</strong> than the price on the <strong>preceding day</strong> by <strong>exactly</strong> <code>1</code>. The first day of the period is exempted from this rule.</p>
+
+<p>Return <em>the number of <strong>smooth descent periods</strong></em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> prices = [3,2,1,4]
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> There are 7 smooth descent periods:
+[3], [2], [1], [4], [3,2], [2,1], and [3,2,1]
+Note that a period with one day is a smooth descent period by the definition.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> prices = [8,6,7,7]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> There are 4 smooth descent periods: [8], [6], [7], and [7]
+Note that [8,6] is not a smooth descent period as 8 - 6 &ne; 1.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> prices = [1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> There is 1 smooth descent period: [1]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= prices.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= prices[i] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> A smooth descent is a contiguous index range whose adjacent values differ by exactly $1$. A run of length $L$ contains $L(L+1)/2$ nonempty subarrays. Checking every subarray is $O(n^2)$ and fails for $n\le 10^5$.
+>
+> Maximal smooth runs are disjoint and can be cut greedily: extend right while the adjacent difference stays $1$, then add the triangular count for that run.
+>
+> Pointers $i$ and $j$ mark each run; after adding $\textit{cnt}(\textit{cnt}+1)/2$ we restart from $j$.
+
+We define an answer variable $\textit{ans}$ with an initial value of $0$.
+
+Next, we use two pointers $i$ and $j$, which point to the first day of the current smooth descent period and the day after the last day, respectively. Initially, $i = 0$ and $j = 0$.
+
+We traverse the array $\textit{prices}$ from left to right. For each position $i$, we move $j$ to the right until $j$ reaches the end of the array or $\textit{prices}[j - 1] - \textit{prices}[j] \neq 1$. At this point, $\textit{cnt} = j - i$ is the length of the current smooth descent period, and we add $\frac{(1 + \textit{cnt}) \times \textit{cnt}}{2}$ to the answer variable $\textit{ans}$. Then we update $i$ to $j$ and continue traversing.
+
+After the traversal ends, we return the answer variable $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array $\textit{prices}$.
+
+#### Java
+
+```java
+class Solution {
+    public long getDescentPeriods(int[] prices) {
+        long ans = 0;
+        int n = prices.length;
+        for (int i = 0, j = 0; i < n; i = j) {
+            j = i + 1;
+            while (j < n && prices[j - 1] - prices[j] == 1) {
+                ++j;
+            }
+            int cnt = j - i;
+            ans += (1L + cnt) * cnt / 2;
+        }
+        return ans;
+    }
+}
+```

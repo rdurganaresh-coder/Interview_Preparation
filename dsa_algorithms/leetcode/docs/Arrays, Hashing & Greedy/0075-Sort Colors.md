@@ -1,0 +1,101 @@
+# 75. Sort Colors
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/sort-colors/
+
+---
+
+[中文文档](/solution/0000-0099/0075.Sort%20Colors/README.md)
+
+## Description
+
+<p>You are given an array <code>nums</code> with <code>n</code> objects colored red, white, or blue, sort them <strong><a href="https://en.wikipedia.org/wiki/In-place_algorithm" target="_blank">in-place</a> </strong>so that objects of the same color are adjacent, with the colors in the order red, white, and blue.</p>
+
+<p>We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.</p>
+
+<p>You must solve this problem without using the library&#39;s sort function.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,0,2,1,1,0]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[0,0,1,1,2,2]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The array has two 0s, two 1s, and two 2s. Sorting them in-place places all 0s first, then all 1s, then all 2s.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,0,1]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[0,1,2]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The array has one each of 0, 1, and 2, arranged in-place in the order 0, 1, 2.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == nums.length</code></li>
+	<li><code>1 &lt;= n &lt;= 300</code></li>
+	<li><code>nums[i]</code> is either 0, 1, or 2.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Follow up:</strong>&nbsp;Could you come up with a one-pass algorithm using only&nbsp;constant extra space?</p>
+
+## Solutions
+
+### Solution 1: Three Pointers
+
+> **Thinking**
+>
+> Count $0,1,2$ then overwrite: two passes. Sorting would also work for $n \le 300$. The problem forbids library sort, and the follow-up wants one scan and $O(1)$ space.
+>
+> Three values only need a partition into all $0$s, all $1$s, and all $2$s. Let $i$ and $j$ bound the $0$s and $2$s already placed, and let $k$ scan the unknown middle. A swap toward $2$ brings an unseen value, so $k$ stays; a swap toward $0$ brings a value from the scanned range, so $k$ advances too. One pass finishes the three segments.
+
+We define three pointers $i$, $j$, and $k$. Pointer $i$ is used to point to the rightmost boundary of the elements with a value of $0$ in the array, and pointer $j$ is used to point to the leftmost boundary of the elements with a value of $2$ in the array. Initially, $i=-1$, $j=n$. Pointer $k$ is used to point to the current element being traversed, initially $k=0$.
+
+When $k < j$, we perform the following operations:
+
+- If $\textit{nums}[k] = 0$, then swap it with $\textit{nums}[i+1]$, then increment both $i$ and $k$ by $1$;
+- If $\textit{nums}[k] = 2$, then swap it with $\textit{nums}[j-1]$, then decrement $j$ by $1$;
+- If $\textit{nums}[k] = 1$, then increment $k$ by $1$.
+
+After the traversal, the elements in the array are divided into three parts: $[0,i]$, $[i+1,j-1]$ and $[j,n-1]$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array. Only one traversal of the array is needed.
+
+#### Java
+
+```java
+class Solution {
+    public void sortColors(int[] nums) {
+        int i = -1, j = nums.length, k = 0;
+        while (k < j) {
+            if (nums[k] == 0) {
+                swap(nums, ++i, k++);
+            } else if (nums[k] == 2) {
+                swap(nums, --j, k);
+            } else {
+                ++k;
+            }
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
+    }
+}
+```

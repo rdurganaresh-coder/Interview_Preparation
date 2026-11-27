@@ -1,0 +1,121 @@
+# 2529. Maximum Count of Positive Integer and Negative Integer
+
+**Difficulty:** Easy  
+**Category:** Bit Manipulation & Math  
+**LeetCode:** https://leetcode.com/problems/maximum-count-of-positive-integer-and-negative-integer/
+
+---
+
+[中文文档](/solution/2500-2599/2529.Maximum%20Count%20of%20Positive%20Integer%20and%20Negative%20Integer/README.md)
+
+## Description
+
+<p>Given an array <code>nums</code> sorted in <strong>non-decreasing</strong> order, return <em>the maximum between the number of positive integers and the number of negative integers.</em></p>
+
+<ul>
+	<li>In other words, if the number of positive integers in <code>nums</code> is <code>pos</code> and the number of negative integers is <code>neg</code>, then return the maximum of <code>pos</code> and <code>neg</code>.</li>
+</ul>
+
+<p><strong>Note</strong> that <code>0</code> is neither positive nor negative.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [-2,-1,-1,1,2,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are 3 positive integers and 3 negative integers. The maximum count among them is 3.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [-3,-2,-1,0,0,1,2]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are 2 positive integers and 3 negative integers. The maximum count among them is 3.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5,20,66,1314]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> There are 4 positive integers and 0 negative integers. The maximum count among them is 4.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 2000</code></li>
+	<li><code>-2000 &lt;= nums[i] &lt;= 2000</code></li>
+	<li><code>nums</code> is sorted in a <strong>non-decreasing order</strong>.</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Follow up:</strong> Can you solve the problem in <code>O(log(n))</code> time complexity?</p>
+
+## Solutions
+
+### Solution 1: Traversal
+
+> **Thinking**
+>
+> Return the larger of the positive count and the negative count; zeros are ignored. A single pass at $n\le 10^5$ is enough.
+
+We can directly traverse the array, count the number of positive and negative integers $a$ and $b$, and return the larger of $a$ and $b$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumCount(int[] nums) {
+        int a = 0, b = 0;
+        for (int x : nums) {
+            if (x > 0) {
+                ++a;
+            } else if (x < 0) {
+                ++b;
+            }
+        }
+        return Math.max(a, b);
+    }
+}
+```
+
+### Solution 2: Binary Search
+
+> **Thinking**
+>
+> Solution 1 does not use that the array is non-decreasing. Positives are the suffix of values $\ge 1$, negatives the prefix of values $<0$, i.e. the lower bounds of $1$ and $0$. Two $\textit{bisect\_left}$ calls obtain both counts in logarithmic time.
+
+Since the array is sorted in non-decreasing order, we can use binary search to find the index $i$ of the first element that is greater than or equal to $1$, and the index $j$ of the first element that is greater than or equal to $0$. The number of positive integers is $a = n - i$, and the number of negative integers is $b = j$. We return the larger of $a$ and $b$.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumCount(int[] nums) {
+        int a = nums.length - search(nums, 1);
+        int b = search(nums, 0);
+        return Math.max(a, b);
+    }
+
+    private int search(int[] nums, int x) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (nums[mid] >= x) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+```

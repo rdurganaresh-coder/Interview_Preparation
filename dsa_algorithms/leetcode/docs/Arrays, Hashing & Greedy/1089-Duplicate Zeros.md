@@ -1,0 +1,88 @@
+# 1089. Duplicate Zeros
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/duplicate-zeros/
+
+---
+
+[中文文档](/solution/1000-1099/1089.Duplicate%20Zeros/README.md)
+
+## Description
+
+<p>Given a fixed-length integer array <code>arr</code>, duplicate each occurrence of zero, shifting the remaining elements to the right.</p>
+
+<p><strong>Note</strong> that elements beyond the length of the original array are not written. Do the above modifications to the input array in place and do not return anything.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [1,0,2,3,0,4,5,0]
+<strong>Output:</strong> [1,0,0,2,3,0,0,4]
+<strong>Explanation:</strong> After calling your function, the input array is modified to: [1,0,0,2,3,0,0,4]
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [1,2,3]
+<strong>Output:</strong> [1,2,3]
+<strong>Explanation:</strong> After calling your function, the input array is modified to: [1,2,3]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= arr.length &lt;= 10<sup>4</sup></code></li>
+	<li><code>0 &lt;= arr[i] &lt;= 9</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> Each zero must be duplicated in place and the tail truncated. An extra array is not in-place. Writing from the left overwrites unread values, so we first find the last original index that still fits, then fill from the right.
+>
+> $i$ and a virtual length $k$ advance together: $+1$ for a nonzero, $+2$ for a zero, until $k\ge n$. If a final zero makes $k=n+1$, that zero is written once at the end.
+>
+> Then $j$ walks from $n-1$: a zero occupies two slots, a nonzero one.
+
+Scan from left to right to see how far the original array can go after zeros are duplicated. Pointer $i$ is the last source index that still fits, and $k$ is the virtual length after duplication: add $1$ for a nonzero value and $2$ for a zero. Stop when $k \ge n$.
+
+Let $j = n - 1$ be the write index. If the last kept value is a zero that would overflow ($k = n + 1$), write that single zero at $\textit{arr}[j]$ and decrement both $i$ and $j$.
+
+Then fill from right to left. Copy $\textit{arr}[i]$ once into $\textit{arr}[j]$ if it is nonzero, or twice if it is zero.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the array.
+
+#### Java
+
+```java
+class Solution {
+    public void duplicateZeros(int[] arr) {
+        int n = arr.length;
+        int i = -1, k = 0;
+        while (k < n) {
+            ++i;
+            k += arr[i] > 0 ? 1 : 2;
+        }
+        int j = n - 1;
+        if (k == n + 1) {
+            arr[j--] = 0;
+            --i;
+        }
+        while (j >= 0) {
+            arr[j] = arr[i];
+            if (arr[i] == 0) {
+                arr[--j] = arr[i];
+            }
+            --i;
+            --j;
+        }
+    }
+}
+```

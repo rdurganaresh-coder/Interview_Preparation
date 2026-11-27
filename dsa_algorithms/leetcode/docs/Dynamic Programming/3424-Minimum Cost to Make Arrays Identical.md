@@ -1,0 +1,102 @@
+# 3424. Minimum Cost to Make Arrays Identical
+
+**Difficulty:** Medium  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/minimum-cost-to-make-arrays-identical/
+
+---
+
+[中文文档](/solution/3400-3499/3424.Minimum%20Cost%20to%20Make%20Arrays%20Identical/README.md)
+
+## Description
+
+<p>You are given two integer arrays <code>arr</code> and <code>brr</code> of length <code>n</code>, and an integer <code>k</code>. You can perform the following operations on <code>arr</code> <em>any</em> number of times:</p>
+
+<ul>
+	<li>Split <code>arr</code> into <em>any</em> number of <strong>contiguous</strong> <span data-keyword="subarray-nonempty">subarrays</span> and rearrange these subarrays in <em>any order</em>. This operation has a fixed cost of <code>k</code>.</li>
+	<li>
+	<p>Choose any element in <code>arr</code> and add or subtract a positive integer <code>x</code> to it. The cost of this operation is <code>x</code>.</p>
+	</li>
+</ul>
+
+<p>Return the <strong>minimum </strong>total cost to make <code>arr</code> <strong>equal</strong> to <code>brr</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">arr = [-7,9,5], brr = [7,-2,-5], k = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">13</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<ul>
+	<li>Split <code>arr</code> into two contiguous subarrays: <code>[-7]</code> and <code>[9, 5]</code> and rearrange them as <code>[9, 5, -7]</code>, with a cost of 2.</li>
+	<li>Subtract 2 from element <code>arr[0]</code>. The array becomes <code>[7, 5, -7]</code>. The cost of this operation is 2.</li>
+	<li>Subtract 7 from element <code>arr[1]</code>. The array becomes <code>[7, -2, -7]</code>. The cost of this operation is 7.</li>
+	<li>Add 2 to element <code>arr[2]</code>. The array becomes <code>[7, -2, -5]</code>. The cost of this operation is 2.</li>
+</ul>
+
+<p>The total cost to make the arrays equal is <code>2 + 2 + 7 + 2 = 13</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">arr = [2,1], brr = [2,1], k = 0</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">0</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>Since the arrays are already equal, no operations are needed, and the total cost is 0.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= arr.length == brr.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= k &lt;= 2 * 10<sup>10</sup></code></li>
+	<li><code>-10<sup>5</sup> &lt;= arr[i] &lt;= 10<sup>5</sup></code></li>
+	<li><code>-10<sup>5</sup> &lt;= brr[i] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Greedy + Sorting
+
+> **Thinking**
+>
+> Without rearranging, the cost is the sum of absolute differences at each index. Rearranging costs $k$ first, after which $\textit{arr}$ may be matched to $\textit{brr}$ arbitrarily.
+>
+> Searching permutations is impossible for $n\le 10^5$. Sorting both arrays and pairing them in order minimizes $\sum|a_i-b_i|$.
+>
+> We compute $c_1$ with no split, and $c_2=k$ plus the sorted pairing, then take the minimum. A partial rearrangement cannot beat “no rearrange” or “pay $k$ and fully rearrange”.
+
+If splitting the array is not allowed, we can directly calculate the sum of absolute differences between the two arrays as the total cost $c_1$. If splitting is allowed, we can divide the array $\textit{arr}$ into $n$ subarrays of length 1, then rearrange them in any order, and compare with array $\textit{brr}$, calculating the sum of absolute differences as the total cost $c_2$. To minimize $c_2$, we can sort both arrays and then calculate the sum of absolute differences. The final result is $\min(c_1, c_2 + k)$.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the length of the array $\textit{arr}$.
+
+#### Java
+
+```java
+class Solution {
+    public long minCost(int[] arr, int[] brr, long k) {
+        long c1 = calc(arr, brr);
+        Arrays.sort(arr);
+        Arrays.sort(brr);
+        long c2 = calc(arr, brr) + k;
+        return Math.min(c1, c2);
+    }
+
+    private long calc(int[] arr, int[] brr) {
+        long ans = 0;
+        for (int i = 0; i < arr.length; ++i) {
+            ans += Math.abs(arr[i] - brr[i]);
+        }
+        return ans;
+    }
+}
+```

@@ -1,0 +1,124 @@
+# 757. Set Intersection Size At Least Two
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/set-intersection-size-at-least-two/
+
+---
+
+[中文文档](/solution/0700-0799/0757.Set%20Intersection%20Size%20At%20Least%20Two/README.md)
+
+## Description
+
+<p>You are given a 2D integer array <code>intervals</code> where <code>intervals[i] = [start<sub>i</sub>, end<sub>i</sub>]</code> represents all the integers from <code>start<sub>i</sub></code> to <code>end<sub>i</sub></code> inclusively.</p>
+
+<p>A <strong>containing set</strong> is an array <code>nums</code> where each interval from <code>intervals</code> has <strong>at least two</strong> integers in <code>nums</code>.</p>
+
+<ul>
+	<li>For example, if <code>intervals = [[1,3], [3,7], [8,9]]</code>, then <code>[1,2,4,7,8,9]</code> and <code>[2,3,4,8,9]</code> are <strong>containing sets</strong>.</li>
+</ul>
+
+<p>Return <em>the minimum possible size of a containing set</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> intervals = [[1,3],[3,7],[8,9]]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> let nums = [2, 3, 4, 8, 9].
+It can be shown that there cannot be any containing array of size 4.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> intervals = [[1,3],[1,4],[2,5],[3,5]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> let nums = [2, 3, 4].
+It can be shown that there cannot be any containing array of size 2.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> intervals = [[1,2],[2,3],[2,4],[4,5]]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> let nums = [1, 2, 3, 4, 5].
+It can be shown that there cannot be any containing array of size 4.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= intervals.length &lt;= 3000</code></li>
+	<li><code>intervals[i].length == 2</code></li>
+	<li><code>0 &lt;= start<sub>i</sub> &lt; end<sub>i</sub> &lt;= 10<sup>8</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting + Greedy
+
+> **Thinking**
+>
+> Pick as few points as possible so every interval contains at least two. $3000$ intervals rule out subsets. Points should sit as far right as possible to be reused.
+>
+> Sort by end, then by start descending, so tighter intervals come first. Keep the last two placed points $s<e$.
+>
+> Skip if both lie in the interval; if only $e$ does, add $b$; if neither does, add $b-1$ and $b$. Each step adds the fewest, rightmost points.
+
+We want to select as few integer points as possible on the number line such that each interval contains at least two points. A classic and effective strategy is to sort intervals by their right endpoints and try to place selected points towards the right side of intervals, so that these points can cover more subsequent intervals.
+
+First, sort all intervals by the following rules:
+
+1. Sort by right endpoint in ascending order;
+2. If right endpoints are equal, sort by left endpoint in descending order.
+
+The reason for this sorting is: intervals with smaller right endpoints have less "operational space" and should be satisfied first; when right endpoints are equal, intervals with larger left endpoints are narrower and should be prioritized.
+
+Next, we use two variables $s$ and $e$ to record the **second-to-last point** and **last point** that are common to all currently processed intervals. Initially, $s = e = -1$, indicating that no points have been placed yet.
+
+Then we process the sorted intervals $[a, b]$ one by one, and discuss three cases based on their relationship with $\{s, e\}$:
+
+1. **If $a \leq s$**:
+   The current interval already contains both points $s$ and $e$, so no additional points are needed.
+
+2. **If $s < a \leq e$**:
+   The current interval only contains one point (i.e., $e$), and needs one more point. To make the new point most helpful for subsequent intervals, we choose the rightmost point $b$ in the interval. Update $\textit{ans} = \textit{ans} + 1$, and set the new two points to $\{e, b\}$.
+
+3. **If $a > e$**:
+   The current interval does not contain either of the existing two points, so two points need to be added. The optimal choice is to place $\{b - 1, b\}$ at the rightmost side of the interval. Update $\textit{ans} = \textit{ans} + 2$, and set the new two points to $\{b - 1, b\}$.
+
+Finally, return the total number of points placed, $\textit{ans}$.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(\log n)$, where $n$ is the number of intervals.
+
+#### Java
+
+```java
+class Solution {
+    public int intersectionSizeTwo(int[][] intervals) {
+        Arrays.sort(intervals, (a, b) -> a[1] == b[1] ? b[0] - a[0] : a[1] - b[1]);
+        int ans = 0;
+        int s = -1, e = -1;
+        for (int[] v : intervals) {
+            int a = v[0], b = v[1];
+            if (a <= s) {
+                continue;
+            }
+            if (a > e) {
+                ans += 2;
+                s = b - 1;
+                e = b;
+            } else {
+                ans += 1;
+                s = e;
+                e = b;
+            }
+        }
+        return ans;
+    }
+}
+```

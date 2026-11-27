@@ -1,0 +1,124 @@
+# 742. Closest Leaf in a Binary Tree
+
+**Difficulty:** Medium  
+**Category:** Trees & Tries  
+**LeetCode:** https://leetcode.com/problems/closest-leaf-in-a-binary-tree/
+
+---
+
+[中文文档](/solution/0700-0799/0742.Closest%20Leaf%20in%20a%20Binary%20Tree/README.md)
+
+## Description
+
+<p>Given the <code>root</code> of a binary tree where every node has <strong>a unique value</strong> and a target integer <code>k</code>, return <em>the value of the <strong>nearest leaf node</strong> to the target </em><code>k</code><em> in the tree</em>.</p>
+
+<p><strong>Nearest to a leaf</strong> means the least number of edges traveled on the binary tree to reach any leaf of the tree. Also, a node is called a leaf if it has no children.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0700-0799/0742.Closest%20Leaf%20in%20a%20Binary%20Tree/images/closest1-tree.jpg" style="width: 224px; height: 145px;" />
+<pre>
+<strong>Input:</strong> root = [1,3,2], k = 1
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Either 2 or 3 is the nearest leaf node to the target of 1.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0700-0799/0742.Closest%20Leaf%20in%20a%20Binary%20Tree/images/closest2-tree.jpg" style="width: 64px; height: 65px;" />
+<pre>
+<strong>Input:</strong> root = [1], k = 1
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The nearest leaf node is the root node itself.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0700-0799/0742.Closest%20Leaf%20in%20a%20Binary%20Tree/images/closest3-tree.jpg" style="width: 464px; height: 384px;" />
+<pre>
+<strong>Input:</strong> root = [1,2,3,4,null,null,null,5,null,6], k = 2
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The leaf node with value 3 (and not the leaf node with value 6) is nearest to the node with value 2.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li>The number of nodes in the tree is in the range <code>[1, 1000]</code>.</li>
+	<li><code>1 &lt;= Node.val &lt;= 1000</code></li>
+	<li>All the values of the tree are <strong>unique</strong>.</li>
+	<li>There exist some node in the tree where <code>Node.val == k</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS + BFS
+
+> **Thinking**
+>
+> Find the nearest leaf to the node valued $k$. The leaf may sit in the subtree or require walking up to the parent first. Downward search alone misses that.
+>
+> On the undirected graph of the tree, the first leaf reached by BFS from $k$ is the closest. Values are unique, so the start is easy to find.
+>
+> DFS records parent/child edges both ways, then BFS from $k$ returns on the first node with no children. $O(n)$.
+
+First, we use depth-first search to construct an undirected graph $g$, where $g[\textit{node}]$ represents the set of nodes adjacent to the node $\textit{node}$. Then we start a breadth-first search from node $k$ until we find a leaf node, which is the answer.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes in the binary tree.
+
+#### Java
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private Map<TreeNode, List<TreeNode>> g = new HashMap<>();
+
+    public int findClosestLeaf(TreeNode root, int k) {
+        dfs(root, null);
+        Deque<TreeNode> q = new LinkedList<>();
+        Set<TreeNode> vis = new HashSet<>(q.size());
+        for (TreeNode node : g.keySet()) {
+            if (node != null && node.val == k) {
+                vis.add(node);
+                q.offer(node);
+                break;
+            }
+        }
+        while (true) {
+            TreeNode node = q.poll();
+            if (node != null) {
+                if (node.left == node.right) {
+                    return node.val;
+                }
+                for (TreeNode nxt : g.get(node)) {
+                    if (vis.add(nxt)) {
+                        q.offer(nxt);
+                    }
+                }
+            }
+        }
+    }
+
+    private void dfs(TreeNode root, TreeNode fa) {
+        if (root != null) {
+            g.computeIfAbsent(root, k -> new ArrayList<>()).add(fa);
+            g.computeIfAbsent(fa, k -> new ArrayList<>()).add(root);
+            dfs(root.left, root);
+            dfs(root.right, root);
+        }
+    }
+}
+```

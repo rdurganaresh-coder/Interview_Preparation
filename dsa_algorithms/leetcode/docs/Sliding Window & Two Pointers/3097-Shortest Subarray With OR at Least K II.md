@@ -1,0 +1,120 @@
+# 3097. Shortest Subarray With OR at Least K II
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/shortest-subarray-with-or-at-least-k-ii/
+
+---
+
+[中文文档](/solution/3000-3099/3097.Shortest%20Subarray%20With%20OR%20at%20Least%20K%20II/README.md)
+
+## Description
+
+<p>You are given an array <code>nums</code> of <strong>non-negative</strong> integers and an integer <code>k</code>.</p>
+
+<p>An array is called <strong>special</strong> if the bitwise <code>OR</code> of all of its elements is <strong>at least</strong> <code>k</code>.</p>
+
+<p>Return <em>the length of the <strong>shortest</strong> <strong>special</strong> <strong>non-empty</strong> <span data-keyword="subarray-nonempty">subarray</span> of</em> <code>nums</code>, <em>or return</em> <code>-1</code> <em>if no special subarray exists</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,2,3], k = 2</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">1</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The subarray <code>[3]</code> has <code>OR</code> value of <code>3</code>. Hence, we return <code>1</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [2,1,8], k = 10</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">3</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The subarray <code>[2,1,8]</code> has <code>OR</code> value of <code>11</code>. Hence, we return <code>3</code>.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,2], k = 0</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">1</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The subarray <code>[1]</code> has <code>OR</code> value of <code>1</code>. Hence, we return <code>1</code>.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 2 * 10<sup>5</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+	<li><code>0 &lt;= k &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers + Counting
+
+> **Thinking**
+>
+> The statement matches part I, but $n \le 2 \times 10^5$, so enumerating subarrays is gone.
+>
+> Part I’s monotone OR plus per-bit counts for deletions is already $O(n \log M)$ and carries over unchanged.
+>
+> The same two pointers and $32$ counters maintain the current OR.
+
+We can observe that if we fix the left endpoint of the subarray, as the right endpoint moves to the right, the bitwise OR value of the subarray will only increase, not decrease. Therefore, we can use the double pointers method to maintain a subarray that meets the conditions.
+
+Specifically, we use two pointers $i$ and $j$ to represent the left and right endpoints of the subarray, respectively. Initially, both pointers are at the first element of the array. We use a variable $s$ to represent the bitwise OR value of the subarray, and initially, the value of $s$ is $0$. We also need to maintain an array $\textit{cnt}$ of length $32$, which represents the occurrence times of each bit in the binary representation of each element in the subarray.
+
+In each step, we move $j$ to the right by one position, and update $s$ and $\textit{cnt}$. If the value of $s$ is greater than or equal to $k$, we continuously update the minimum length of the subarray and move $i$ to the right by one position until the value of $s$ is less than $k$. In this process, we also need to update $s$ and $\textit{cnt}$.
+
+Finally, we return the minimum length. If there is no subarray that meets the conditions, we return $-1$.
+
+The time complexity is $O(n \log M)$, and the space complexity is $O(\log M)$, where $n$ and $M$ are the length of the array and the maximum value of the elements in the array, respectively.
+
+Similar Problems:
+
+- [3171. Find Subarray With Bitwise AND Closest to K](https://github.com/doocs/leetcode/blob/main/solution/3100-3199/3171.Find%20Subarray%20With%20Bitwise%20AND%20Closest%20to%20K/README_EN.md)
+
+#### Java
+
+```java
+class Solution {
+    public int minimumSubarrayLength(int[] nums, int k) {
+        int n = nums.length;
+        int[] cnt = new int[32];
+        int ans = n + 1;
+        for (int i = 0, j = 0, s = 0; j < n; ++j) {
+            s |= nums[j];
+            for (int h = 0; h < 32; ++h) {
+                if ((nums[j] >> h & 1) == 1) {
+                    ++cnt[h];
+                }
+            }
+            for (; s >= k && i <= j; ++i) {
+                ans = Math.min(ans, j - i + 1);
+                for (int h = 0; h < 32; ++h) {
+                    if ((nums[i] >> h & 1) == 1) {
+                        if (--cnt[h] == 0) {
+                            s ^= 1 << h;
+                        }
+                    }
+                }
+            }
+        }
+        return ans > n ? -1 : ans;
+    }
+}
+```

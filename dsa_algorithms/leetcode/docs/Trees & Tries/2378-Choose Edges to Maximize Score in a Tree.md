@@ -1,0 +1,180 @@
+# 2378. Choose Edges to Maximize Score in a Tree
+
+**Difficulty:** Medium  
+**Category:** Trees & Tries  
+**LeetCode:** https://leetcode.com/problems/choose-edges-to-maximize-score-in-a-tree/
+
+---
+
+[中文文档](/solution/2300-2399/2378.Choose%20Edges%20to%20Maximize%20Score%20in%20a%20Tree/README.md)
+
+## Description
+
+<p>You are given a <strong>weighted</strong> tree consisting of <code>n</code> nodes numbered from <code>0</code> to <code>n - 1</code>.</p>
+
+<p>The tree is <strong>rooted</strong> at node <code>0</code> and represented with a <strong>2D</strong> array <code>edges</code> of size <code>n</code> where <code>edges[i] = [par<sub>i</sub>, weight<sub>i</sub>]</code> indicates that node <code>par<sub>i</sub></code> is the <strong>parent</strong> of node <code>i</code>, and the edge between them has a weight equal to <code>weight<sub>i</sub></code>. Since the root does <strong>not</strong> have a parent, you have <code>edges[0] = [-1, -1]</code>.</p>
+
+<p>Choose some edges from the tree such that no two chosen edges are <strong>adjacent</strong> and the <strong>sum</strong> of the weights of the chosen edges is maximized.</p>
+
+<p>Return <em>the <strong>maximum</strong> sum of the chosen edges</em>.</p>
+
+<p><strong>Note</strong>:</p>
+
+<ul>
+	<li>You are allowed to <strong>not</strong> choose any edges in the tree, the sum of weights in this case will be <code>0</code>.</li>
+	<li>Two edges <code>Edge<sub>1</sub></code> and <code>Edge<sub>2</sub></code> in the tree are <strong>adjacent</strong> if they have a <strong>common</strong> node.
+	<ul>
+		<li>In other words, they are adjacent if <code>Edge<sub>1</sub></code> connects nodes <code>a</code> and <code>b</code> and <code>Edge<sub>2</sub></code> connects nodes <code>b</code> and <code>c</code>.</li>
+	</ul>
+	</li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2300-2399/2378.Choose%20Edges%20to%20Maximize%20Score%20in%20a%20Tree/images/treedrawio.png" style="width: 271px; height: 221px;" />
+<pre>
+<strong>Input:</strong> edges = [[-1,-1],[0,5],[0,10],[2,6],[2,4]]
+<strong>Output:</strong> 11
+<strong>Explanation:</strong> The above diagram shows the edges that we have to choose colored in red.
+The total score is 5 + 6 = 11.
+It can be shown that no better score can be obtained.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2300-2399/2378.Choose%20Edges%20to%20Maximize%20Score%20in%20a%20Tree/images/treee1293712983719827.png" style="width: 221px; height: 181px;" />
+<pre>
+<strong>Input:</strong> edges = [[-1,-1],[0,5],[0,-6],[0,7]]
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> We choose the edge with weight 7.
+Note that we cannot choose more than one edge because all edges are adjacent to each other.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>n == edges.length</code></li>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+	<li><code>edges[i].length == 2</code></li>
+	<li><code>par<sub>0</sub> == weight<sub>0</sub> == -1</code></li>
+	<li><code>0 &lt;= par<sub>i</sub> &lt;= n - 1</code> for all <code>i &gt;= 1</code>.</li>
+	<li><code>par<sub>i</sub> != i</code></li>
+	<li><code>-10<sup>6</sup> &lt;= weight<sub>i</sub> &lt;= 10<sup>6</sup></code> for all <code>i &gt;= 1</code>.</li>
+	<li><code>edges</code> represents a valid tree.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Tree DP
+
+> **Thinking**
+>
+> Choose a matching of tree edges with maximum weight. A choice only affects the two endpoints, so a tree DP is enough.
+>
+> $\textit{dfs}(i)$ returns the best weight when the edge to the parent is taken, and when it is not. The former sums children’s “not taken” values; the latter may switch at most one child to “taken” and add that edge weight.
+
+We design a function $\textit{dfs}(i)$, which represents the maximum sum of the weights of selected edges in the subtree rooted at node $i$, such that no two selected edges are adjacent. This function returns two values $(a, b)$. The first value $a$ represents the sum of the weights of selected edges when the edge between the current node $i$ and its parent node is selected. The second value $b$ represents the sum of the weights of selected edges when the edge between the current node $i$ and its parent node is not selected.
+
+We can observe the following for the current node $i$:
+
+- If the edge between $i$ and its parent node is selected, then none of the edges between $i$ and its child nodes can be selected. In this case, the value of $a$ for the current node is the sum of the $b$ values of all its child nodes.
+- If the edge between $i$ and its parent node is not selected, then we can select at most one edge between $i$ and its child nodes. In this case, the value of $b$ for the current node is the sum of the $a$ values of the selected child nodes and the $b$ values of the unselected child nodes, plus the weight of the edge between $i$ and the selected child node.
+
+We call the function $\textit{dfs}(0)$, and the second value returned is the answer, which is the sum of the weights of selected edges when the edge between the root node and its parent node is not selected.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes.
+
+#### Java
+
+```java
+class Solution {
+    private List<int[]>[] g;
+
+    public long maxScore(int[][] edges) {
+        int n = edges.length;
+        g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (int i = 1; i < n; ++i) {
+            int p = edges[i][0], w = edges[i][1];
+            g[p].add(new int[] {i, w});
+        }
+        return dfs(0)[1];
+    }
+
+    private long[] dfs(int i) {
+        long a = 0, b = 0, t = 0;
+        for (int[] nxt : g[i]) {
+            int j = nxt[0], w = nxt[1];
+            long[] s = dfs(j);
+            a += s[1];
+            b += s[1];
+            t = Math.max(t, s[0] - s[1] + w);
+        }
+        b += t;
+        return new long[] {a, b};
+    }
+}
+```
+
+### Solution 2: Tree DP + Explicit Stack
+
+> **Thinking**
+>
+> Choose a set of non-adjacent tree edges with maximum weight. With $n \le 10^5$, deciding each edge by recursion from the root is too deep: a chain makes the call depth $n$.
+>
+> Each node needs two values: the best weight $a$ when the edge to its parent is taken, and the best weight $b$ when that edge is not taken. Taking the parent edge forbids every edge to a child, so $a$ is the sum of the children's $b$ values. Leaving it free allows at most one child edge, and the gain of switching that child is its $a$ minus its $b$ plus the edge weight.
+>
+> An explicit stack of $(\textit{node}, \textit{state})$ runs the postorder. On entry we push the exit marker and then the children, and on exit we store $a$ and $b$. The root has no parent edge, so the answer is the root's $b$.
+
+For each node $i$ we compute two values $(a, b)$. The value $a$ is the maximum weight of selected edges in the subtree when the edge between $i$ and its parent is selected. The value $b$ is that weight when the edge is not selected. An explicit stack walks from the root in postorder and writes the pair when the node is left.
+
+For the current node $i$:
+
+- If the edge between $i$ and its parent is selected, then none of the edges between $i$ and its children can be selected. In this case $a$ is the sum of the $b$ values of all children.
+- If that edge is not selected, then at most one edge from $i$ to a child can be selected. In this case $b$ is the selected child's $a$, plus the $b$ values of the other children, plus the weight of the selected edge. A negative gain leaves the edge unselected.
+
+The root has no parent edge, so the answer is the root's $b$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes.
+
+#### Java
+
+```java
+class Solution {
+    public long maxScore(int[][] edges) {
+        int n = edges.length;
+        List<int[]>[] g = new List[n];
+        Arrays.setAll(g, k -> new ArrayList<>());
+        for (int i = 1; i < n; ++i) {
+            int p = edges[i][0], w = edges[i][1];
+            g[p].add(new int[] {i, w});
+        }
+        long[][] down = new long[n][2];
+        Deque<int[]> stk = new ArrayDeque<>();
+        stk.push(new int[] {0, 0});
+        while (!stk.isEmpty()) {
+            int[] cur = stk.pop();
+            int i = cur[0], state = cur[1];
+            if (state == 0) {
+                stk.push(new int[] {i, 1});
+                for (int[] nxt : g[i]) {
+                    stk.push(new int[] {nxt[0], 0});
+                }
+            } else {
+                long a = 0, b = 0, t = 0;
+                for (int[] nxt : g[i]) {
+                    int j = nxt[0], w = nxt[1];
+                    long x = down[j][0], y = down[j][1];
+                    a += y;
+                    b += y;
+                    t = Math.max(t, x - y + w);
+                }
+                b += t;
+                down[i][0] = a;
+                down[i][1] = b;
+            }
+        }
+        return down[0][1];
+    }
+}
+```

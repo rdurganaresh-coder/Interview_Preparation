@@ -1,0 +1,89 @@
+# 2358. Maximum Number of Groups Entering a Competition
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-number-of-groups-entering-a-competition/
+
+---
+
+[中文文档](/solution/2300-2399/2358.Maximum%20Number%20of%20Groups%20Entering%20a%20Competition/README.md)
+
+## Description
+
+<p>You are given a positive integer array <code>grades</code> which represents the grades of students in a university. You would like to enter <strong>all</strong> these students into a competition in <strong>ordered</strong> non-empty groups, such that the ordering meets the following conditions:</p>
+
+<ul>
+	<li>The sum of the grades of students in the <code>i<sup>th</sup></code> group is <strong>less than</strong> the sum of the grades of students in the <code>(i + 1)<sup>th</sup></code> group, for all groups (except the last).</li>
+	<li>The total number of students in the <code>i<sup>th</sup></code> group is <strong>less than</strong> the total number of students in the <code>(i + 1)<sup>th</sup></code> group, for all groups (except the last).</li>
+</ul>
+
+<p>Return <em>the <strong>maximum</strong> number of groups that can be formed</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> grades = [10,6,12,7,3,5]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The following is a possible way to form 3 groups of students:
+- 1<sup>st</sup> group has the students with grades = [12]. Sum of grades: 12. Student count: 1
+- 2<sup>nd</sup> group has the students with grades = [6,7]. Sum of grades: 6 + 7 = 13. Student count: 2
+- 3<sup>rd</sup> group has the students with grades = [10,3,5]. Sum of grades: 10 + 3 + 5 = 18. Student count: 3
+It can be shown that it is not possible to form more than 3 groups.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> grades = [8,8]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> We can only form 1 group, since forming 2 groups would lead to an equal number of students in both groups.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= grades.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= grades[i] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Greedy + Binary Search
+
+> **Thinking**
+>
+> Group sizes and score sums must both strictly increase. $n \le 10^5$ rules out searching partitions. After sorting grades, sizes $1,2,\ldots,k$ automatically increase the sums.
+>
+> Only $\frac{k(k+1)}{2}\le n$ remains. Binary-search $k$ (via $\textit{bisect}$ on $x^2+x$ versus $2n$) for the largest feasible count.
+
+Observing the conditions in the problem, the number of students in the $i$-th group must be less than that in the $(i+1)$-th group, and the total score of students in the $i$-th group must be less than that in the $(i+1)$-th group. We only need to sort the students by their scores in ascending order, and then assign $1$, $2$, ..., $k$ students to each group in order. If the last group does not have enough students for $k$, we can distribute these students to the previous last group.
+
+Therefore, we need to find the largest $k$ such that $\frac{(1 + k) \times k}{2} \leq n$, where $n$ is the total number of students. We can use binary search to solve this.
+
+We define the left boundary of binary search as $l = 1$ and the right boundary as $r = n$. Each time, the midpoint is $\textit{mid} = \lfloor \frac{l + r + 1}{2} \rfloor$. If $(1 + \textit{mid}) \times \textit{mid} \gt 2 \times n$, it means $\textit{mid}$ is too large, so we shrink the right boundary to $\textit{mid} - 1$; otherwise, we increase the left boundary to $\textit{mid}$.
+
+Finally, we return $l$ as the answer.
+
+The time complexity is $O(\log n)$, and the space complexity is $O(1)$, where $n$ is the total number of students.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumGroups(int[] grades) {
+        int n = grades.length;
+        int l = 0, r = n;
+        while (l < r) {
+            int mid = (l + r + 1) >> 1;
+            if (1L * mid * mid + mid > n * 2L) {
+                r = mid - 1;
+            } else {
+                l = mid;
+            }
+        }
+        return l;
+    }
+}
+```

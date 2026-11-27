@@ -1,0 +1,87 @@
+# 3100. Water Bottles II
+
+**Difficulty:** Medium  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/water-bottles-ii/
+
+---
+
+[中文文档](/solution/3100-3199/3100.Water%20Bottles%20II/README.md)
+
+## Description
+
+<p>You are given two integers <code>numBottles</code> and <code>numExchange</code>.</p>
+
+<p><code>numBottles</code> represents the number of full water bottles that you initially have. In one operation, you can perform one of the following operations:</p>
+
+<ul>
+	<li>Drink any number of full water bottles turning them into empty bottles.</li>
+	<li>Exchange <code>numExchange</code> empty bottles with one full water bottle. Then, increase <code>numExchange</code> by one.</li>
+</ul>
+
+<p>Note that you cannot exchange multiple batches of empty bottles for the same value of <code>numExchange</code>. For example, if <code>numBottles == 3</code> and <code>numExchange == 1</code>, you cannot exchange <code>3</code> empty water bottles for <code>3</code> full bottles.</p>
+
+<p>Return <em>the <strong>maximum</strong> number of water bottles you can drink</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3100-3199/3100.Water%20Bottles%20II/images/exampleone1.png" style="width: 948px; height: 482px; padding: 10px; background: #fff; border-radius: .5rem;" />
+<pre>
+<strong>Input:</strong> numBottles = 13, numExchange = 6
+<strong>Output:</strong> 15
+<strong>Explanation:</strong> The table above shows the number of full water bottles, empty water bottles, the value of numExchange, and the number of bottles drunk.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/3100-3199/3100.Water%20Bottles%20II/images/example231.png" style="width: 990px; height: 642px; padding: 10px; background: #fff; border-radius: .5rem;" />
+<pre>
+<strong>Input:</strong> numBottles = 10, numExchange = 3
+<strong>Output:</strong> 13
+<strong>Explanation:</strong> The table above shows the number of full water bottles, empty water bottles, the value of numExchange, and the number of bottles drunk.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= numBottles &lt;= 100 </code></li>
+	<li><code>1 &lt;= numExchange &lt;= 100</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Simulation
+
+> **Thinking**
+>
+> Each successful exchange increments the threshold, so a closed form must track a quadratic relation between empties and the growing cost. Both $n$ and $\textit{numExchange}$ are at most $100$, and a direct loop runs in $O(\sqrt{n})$, which fits the limits.
+>
+> All full bottles can be drunk first. Afterwards the only question is whether the empty count is at least the current threshold. Exchanging one bottle, drinking it, and incrementing the threshold reduces empties by $\textit{numExchange}-1$.
+>
+> Add $\textit{numBottles}$ to the answer, then while empties are enough subtract the threshold, increment it, and add one drunk bottle. The accumulated count is the maximum number of bottles drunk.
+
+We can drink all the full water bottles at the beginning, so initially the amount of water we drink is $\textit{numBottles}$. Then, we repeatedly perform the following operations:
+
+- If we currently have $\textit{numExchange}$ empty bottles, we can exchange them for one full bottle. After the exchange, the value of $\textit{numExchange}$ increases by $1$. Then, we drink this bottle, increasing the total amount of water drunk by $1$, and the number of empty bottles increases by $1$.
+- If we do not have $\textit{numExchange}$ empty bottles, we cannot exchange for more water and should stop.
+
+We repeat the above process until we can no longer exchange bottles. The total amount of water drunk is the answer.
+
+The time complexity is $O(\sqrt{n})$, and the space complexity is $O(1)$, where $n$ is the initial number of full bottles.
+
+#### Java
+
+```java
+class Solution {
+    public int maxBottlesDrunk(int numBottles, int numExchange) {
+        int ans = numBottles;
+        while (numBottles >= numExchange) {
+            numBottles -= numExchange;
+            ++numExchange;
+            ++ans;
+            ++numBottles;
+        }
+        return ans;
+    }
+}
+```

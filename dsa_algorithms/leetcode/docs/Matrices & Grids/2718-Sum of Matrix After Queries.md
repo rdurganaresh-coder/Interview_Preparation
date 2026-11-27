@@ -1,0 +1,99 @@
+# 2718. Sum of Matrix After Queries
+
+**Difficulty:** Medium  
+**Category:** Matrices & Grids  
+**LeetCode:** https://leetcode.com/problems/sum-of-matrix-after-queries/
+
+---
+
+[中文文档](/solution/2700-2799/2718.Sum%20of%20Matrix%20After%20Queries/README.md)
+
+## Description
+
+<p>You are given an integer <code>n</code> and a <strong>0-indexed</strong>&nbsp;<strong>2D array</strong> <code>queries</code> where <code>queries[i] = [type<sub>i</sub>, index<sub>i</sub>, val<sub>i</sub>]</code>.</p>
+
+<p>Initially, there is a <strong>0-indexed</strong> <code>n x n</code> matrix filled with <code>0</code>&#39;s. For each query, you must apply one of the following changes:</p>
+
+<ul>
+	<li>if <code>type<sub>i</sub> == 0</code>, set the values in the row with <code>index<sub>i</sub></code> to <code>val<sub>i</sub></code>, overwriting any previous values.</li>
+	<li>if <code>type<sub>i</sub> == 1</code>, set the values in the column with <code>index<sub>i</sub></code> to <code>val<sub>i</sub></code>, overwriting any previous values.</li>
+</ul>
+
+<p>Return <em>the sum of integers in the matrix after all queries are applied</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2700-2799/2718.Sum%20of%20Matrix%20After%20Queries/images/exm1.png" style="width: 681px; height: 161px;" />
+<pre>
+<strong>Input:</strong> n = 3, queries = [[0,0,1],[1,2,2],[0,2,3],[1,0,4]]
+<strong>Output:</strong> 23
+<strong>Explanation:</strong> The image above describes the matrix after each query. The sum of the matrix after all queries are applied is 23. 
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2700-2799/2718.Sum%20of%20Matrix%20After%20Queries/images/exm2.png" style="width: 681px; height: 331px;" />
+<pre>
+<strong>Input:</strong> n = 3, queries = [[0,0,4],[0,1,2],[1,0,1],[0,2,3],[1,2,1]]
+<strong>Output:</strong> 17
+<strong>Explanation:</strong> The image above describes the matrix after each query. The sum of the matrix after all queries are applied is 17.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>4</sup></code></li>
+	<li><code>1 &lt;= queries.length &lt;= 5 * 10<sup>4</sup></code></li>
+	<li><code>queries[i].length == 3</code></li>
+	<li><code>0 &lt;= type<sub>i</sub> &lt;= 1</code></li>
+	<li><code>0 &lt;= index<sub>i</sub>&nbsp;&lt; n</code></li>
+	<li><code>0 &lt;= val<sub>i</sub> &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table
+
+> **Thinking**
+>
+> We apply row and column assignments on an $n\times n$ matrix and want the final sum. $n$ can be $10^4$, so the matrix cannot be materialized; only the last write to a row or column survives.
+>
+> Scan queries backward. The first time a row (column) appears it is the live write, and it covers the cells not yet claimed by a later column (row). Two sets remember settled rows and columns; add $v$ times the remaining width.
+
+Since the value of each row and column depends on the last modification, we can traverse all queries in reverse order and use hash tables $\textit{row}$ and $\textit{col}$ to record which rows and columns have been modified.
+
+For each query $(t, i, v)$:
+
+- If $t = 0$, we check whether the $i$th row has been modified. If not, we add $v \times (n - |\textit{col}|)$ to the answer, where $|\textit{col}|$ represents the size of $\textit{col}$, and then add $i$ to $\textit{row}$.
+- If $t = 1$, we check whether the $i$th column has been modified. If not, we add $v \times (n - |\textit{row}|)$ to the answer, where $|\textit{row}|$ represents the size of $\textit{row}$, and then add $i$ to $\textit{col}$.
+
+Finally, return the answer.
+
+The time complexity is $O(m)$, and the space complexity is $O(n)$, where $m$ represents the number of queries.
+
+#### Java
+
+```java
+class Solution {
+    public long matrixSumQueries(int n, int[][] queries) {
+        Set<Integer> row = new HashSet<>();
+        Set<Integer> col = new HashSet<>();
+        int m = queries.length;
+        long ans = 0;
+        for (int k = m - 1; k >= 0; --k) {
+            var q = queries[k];
+            int t = q[0], i = q[1], v = q[2];
+            if (t == 0) {
+                if (row.add(i)) {
+                    ans += 1L * (n - col.size()) * v;
+                }
+            } else {
+                if (col.add(i)) {
+                    ans += 1L * (n - row.size()) * v;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

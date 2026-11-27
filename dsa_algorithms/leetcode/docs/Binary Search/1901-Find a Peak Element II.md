@@ -1,0 +1,114 @@
+# 1901. Find a Peak Element II
+
+**Difficulty:** Medium  
+**Category:** Binary Search  
+**LeetCode:** https://leetcode.com/problems/find-a-peak-element-ii/
+
+---
+
+[中文文档](/solution/1900-1999/1901.Find%20a%20Peak%20Element%20II/README.md)
+
+## Description
+
+<p>A <strong>peak</strong> element in a 2D grid is an element that is <strong>strictly greater</strong> than all of its <strong>adjacent </strong>neighbors to the left, right, top, and bottom.</p>
+
+<p>Given a <strong>0-indexed</strong> <code>m x n</code> matrix <code>mat</code> where <strong>no two adjacent cells are equal</strong>, find <strong>any</strong> peak element <code>mat[i][j]</code> and return <em>the length 2 array </em><code>[i,j]</code>.</p>
+
+<p>You may assume that the entire matrix is surrounded by an <strong>outer perimeter</strong> with the value <code>-1</code> in each cell.</p>
+
+<p>You must write an algorithm that runs in <code>O(m log(n))</code> or <code>O(n log(m))</code> time.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<p><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1900-1999/1901.Find%20a%20Peak%20Element%20II/images/1.png" style="width: 206px; height: 209px;" /></p>
+
+<pre>
+<strong>Input:</strong> mat = [[1,4],[3,2]]
+<strong>Output:</strong> [0,1]
+<strong>Explanation:</strong>&nbsp;Both 3 and 4 are peak elements so [1,0] and [0,1] are both acceptable answers.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<p><strong><img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/1900-1999/1901.Find%20a%20Peak%20Element%20II/images/3.png" style="width: 254px; height: 257px;" /></strong></p>
+
+<pre>
+<strong>Input:</strong> mat = [[10,20,15],[21,30,14],[7,16,32]]
+<strong>Output:</strong> [1,1]
+<strong>Explanation:</strong>&nbsp;Both 30 and 32 are peak elements so [1,1] and [2,2] are both acceptable answers.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>m == mat.length</code></li>
+	<li><code>n == mat[i].length</code></li>
+	<li><code>1 &lt;= m, n &lt;= 500</code></li>
+	<li><code>1 &lt;= mat[i][j] &lt;= 10<sup>5</sup></code></li>
+	<li>No two adjacent cells are equal.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Binary Search
+
+> **Thinking**
+>
+> Scanning every cell against its four neighbors finds a peak in $O(mn)$, but the required bound is $O(n \log m)$ or $O(m \log n)$.
+>
+> Let $\textit{mat}[i][j]$ be the maximum of row $i$. Comparing it with $\textit{mat}[i+1][j]$ tells which half must contain a peak: a drop keeps the upper half, a rise keeps the lower half. If that half had no peak, the row-max at the border would contradict the sentinel $-1$ outside the matrix.
+>
+> We therefore binary-search the row index, each time taking the max column $j$ of the mid row and shrinking by that vertical comparison, for $O(n \log m)$ time.
+
+Let $m$ and $n$ be the number of rows and columns of the matrix, respectively.
+
+The problem asks us to find a peak, and the time complexity should be $O(m \log n)$ or $O(n \log m)$. Therefore, we can consider using binary search.
+
+We consider the maximum value of the $i$-th row, and denote its index as $j$.
+
+If $\textit{mat}[i][j] > \textit{mat}[i + 1][j]$, then there must be a peak in the rows $[0,..i]$. We only need to find the maximum value in these rows. Similarly, if $\textit{mat}[i][j] < \textit{mat}[i + 1][j]$, then there must be a peak in the rows $[i + 1,..m - 1]$. We only need to find the maximum value in these rows.
+
+Why is the above method correct? We can prove it by contradiction.
+
+If $\textit{mat}[i][j] > \textit{mat}[i + 1][j]$, suppose there is no peak in the rows $[0,..i]$. Then $\textit{mat}[i][j]$ is not a peak. Since $\textit{mat}[i][j]$ is the maximum value of the $i$-th row, and $\textit{mat}[i][j] > \textit{mat}[i + 1][j]$, then $\textit{mat}[i][j] < \textit{mat}[i - 1][j]$. We continue to consider from the $(i - 1)$-th row upwards, and the maximum value of each row is less than the maximum value of the previous row. When we traverse to $i = 0$, since all elements in the matrix are positive integers, and the values of the cells around the matrix are $-1$. Therefore, at the 0-th row, its maximum value is greater than all its adjacent elements, so the maximum value of the 0-th row is a peak, which contradicts the assumption. Therefore, there must be a peak in the rows $[0,..i]$.
+
+For the case where $\textit{mat}[i][j] < \textit{mat}[i + 1][j]$, we can prove in a similar way that there must be a peak in the rows $[i + 1,..m - 1]$.
+
+Therefore, we can use binary search to find the peak.
+
+We perform binary search on the rows of the matrix, initially with the search boundaries $l = 0$, $r = m - 1$. Each time, we find the middle row $\textit{mid}$ and find the index $j$ of the maximum value of this row. If $\textit{mat}[\textit{mid}][j] > \textit{mat}[\textit{mid} + 1][j]$, then we search for the peak in the rows $[0,..\textit{mid}]$, i.e., update $r = \textit{mid}$. Otherwise, we search for the peak in the rows $[\textit{mid} + 1,..m - 1]$, i.e., update $l = \textit{mid} + 1$. When $l = r$, we find the position $[l, j_l]$ of the peak, where $j_l$ is the index of the maximum value of the $l$-th row.
+
+The time complexity is $O(n \log m)$, and the space complexity is $O(1)$, where $m$ and $n$ are the number of rows and columns of the matrix, respectively. The time complexity of binary search is $O(\log m)$, and each time we perform binary search, we need to traverse all elements of the $\textit{mid}$-th row, with a time complexity of $O(n)$.
+
+#### Java
+
+```java
+class Solution {
+    public int[] findPeakGrid(int[][] mat) {
+        int l = 0, r = mat.length - 1;
+        int n = mat[0].length;
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            int j = maxPos(mat[mid]);
+            if (mat[mid][j] > mat[mid + 1][j]) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return new int[] {l, maxPos(mat[l])};
+    }
+
+    private int maxPos(int[] arr) {
+        int j = 0;
+        for (int i = 1; i < arr.length; ++i) {
+            if (arr[j] < arr[i]) {
+                j = i;
+            }
+        }
+        return j;
+    }
+}
+```

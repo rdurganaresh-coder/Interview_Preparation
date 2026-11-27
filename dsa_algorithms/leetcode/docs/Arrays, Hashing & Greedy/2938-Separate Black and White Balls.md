@@ -1,0 +1,91 @@
+# 2938. Separate Black and White Balls
+
+**Difficulty:** Medium  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/separate-black-and-white-balls/
+
+---
+
+[中文文档](/solution/2900-2999/2938.Separate%20Black%20and%20White%20Balls/README.md)
+
+## Description
+
+<p>There are <code>n</code> balls on a table, each ball has a color black or white.</p>
+
+<p>You are given a <strong>0-indexed</strong> binary string <code>s</code> of length <code>n</code>, where <code>1</code> and <code>0</code> represent black and white balls, respectively.</p>
+
+<p>In each step, you can choose two adjacent balls and swap them.</p>
+
+<p>Return <em>the <strong>minimum</strong> number of steps to group all the black balls to the right and all the white balls to the left</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;101&quot;
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> We can group all the black balls to the right in the following way:
+- Swap s[0] and s[1], s = &quot;011&quot;.
+Initially, 1s are not grouped together, requiring at least 1 step to group them to the right.</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;100&quot;
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> We can group all the black balls to the right in the following way:
+- Swap s[0] and s[1], s = &quot;010&quot;.
+- Swap s[1] and s[2], s = &quot;001&quot;.
+It can be proven that the minimum number of steps needed is 2.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> s = &quot;0111&quot;
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> All the black balls are already grouped to the right.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n == s.length &lt;= 10<sup>5</sup></code></li>
+	<li><code>s[i]</code> is either <code>&#39;0&#39;</code> or <code>&#39;1&#39;</code>.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Counting Simulation
+
+> **Thinking**
+>
+> Adjacent swaps that send every $1$ to the right (equivalently every $0$ to the left) cost the number of $0$s to the right of each $1$. $n \le 10^5$. Scanning right to left, a $1$ still crosses $n-i-\textit{cnt}$ empty slots on its right.
+>
+> $\textit{cnt}$ is the number of ones already seen; summing those gaps is the minimum swap count. The balls need not be moved explicitly.
+
+We consider moving all the '1's to the rightmost side. We use a variable $\textit{cnt}$ to record the current number of '1's that have been moved to the rightmost side, and a variable $\textit{ans}$ to record the number of moves.
+
+We traverse the string from right to left. If the current position is '1', then we increment $\textit{cnt}$ by one, and add $n - i - \textit{cnt}$ to $\textit{ans}$, where $n$ is the length of the string. Finally, we return $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(1)$, where $n$ is the length of the string.
+
+#### Java
+
+```java
+class Solution {
+    public long minimumSteps(String s) {
+        long ans = 0;
+        int cnt = 0;
+        int n = s.length();
+        for (int i = n - 1; i >= 0; --i) {
+            if (s.charAt(i) == '1') {
+                ++cnt;
+                ans += n - i - cnt;
+            }
+        }
+        return ans;
+    }
+}
+```

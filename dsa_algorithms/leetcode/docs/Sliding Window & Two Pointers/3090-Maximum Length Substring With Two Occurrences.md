@@ -1,0 +1,81 @@
+# 3090. Maximum Length Substring With Two Occurrences
+
+**Difficulty:** Easy  
+**Category:** Sliding Window & Two Pointers  
+**LeetCode:** https://leetcode.com/problems/maximum-length-substring-with-two-occurrences/
+
+---
+
+[中文文档](/solution/3000-3099/3090.Maximum%20Length%20Substring%20With%20Two%20Occurrences/README.md)
+
+## Description
+
+Given a string <code>s</code>, return the <strong>maximum</strong> length of a <span data-keyword="substring">substring</span>&nbsp;such that it contains <em>at most two occurrences</em> of each character.
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;bcbbbcba&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">4</span></p>
+
+<p><strong>Explanation:</strong></p>
+The following substring has a length of 4 and contains at most two occurrences of each character: <code>&quot;bcbb<u>bcba</u>&quot;</code>.</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">s = &quot;aaaa&quot;</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+The following substring has a length of 2 and contains at most two occurrences of each character: <code>&quot;<u>aa</u>aa&quot;</code>.</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>2 &lt;= s.length &lt;= 100</code></li>
+	<li><code>s</code> consists only of lowercase English letters.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two Pointers
+
+> **Thinking**
+>
+> Every character in the substring may appear at most twice. $n \le 100$ would allow enumeration, but the constraint is a classic sliding window.
+>
+> After the right end absorbs a character, if some count exceeds $2$ the left end must advance until that count is back to $2$. A valid window updates the maximum length.
+>
+> A hash of counts plus two pointers does this in one pass.
+
+We use two pointers $l$ and $r$ to maintain a sliding window, and an array $\textit{cnt}$ to record the occurrence times of each character in the window.
+
+In each iteration, we add the character $c$ at the pointer $r$ into the window, then check if $\textit{cnt}[c]$ is greater than $2$. If it is, we move the pointer $l$ to the right until $\textit{cnt}[c]$ is less than or equal to $2$. At this point, we update the answer $\textit{ans} = \max(\textit{ans}, r - l + 1)$.
+
+Finally, we return the answer $\textit{ans}$.
+
+The time complexity is $O(n)$, and the space complexity is $O(|\Sigma|)$, where $n$ is the length of the string $s$, and $\Sigma$ is the character set, and in this problem, $\Sigma = 26$.
+
+#### Java
+
+```java
+class Solution {
+    public int maximumLengthSubstring(String s) {
+        int ans = 0;
+        int[] cnt = new int[26];
+        for (int l = 0, r = 0; r < s.length(); ++r) {
+            int idx = s.charAt(r) - 'a';
+            ++cnt[idx];
+            while (cnt[idx] > 2) {
+                --cnt[s.charAt(l++) - 'a'];
+            }
+            ans = Math.max(ans, r - l + 1);
+        }
+        return ans;
+    }
+}
+```

@@ -1,0 +1,144 @@
+# 133. Clone Graph
+
+**Difficulty:** Medium  
+**Category:** Graphs & Shortest Path  
+**LeetCode:** https://leetcode.com/problems/clone-graph/
+
+---
+
+[中文文档](/solution/0100-0199/0133.Clone%20Graph/README.md)
+
+## Description
+
+<p>Given a reference of a node in a <strong><a href="https://en.wikipedia.org/wiki/Connectivity_(graph_theory)#Connected_graph" target="_blank">connected</a></strong> undirected graph.</p>
+
+<p>Return a <a href="https://en.wikipedia.org/wiki/Object_copying#Deep_copy" target="_blank"><strong>deep copy</strong></a> (clone) of the graph.</p>
+
+<p>Each node in the graph contains a value (<code>int</code>) and a list (<code>List[Node]</code>) of its neighbors.</p>
+
+<pre>
+class Node {
+    public int val;
+    public List&lt;Node&gt; neighbors;
+}
+</pre>
+
+<p>&nbsp;</p>
+
+<p><strong>Test case format:</strong></p>
+
+<p>For simplicity, each node&#39;s value is the same as the node&#39;s index (1-indexed). For example, the first node with <code>val == 1</code>, the second node with <code>val == 2</code>, and so on. The graph is represented in the test case using an adjacency list.</p>
+
+<p><b>An adjacency list</b> is a collection of unordered <b>lists</b> used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.</p>
+
+<p>The given node will always be the first node with <code>val = 1</code>. You must return the <strong>copy of the given node</strong> as a reference to the cloned graph.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0100-0199/0133.Clone%20Graph/images/133_clone_graph_question.png" style="width: 454px; height: 500px;" />
+<pre>
+<strong>Input:</strong> adjList = [[2,4],[1,3],[2,4],[1,3]]
+<strong>Output:</strong> [[2,4],[1,3],[2,4],[1,3]]
+<strong>Explanation:</strong> There are 4 nodes in the graph.
+1st node (val = 1)&#39;s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+2nd node (val = 2)&#39;s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+3rd node (val = 3)&#39;s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+4th node (val = 4)&#39;s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0100-0199/0133.Clone%20Graph/images/graph.png" style="width: 163px; height: 148px;" />
+<pre>
+<strong>Input:</strong> adjList = [[]]
+<strong>Output:</strong> [[]]
+<strong>Explanation:</strong> Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> adjList = []
+<strong>Output:</strong> []
+<strong>Explanation:</strong> This an empty graph, it does not have any nodes.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li>The number of nodes in the graph is in the range <code>[0, 100]</code>.</li>
+	<li><code>1 &lt;= Node.val &lt;= 100</code></li>
+	<li><code>Node.val</code> is unique for each node.</li>
+	<li>There are no repeated edges and no self-loops in the graph.</li>
+	<li>The Graph is connected and all nodes can be visited starting from the given node.</li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table + DFS
+
+> **Thinking**
+>
+> Deep-copy a connected undirected graph; values are unique and $n\le 100$. Copying values is not enough: neighbor pointers must refer to the new nodes, and cycles would loop if we recurse blindly.
+>
+> A map from original node to clone does it. On the first visit we create the clone and recurse on neighbors; a later visit returns the existing clone, which cuts cycles.
+
+We use a hash table $g$ to record the correspondence between each node in the original graph and its copy, and then perform depth-first search.
+
+We define the function $\textit{dfs}(\textit{node})$, which returns the copy of the $\textit{node}$. The process of $\textit{dfs}(\textit{node})$ is as follows:
+
+- If $\textit{node}$ is $\textit{null}$, then the return value of $\textit{dfs}(\textit{node})$ is $\textit{null}$.
+- If $\textit{node}$ is in $g$, then the return value of $\textit{dfs}(\textit{node})$ is $g[\textit{node}]$.
+- Otherwise, we create a new node $\textit{cloned}$ and set the value of $g[\textit{node}]$ to $\textit{cloned}$. Then, we traverse all the neighbor nodes $\textit{nxt}$ of $\textit{node}$ and add $\textit{dfs}(\textit{nxt})$ to the neighbor list of $\textit{cloned}$.
+- Finally, return $\textit{cloned}$.
+
+In the main function, we return $\textit{dfs}(\textit{node})$.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the number of nodes.
+
+#### Java
+
+```java
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public List<Node> neighbors;
+    public Node() {
+        val = 0;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val) {
+        val = _val;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val, ArrayList<Node> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+}
+*/
+
+class Solution {
+    private Map<Node, Node> g = new HashMap<>();
+
+    public Node cloneGraph(Node node) {
+        return dfs(node);
+    }
+
+    private Node dfs(Node node) {
+        if (node == null) {
+            return null;
+        }
+        Node cloned = g.get(node);
+        if (cloned == null) {
+            cloned = new Node(node.val);
+            g.put(node, cloned);
+            for (Node nxt : node.neighbors) {
+                cloned.neighbors.add(dfs(nxt));
+            }
+        }
+        return cloned;
+    }
+}
+```

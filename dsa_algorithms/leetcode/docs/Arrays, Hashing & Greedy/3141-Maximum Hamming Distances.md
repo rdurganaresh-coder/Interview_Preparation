@@ -1,0 +1,126 @@
+# 3141. Maximum Hamming Distances
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/maximum-hamming-distances/
+
+---
+
+[中文文档](/solution/3100-3199/3141.Maximum%20Hamming%20Distances/README.md)
+
+## Description
+
+<p>Given an array <code>nums</code> and an integer <code>m</code>, with each element <code>nums[i]</code> satisfying <code>0 &lt;= nums[i] &lt; 2<sup>m</sup></code>, return an array <code>answer</code>. The <code>answer</code> array should be of the same length as <code>nums</code>, where each element <code>answer[i]</code> represents the <em>maximum</em> <strong>Hamming distance </strong>between <code>nums[i]</code> and any other element <code>nums[j]</code> in the array.</p>
+
+<p>The <strong>Hamming distance</strong> between two binary integers is defined as the number of positions at which the corresponding bits differ (add leading zeroes if needed).</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [9,12,9,11], m = 4</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[2,3,2,3]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The binary representation of <code>nums = [1001,1100,1001,1011]</code>.</p>
+
+<p>The maximum hamming distances for each index are:</p>
+
+<ul>
+	<li><code>nums[0]</code>: 1001 and 1100 have a distance of 2.</li>
+	<li><code>nums[1]</code>: 1100 and 1011 have a distance of 3.</li>
+	<li><code>nums[2]</code>: 1001 and 1100 have a distance of 2.</li>
+	<li><code>nums[3]</code>: 1011 and 1100 have a distance of 3.</li>
+</ul>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [3,4,6,10], m = 4</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">[3,3,2,3]</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The binary representation of <code>nums = [0011,0100,0110,1010]</code>.</p>
+
+<p>The maximum hamming distances for each index are:</p>
+
+<ul>
+	<li><code>nums[0]</code>: 0011 and 0100 have a distance of 3.</li>
+	<li><code>nums[1]</code>: 0100 and 0011 have a distance of 3.</li>
+	<li><code>nums[2]</code>: 0110 and 1010 have a distance of 2.</li>
+	<li><code>nums[3]</code>: 1010 and 0100 have a distance of 3.</li>
+</ul>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= m &lt;= 17</code></li>
+	<li><code>2 &lt;= nums.length &lt;= 2<sup>m</sup></code></li>
+	<li><code>0 &lt;= nums[i] &lt; 2<sup>m</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Reverse Thinking + BFS
+
+> **Thinking**
+>
+> Each value needs its maximum Hamming distance to some array element. Pairwise comparison is too slow when $m$ reaches $17$.
+>
+> That maximum is $m$ minus the minimum distance to an array element. BFS on the hypercube, flipping one bit at a time from the array values, yields every mask's nearest neighbor in the array.
+>
+> Set $\textit{dist}[x]=0$ for $x$ in $\textit{nums}$ and expand. For a query $x$ the answer is $m-\textit{dist}[x\oplus(2^m-1)]$, converting distance-to-complement into maximum distance.
+
+The problem requires us to find the maximum Hamming distance between each element and other elements in the array. We can think in reverse: for each element, we take its complement and find the minimum Hamming distance to other elements in the array. Then, the maximum Hamming distance we are looking for is $m$ minus this minimum Hamming distance.
+
+We can use Breadth-First Search (BFS) to find the minimum Hamming distance from each complemented element to other elements.
+
+The specific steps are as follows:
+
+1. Initialize an array $\textit{dist}$ with a length of $2^m$ to record the minimum Hamming distance from each complemented element to other elements. Initially, all are set to $-1$.
+2. Traverse the array $\textit{nums}$, set the complement of each element to $0$, and add it to the queue $q$.
+3. Starting from $k = 1$, continuously traverse the queue $q$. Each time, take out the elements in the queue, perform $m$ complement operations on them, add the complemented elements to the queue $t$, and set the minimum Hamming distance to the original element to $k$.
+4. Repeat step 3 until the queue is empty.
+
+Finally, we traverse the array $\textit{nums}$, take the complement of each element as the index, and take out the corresponding minimum Hamming distance from the $\textit{dist}$ array. Then, $m$ minus this value is the maximum Hamming distance we are looking for.
+
+The time complexity is $O(2^m)$, and the space complexity is $O(2^m)$, where $m$ is the integer given in the problem.
+
+#### Java
+
+```java
+class Solution {
+    public int[] maxHammingDistances(int[] nums, int m) {
+        int[] dist = new int[1 << m];
+        Arrays.fill(dist, -1);
+        Deque<Integer> q = new ArrayDeque<>();
+        for (int x : nums) {
+            dist[x] = 0;
+            q.offer(x);
+        }
+        for (int k = 1; !q.isEmpty(); ++k) {
+            for (int t = q.size(); t > 0; --t) {
+                int x = q.poll();
+                for (int i = 0; i < m; ++i) {
+                    int y = x ^ (1 << i);
+                    if (dist[y] == -1) {
+                        q.offer(y);
+                        dist[y] = k;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < nums.length; ++i) {
+            nums[i] = m - dist[nums[i] ^ ((1 << m) - 1)];
+        }
+        return nums;
+    }
+}
+```

@@ -1,0 +1,178 @@
+# 2328. Number of Increasing Paths in a Grid
+
+**Difficulty:** Hard  
+**Category:** Graphs & Shortest Path  
+**LeetCode:** https://leetcode.com/problems/number-of-increasing-paths-in-a-grid/
+
+---
+
+[中文文档](/solution/2300-2399/2328.Number%20of%20Increasing%20Paths%20in%20a%20Grid/README.md)
+
+## Description
+
+<p>You are given an <code>m x n</code> integer matrix <code>grid</code>, where you can move from a cell to any adjacent cell in all <code>4</code> directions.</p>
+
+<p>Return <em>the number of <strong>strictly</strong> <strong>increasing</strong> paths in the grid such that you can start from <strong>any</strong> cell and end at <strong>any</strong> cell. </em>Since the answer may be very large, return it <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>.</p>
+
+<p>Two paths are considered different if they do not have exactly the same sequence of visited cells.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/2300-2399/2328.Number%20of%20Increasing%20Paths%20in%20a%20Grid/images/griddrawio-4.png" style="width: 181px; height: 121px;" />
+<pre>
+<strong>Input:</strong> grid = [[1,1],[3,4]]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> The strictly increasing paths are:
+- Paths with length 1: [1], [1], [3], [4].
+- Paths with length 2: [1 -&gt; 3], [1 -&gt; 4], [3 -&gt; 4].
+- Paths with length 3: [1 -&gt; 3 -&gt; 4].
+The total number of paths is 4 + 3 + 1 = 8.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> grid = [[1],[2]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The strictly increasing paths are:
+- Paths with length 1: [1], [2].
+- Paths with length 2: [1 -&gt; 2].
+The total number of paths is 2 + 1 = 3.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>m == grid.length</code></li>
+	<li><code>n == grid[i].length</code></li>
+	<li><code>1 &lt;= m, n &lt;= 1000</code></li>
+	<li><code>1 &lt;= m * n &lt;= 10<sup>5</sup></code></li>
+	<li><code>1 &lt;= grid[i][j] &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: DFS + Memoization
+
+> **Thinking**
+>
+> Strictly increasing paths may start anywhere and have any length. Up to $10^5$ cells makes enumeration impossible. Paths from a cell depend only on strictly larger neighbors.
+>
+> Memoize $\textit{dfs}(i,j)$ as one (the cell itself) plus the four larger neighbors. Each cell is solved once; the sum over the grid is the answer.
+
+We design a function $\textit{dfs}(i, j)$, which represents the number of strictly increasing paths that can be reached from the grid graph starting at the $i$-th row and $j$-th column. Then the answer is $\sum_{i=0}^{m-1} \sum_{j=0}^{n-1} \textit{dfs}(i, j)$. In the search process, we can use a two-dimensional array $f$ to record the calculated results to avoid repeated calculation.
+
+The calculation process of the function $\textit{dfs}(i, j)$ is as follows:
+
+- If $f[i][j]$ is not $0$, it means that it has been calculated, and $f[i][j]$ is returned directly;
+- Otherwise, we initialize $f[i][j] = 1$, and then enumerate the four directions of $(i, j)$. If the grid $(x, y)$ in a certain direction satisfies $0 \leq x \lt m$, $0 \leq y \lt n$, and $\textit{grid}[i][j] \lt \textit{grid}[x][y]$, we can start from the grid $(i, j)$ to the grid $(x, y)$, and the number on the path is strictly increasing, so $f[i][j] += \textit{dfs}(x, y)$.
+
+Finally, we return $f[i][j]$.
+
+The answer is $\sum_{i=0}^{m-1} \sum_{j=0}^{n-1} \textit{dfs}(i, j)$.
+
+The time complexity is $O(mn)$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns in the grid graph, respectively.
+
+#### Java
+
+```java
+class Solution {
+    private int[][] f;
+    private int[][] grid;
+    private int m;
+    private int n;
+    private final int mod = (int) 1e9 + 7;
+
+    public int countPaths(int[][] grid) {
+        m = grid.length;
+        n = grid[0].length;
+        this.grid = grid;
+        f = new int[m][n];
+        int ans = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                ans = (ans + dfs(i, j)) % mod;
+            }
+        }
+        return ans;
+    }
+
+    private int dfs(int i, int j) {
+        if (f[i][j] != 0) {
+            return f[i][j];
+        }
+        int ans = 1;
+        int[] dirs = {-1, 0, 1, 0, -1};
+        for (int k = 0; k < 4; ++k) {
+            int x = i + dirs[k], y = j + dirs[k + 1];
+            if (x >= 0 && x < m && y >= 0 && y < n && grid[i][j] < grid[x][y]) {
+                ans = (ans + dfs(x, y)) % mod;
+            }
+        }
+        return f[i][j] = ans;
+    }
+}
+```
+
+### Solution 2: Sorting + Dynamic Programming
+
+> **Thinking**
+>
+> Strictly increasing paths may start at any cell. The grid has up to $10^5$ cells. Memoizing a walk toward larger neighbors follows one chain on a strictly increasing row of length $1000$, and both $m$ and $n$ can be $1000$, which exhausts the call stack.
+>
+> The bottleneck is that chain: every call steps into a strictly larger neighbor that has not been finished.
+>
+> The count at a cell depends only on strictly larger neighbors, so those edges form a DAG.
+>
+> Sort cells by decreasing value. Set $f[i][j]=1$, then add the finished counts of the four larger neighbors and reduce modulo $10^9+7$. The sum of every $f[i][j]$, reduced again, is the number of paths.
+
+Let $f[i][j]$ be the number of strictly increasing paths that start at row $i$ and column $j$. A cell contributes one path by itself, so the initial value is $1$. It may also step to a strictly larger neighbor, which gives
+
+$$
+f[i][j] = 1 + \sum_{\substack{(x,y)\sim(i,j)\\ \textit{grid}[i][j] < \textit{grid}[x][y]}} f[x][y] \pmod{10^9+7}.
+$$
+
+A larger cell does not depend on the current one. Processing cells from largest value to smallest finishes those neighbors first. The answer is $\sum f[i][j]$ modulo $10^9+7$.
+
+The time complexity is $O(mn \log(mn))$, and the space complexity is $O(mn)$, where $m$ and $n$ are the number of rows and columns.
+
+#### Java
+
+```java
+class Solution {
+    public int countPaths(int[][] grid) {
+        final int mod = (int) 1e9 + 7;
+        int m = grid.length, n = grid[0].length;
+        int[][] f = new int[m][n];
+        int[][] cells = new int[m * n][3];
+        for (int i = 0, k = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                f[i][j] = 1;
+                cells[k][0] = grid[i][j];
+                cells[k][1] = i;
+                cells[k][2] = j;
+                ++k;
+            }
+        }
+        Arrays.sort(cells, (a, b) -> Integer.compare(b[0], a[0]));
+        int[] dirs = {-1, 0, 1, 0, -1};
+        for (int[] cell : cells) {
+            int i = cell[1], j = cell[2];
+            for (int k = 0; k < 4; ++k) {
+                int x = i + dirs[k], y = j + dirs[k + 1];
+                if (x >= 0 && x < m && y >= 0 && y < n && grid[i][j] < grid[x][y]) {
+                    f[i][j] = (f[i][j] + f[x][y]) % mod;
+                }
+            }
+        }
+        long ans = 0;
+        for (int[] row : f) {
+            for (int v : row) {
+                ans += v;
+            }
+        }
+        return (int) (ans % mod);
+    }
+}
+```

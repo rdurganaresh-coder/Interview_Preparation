@@ -1,0 +1,126 @@
+# 1051. Height Checker
+
+**Difficulty:** Easy  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/height-checker/
+
+---
+
+[中文文档](/solution/1000-1099/1051.Height%20Checker/README.md)
+
+## Description
+
+<p>A school is trying to take an annual photo of all the students. The students are asked to stand in a single file line in <strong>non-decreasing order</strong> by height. Let this ordering be represented by the integer array <code>expected</code> where <code>expected[i]</code> is the expected height of the <code>i<sup>th</sup></code> student in line.</p>
+
+<p>You are given an integer array <code>heights</code> representing the <strong>current order</strong> that the students are standing in. Each <code>heights[i]</code> is the height of the <code>i<sup>th</sup></code> student in line (<strong>0-indexed</strong>).</p>
+
+<p>Return <em>the <strong>number of indices</strong> where </em><code>heights[i] != expected[i]</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> heights = [1,1,4,2,1,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 
+heights:  [1,1,<u>4</u>,2,<u>1</u>,<u>3</u>]
+expected: [1,1,<u>1</u>,2,<u>3</u>,<u>4</u>]
+Indices 2, 4, and 5 do not match.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> heights = [5,1,2,3,4]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong>
+heights:  [<u>5</u>,<u>1</u>,<u>2</u>,<u>3</u>,<u>4</u>]
+expected: [<u>1</u>,<u>2</u>,<u>3</u>,<u>4</u>,<u>5</u>]
+All indices do not match.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> heights = [1,2,3,4,5]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong>
+heights:  [1,2,3,4,5]
+expected: [1,2,3,4,5]
+All indices match.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= heights.length &lt;= 100</code></li>
+	<li><code>1 &lt;= heights[i] &lt;= 100</code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Sorting
+
+> **Thinking**
+>
+> The number of misplaced students is the number of positions where the array differs from its nondecreasing version. $n\le 100$, so sort and compare.
+>
+> A sorted copy $\textit{expected}$ is zipped with $\textit{heights}$ and mismatches are counted.
+
+We can first sort the heights of the students, then compare the sorted heights with the original heights, and count the positions that are different.
+
+The time complexity is $O(n \log n)$, and the space complexity is $O(n)$, where $n$ is the number of students.
+
+#### Java
+
+```java
+class Solution {
+    public int heightChecker(int[] heights) {
+        int[] expected = heights.clone();
+        Arrays.sort(expected);
+        int ans = 0;
+        for (int i = 0; i < heights.length; ++i) {
+            if (heights[i] != expected[i]) {
+                ++ans;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### Solution 2: Counting Sort
+
+> **Thinking**
+>
+> Comparison sort uses $O(n \log n)$ and an extra array. Heights lie in $1..100$, so counting sort builds the expected order in linear time.
+>
+> Tally each height, then expand heights from $1$ to $100$ against the original array and count disagreements.
+
+Since the height of the students in the problem does not exceed $100$, we can use counting sort. Here we use an array $\textit{cnt}$ of length $101$ to count the number of times each height $h_i$ appears.
+
+The time complexity is $O(n + M)$, and the space complexity is $O(M)$, where $n$ is the number of students, and $M$ is the maximum height of the students. In this problem, $M = 101$.
+
+#### Java
+
+```java
+class Solution {
+    public int heightChecker(int[] heights) {
+        int[] cnt = new int[101];
+        for (int h : heights) {
+            ++cnt[h];
+        }
+        int ans = 0;
+        for (int i = 0, j = 0; i < 101; ++i) {
+            while (cnt[i] > 0) {
+                --cnt[i];
+                if (heights[j++] != i) {
+                    ++ans;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```

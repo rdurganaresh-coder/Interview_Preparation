@@ -1,0 +1,95 @@
+# 135. Candy
+
+**Difficulty:** Hard  
+**Category:** Arrays, Hashing & Greedy  
+**LeetCode:** https://leetcode.com/problems/candy/
+
+---
+
+[中文文档](/solution/0100-0199/0135.Candy/README.md)
+
+## Description
+
+<p>There are <code>n</code> children standing in a line.</p>
+
+<p>Each child is assigned a rating value given in the integer array <code>ratings</code>.</p>
+
+<p>You are giving candies to these children subjected to the following requirements:</p>
+
+<ul>
+	<li>Each child must have <strong>at least</strong> one candy.</li>
+	<li>Children with a <strong>higher</strong> rating get more candies than their neighbors.</li>
+</ul>
+
+<p>Return the <strong>minimum</strong> number of candies you need to have to distribute the candies to the children.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> ratings = [1,0,2]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> You can allocate to the first, second and third child with 2, 1, 2 candies respectively.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> ratings = [1,2,2]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> You can allocate to the first, second and third child with 1, 2, 1 candies respectively.
+The third child gets 1 candy because it satisfies the above two conditions.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n == ratings.length &lt;= 5 * 10<sup>4</sup></code></li>
+	<li><code>0 &lt;= ratings[i] &lt;= 5 * 10<sup>4</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Two traversals
+
+> **Thinking**
+>
+> A higher-rated child must get more candy than a neighbor; minimize the total. $n\le 5\times 10^4$. Sorting by rating can work but equal ratings are fiddly. The left and right constraints are independent: a left-to-right pass enforces “more than the left neighbor”, a right-to-left pass enforces the right, and each child takes the max. Both increasing chains survive.
+
+We initialize two arrays $\textit{left}$ and $\textit{right}$, where $\textit{left}[i]$ represents the minimum number of candies the current child should get when the current child's score is higher than the left child's score, and $\textit{right}[i]$ represents the minimum number of candies the current child should get when the current child's score is higher than the right child's score. Initially, $\textit{left}[i]=1$, $\textit{right}[i]=1$.
+
+We traverse the array from left to right once, and if the current child's score is higher than the left child's score, then $\textit{left}[i]=\textit{left}[i-1]+1$; similarly, we traverse the array from right to left once, and if the current child's score is higher than the right child's score, then $\textit{right}[i]=\textit{right}[i+1]+1$.
+
+Finally, we traverse the array of scores once, and the minimum number of candies each child should get is the maximum of $\textit{left}[i]$ and $\textit{right}[i]$, and we add them up to get the answer.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array of scores.
+
+#### Java
+
+```java
+class Solution {
+    public int candy(int[] ratings) {
+        int n = ratings.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        Arrays.fill(left, 1);
+        Arrays.fill(right, 1);
+        for (int i = 1; i < n; ++i) {
+            if (ratings[i] > ratings[i - 1]) {
+                left[i] = left[i - 1] + 1;
+            }
+        }
+        for (int i = n - 2; i >= 0; --i) {
+            if (ratings[i] > ratings[i + 1]) {
+                right[i] = right[i + 1] + 1;
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            ans += Math.max(left[i], right[i]);
+        }
+        return ans;
+    }
+}
+```

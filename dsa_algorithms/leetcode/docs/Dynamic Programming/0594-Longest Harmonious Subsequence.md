@@ -1,0 +1,95 @@
+# 594. Longest Harmonious Subsequence
+
+**Difficulty:** Easy  
+**Category:** Dynamic Programming  
+**LeetCode:** https://leetcode.com/problems/longest-harmonious-subsequence/
+
+---
+
+[中文文档](/solution/0500-0599/0594.Longest%20Harmonious%20Subsequence/README.md)
+
+## Description
+
+<p>We define a harmonious array as an array where the difference between its maximum value and its minimum value is <b>exactly</b> <code>1</code>.</p>
+
+<p>Given an integer array <code>nums</code>, return the length of its longest harmonious <span data-keyword="subsequence-array">subsequence</span> among all its possible subsequences.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,3,2,2,5,2,3,7]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">5</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The longest harmonious subsequence is <code>[3,2,2,2,3]</code>.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,2,3,4]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">2</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>The longest harmonious subsequences are <code>[1,2]</code>, <code>[2,3]</code>, and <code>[3,4]</code>, all of which have a length of 2.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">nums = [1,1,1,1]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">0</span></p>
+
+<p><strong>Explanation:</strong></p>
+
+<p>No harmonic subsequence exists.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 2 * 10<sup>4</sup></code></li>
+	<li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+</ul>
+
+## Solutions
+
+### Solution 1: Hash Table
+
+> **Thinking**
+>
+> A harmonious subsequence has max and min differing by exactly $1$. Order does not matter, only the values. Listing subsequences is unrealistic.
+>
+> Count frequencies. For each $x$ that has a neighbor $x+1$, $\textit{cnt}[x]+\textit{cnt}[x+1]$ is the longest subsequence using just those two values. Take the maximum.
+
+We can use a hash table $\textit{cnt}$ to record the occurrence count of each element in the array $\textit{nums}$. Then, we iterate through each key-value pair $(x, c)$ in the hash table. If the key $x + 1$ exists in the hash table, then the sum of occurrences of elements $x$ and $x + 1$, $c + \textit{cnt}[x + 1]$, forms a harmonious subsequence. We just need to find the maximum length among all harmonious subsequences.
+
+The time complexity is $O(n)$, and the space complexity is $O(n)$, where $n$ is the length of the array $\textit{nums}$.
+
+#### Java
+
+```java
+class Solution {
+    public int findLHS(int[] nums) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int x : nums) {
+            cnt.merge(x, 1, Integer::sum);
+        }
+        int ans = 0;
+        for (var e : cnt.entrySet()) {
+            int x = e.getKey(), c = e.getValue();
+            if (cnt.containsKey(x + 1)) {
+                ans = Math.max(ans, c + cnt.get(x + 1));
+            }
+        }
+        return ans;
+    }
+}
+```
