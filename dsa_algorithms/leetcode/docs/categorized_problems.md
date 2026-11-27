@@ -554,7 +554,7 @@
 
 | ID | Problem | Difficulty | LeetCode | Status |
 | :-: | :--- | :--- | :-: | :-: |
-| 266 | Palindrome Permutation | 🟢 Easy | [Solve](https://leetcode.com/problems/palindrome-permutation/) | <input type="checkbox"> |
+| 266 | [Palindrome Permutation](https://leetcode.com/problems/palindrome-permutation/) | 🟢 Easy | [Solve](https://leetcode.com/problems/palindrome-permutation/) | <input type="checkbox"> |
 | 1694 | Reformat Phone Number | 🟢 Easy | [Solve](https://leetcode.com/problems/reformat-phone-number/) | <input type="checkbox"> |
 | 1863 | Sum of All Subset XOR Totals | 🟢 Easy | [Solve](https://leetcode.com/problems/sum-of-all-subset-xor-totals/) | <input type="checkbox"> |
 | 1920 | Build Array from Permutation | 🟢 Easy | [Solve](https://leetcode.com/problems/build-array-from-permutation/) | <input type="checkbox"> |
